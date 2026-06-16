@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTVA — Canadian Tamil Volleyball Association</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #15241E;
+  --sand: #EDE6D6;
+  --gold: #E8A23D;
+  --court-green: #2F5233;
+  --signal: #C23B3B;
+  --line-white: #FAF8F2;
+  --gold-dark: #9C6A1F;
+  --green-light: #4A7350;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--sand);
+  color: var(--ink);
+  line-height: 1.6;
+}
+.display {
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ===== TOP BAR / NAV ===== */
+.topbar {
+  background: var(--ink);
+  color: var(--line-white);
+  padding: 0.5rem 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.topbar-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 0.75;
+}
+
+.navbar {
+  background: var(--ink);
+  border-bottom: 3px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-mark {
+  width: 42px; height: 42px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 18px;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.logo-text { line-height: 1.1; }
+.logo-text .full {
+  font-family: 'Anton', sans-serif;
+  font-size: 17px;
+  color: var(--line-white);
+  letter-spacing: 0.02em;
+}
+.logo-text .sub {
+  font-size: 10.5px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+.nav-links a {
+  color: rgba(250,248,242,0.8);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.15s;
+  position: relative;
+}
+.nav-links a:hover { color: var(--line-white); }
+.nav-links a.active { color: var(--gold); }
+.nav-cta {
+  background: var(--signal);
+  color: var(--line-white) !important;
+  padding: 9px 18px;
+  border-radius: 4px;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+.nav-cta:hover { background: #a82f2f; }
+.nav-toggle { display: none; background: none; border: none; color: var(--line-white); font-size: 24px; cursor: pointer; }
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 2rem 0;
+}
+.hero-courtlines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, var(--line-white) 39px, var(--line-white) 40px);
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3rem;
+  align-items: center;
+  padding-bottom: 4rem;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232,162,61,0.15);
+  border: 1px solid rgba(232,162,61,0.4);
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+}
+.hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+.hero h1 {
+  font-family: 'Anton', sans-serif;
+  font-size: 3.6rem;
+  line-height: 1.02;
+  color: var(--line-white);
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.005em;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero-sub {
+  color: rgba(250,248,242,0.7);
+  font-size: 1.08rem;
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 2rem;
+}
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn {
+  font-size: 14.5px;
+  font-weight: 700;
+  padding: 14px 26px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-gold { background: var(--gold); color: var(--ink); }
+.btn-gold:hover { background: #f0ad4e; }
+.btn-line { background: transparent; color: var(--line-white); border: 1.5px solid rgba(250,248,242,0.35); }
+.btn-line:hover { border-color: var(--line-white); }
+
+.hero-visual {
+  position: relative;
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-badge-ring {
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--green-light), var(--court-green) 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 0 8px rgba(232,162,61,0.15);
+}
+.hero-badge-inner {
+  text-align: center;
+  color: var(--line-white);
+}
+.hero-badge-inner .num {
+  font-family: 'Anton', sans-serif;
+  font-size: 4.2rem;
+  line-height: 1;
+  color: var(--gold);
+}
+.hero-badge-inner .lbl {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  opacity: 0.85;
+}
+.hero-badge-inner .since {
+  margin-top: 16px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+  border-top: 1px solid rgba(250,248,242,0.2);
+  padding-top: 12px;
+}
+
+/* ===== SCOREBOARD STAT BAR ===== */
+.scoreboard {
+  background: var(--gold);
+  border-top: 3px solid var(--ink);
+}
+.scoreboard-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.score-cell {
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  border-right: 1.5px dashed rgba(21,36,30,0.25);
+}
+.score-cell:last-child { border-right: none; }
+.score-num {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.4rem;
+  color: var(--ink);
+  line-height: 1;
+}
+.score-lbl {
+  font-size: 11.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(21,36,30,0.7);
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* ===== SECTION GENERIC ===== */
+.section { max-width: 1140px; margin: 0 auto; padding: 5rem 2rem; }
+.section-tight { padding: 3.5rem 2rem; }
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--court-green);
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before { content: ''; width: 22px; height: 2px; background: var(--gold); }
+.section h2 {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+.section-lead {
+  font-size: 1.05rem;
+  color: rgba(21,36,30,0.72);
+  max-width: 640px;
+  margin-bottom: 2.5rem;
+  line-height: 1.75;
+}
+
+/* ===== ABOUT / MISSION ===== */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+.about-grid p { color: rgba(21,36,30,0.75); margin-bottom: 1.1rem; line-height: 1.8; }
+.pillar-list { display: flex; flex-direction: column; gap: 14px; }
+.pillar {
+  background: var(--line-white);
+  border-left: 4px solid var(--gold);
+  border-radius: 0;
+  padding: 1.1rem 1.4rem;
+}
+.pillar .num { font-family: 'Anton', sans-serif; font-size: 13px; color: var(--gold-dark); letter-spacing: 0.05em; }
+.pillar h4 { font-size: 15.5px; font-weight: 700; margin: 4px 0 4px; color: var(--ink); }
+.pillar p { font-size: 13.5px; color: rgba(21,36,30,0.65); margin: 0; line-height: 1.55; }
+
+/* ===== TEAMS STRIP ===== */
+.teams-band {
+  background: var(--court-green);
+  padding: 3.5rem 0;
+  overflow: hidden;
+}
+.teams-band-head {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  margin-bottom: 1.8rem;
+}
+.teams-band-head .eyebrow { color: var(--gold); }
+.teams-band-head .eyebrow::before { background: var(--line-white); }
+.teams-band-head h2 { color: var(--line-white); }
+.teams-marquee {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.team-chip {
+  background: rgba(250,248,242,0.08);
+  border: 1px solid rgba(250,248,242,0.18);
+  color: var(--line-white);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+/* ===== EVENTS PREVIEW ===== */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+}
+.event-card {
+  background: var(--line-white);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(21,36,30,0.08);
+}
+.event-img {
+  height: 130px;
+  background: linear-gradient(135deg, var(--court-green), var(--green-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.event-img .icon { font-family: 'Anton', sans-serif; font-size: 13px; color: rgba(250,248,242,0.5); letter-spacing: 0.08em; }
+.event-date-tag {
+  position: absolute; top: 10px; left: 10px;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 3px;
+  letter-spacing: 0.03em;
+}
+.event-body { padding: 1.1rem 1.2rem; }
+.event-body h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.event-body p { font-size: 13px; color: rgba(21,36,30,0.6); margin: 0; }
+
+/* ===== PHOTOS PREVIEW ===== */
+.photo-mosaic {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 140px 140px;
+  gap: 10px;
+}
+.photo-mosaic .tile:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+.tile {
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.tile-1 { background: linear-gradient(135deg, #2F5233, #4A7350); }
+.tile-2 { background: linear-gradient(135deg, #E8A23D, #c4822a); }
+.tile-3 { background: linear-gradient(135deg, #15241E, #2c3e35); }
+.tile-4 { background: linear-gradient(135deg, #C23B3B, #952e2e); }
+.tile-5 { background: linear-gradient(135deg, #4A7350, #2F5233); }
+.tile span { font-family: 'Anton', sans-serif; font-size: 11px; color: rgba(250,248,242,0.55); letter-spacing: 0.06em; }
+.photo-note {
+  margin-top: 1.5rem;
+  font-size: 13px;
+  color: rgba(21,36,30,0.55);
+  font-style: italic;
+}
+
+/* ===== PETITION MINI-BANNER ===== */
+.petition-banner {
+  background: var(--ink);
+  border-radius: 10px;
+  padding: 2rem 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.petition-banner-text { max-width: 560px; }
+.petition-banner .eyebrow { color: var(--gold); }
+.petition-banner .eyebrow::before { background: var(--signal); }
+.petition-banner h3 {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.5rem;
+  color: var(--line-white);
+  margin-bottom: 6px;
+}
+.petition-banner p { color: rgba(250,248,242,0.65); font-size: 14px; line-height: 1.6; }
+
+/* ===== CONTACT ===== */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+.contact-item { display: flex; gap: 14px; margin-bottom: 1.5rem; align-items: flex-start; }
+.contact-icon {
+  width: 38px; height: 38px;
+  background: var(--court-green);
+  color: var(--line-white);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.contact-item h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 2px; }
+.contact-item p { font-size: 13.5px; color: rgba(21,36,30,0.65); margin: 0; }
+.contact-form { background: var(--line-white); border-radius: 8px; padding: 1.8rem; border: 1px solid rgba(21,36,30,0.08); }
+.contact-form .form-group { margin-bottom: 12px; }
+.contact-form label { font-size: 12.5px; font-weight: 600; color: rgba(21,36,30,0.7); display: block; margin-bottom: 5px; }
+.contact-form input, .contact-form textarea {
+  width: 100%;
+  border: 1px solid rgba(21,36,30,0.15);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  resize: vertical;
+}
+.contact-form input:focus, .contact-form textarea:focus { border-color: var(--court-green); }
+.contact-form button {
+  background: var(--court-green);
+  color: var(--line-white);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 4px;
+}
+.contact-form button:hover { background: var(--ink); }
+
+/* ===== FOOTER ===== */
+.footer { background: var(--ink); padding: 3rem 2rem 1.5rem; }
+.footer-inner { max-width: 1140px; margin: 0 auto; }
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-bottom: 2.2rem;
+  border-bottom: 1px solid rgba(250,248,242,0.12);
+}
+.footer-brand .logo-text .full { color: var(--line-white); }
+.footer-brand p { font-size: 13px; color: rgba(250,248,242,0.5); margin-top: 10px; line-height: 1.6; max-width: 240px; }
+.footer-col h5 { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.footer-col a, .footer-col p { display: block; font-size: 13.5px; color: rgba(250,248,242,0.6); margin-bottom: 9px; }
+.footer-col a:hover { color: var(--line-white); }
+.footer-bottom {
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12.5px;
+  color: rgba(250,248,242,0.4);
+}
+
+@media (max-width: 880px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .about-grid, .contact-grid { grid-template-columns: 1fr; }
+  .events-grid { grid-template-columns: 1fr; }
+  .photo-mosaic { grid-template-columns: repeat(2, 1fr); grid-template-rows: 110px 110px 110px; }
+  .photo-mosaic .tile:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+  .scoreboard-inner { grid-template-columns: repeat(2, 1fr); }
+  .score-cell:nth-child(2) { border-right: none; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .hero h1 { font-size: 2.4rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>Malvern · Toronto, Ontario</span>
+    <span>info@ctva.ca</span>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="logo-block">
+      <div class="logo-mark">CT</div>
+      <div class="logo-text">
+        <div class="full">CTVA</div>
+        <div class="sub">Volleyball Association</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About us</a>
+      <a href="#mission">Mission</a>
+      <a href="#events">Events</a>
+      <a href="#photos">Photos</a>
+      <a href="#contact">Contact</a>
+      <a href="#petition" class="nav-cta">Take action</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-courtlines"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="dot"></span>Community-built · Since 2005</div>
+      <h1>Where our<br>community plays<br><span class="accent">together.</span></h1>
+      <p class="hero-sub">CTVA is the home of 18+ Tamil-Canadian volleyball clubs across the GTA — built by immigrant families, sustained by volunteers, and rooted in the heart of Scarborough for over three decades.</p>
+      <div class="hero-btns">
+        <a href="#about" class="btn btn-gold">Our story →</a>
+        <a href="#events" class="btn btn-line">See upcoming events</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-badge-ring">
+        <div class="hero-badge-inner">
+          <div class="num">18+</div>
+          <div class="lbl">Member clubs</div>
+          <div class="since">Established community · 30+ years</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCOREBOARD -->
+<div class="scoreboard">
+  <div class="scoreboard-inner">
+    <div class="score-cell">
+      <div class="score-num">30+</div>
+      <div class="score-lbl">Years active</div>
+    </div>
+    <div class="score-cell">
+      <div class="score-num">18</div>
+      <div class="score-lbl">Member clubs</div>
+    </div>
+    <div class="score-cell">
+      <div class="score-num">1,000+</div>
+      <div class="score-lbl">Players &amp; families</div>
+    </div>
+    <div class="score-cell">
+      <div class="score-num">100s</div>
+      <div class="score-lbl">Tournaments hosted</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="eyebrow">About us</div>
+  <h2>Built by the community,<br>for the community</h2>
+  <div class="about-grid">
+    <div>
+      <p>The Canadian Tamil Volleyball Association began as an informal gathering of newcomer families on a single court in Malvern. Over more than three decades, it grew into a network of 18 clubs across the Greater Toronto Area — each with its own name, colours, and following, all connected by the same court culture.</p>
+      <p>Through the 1990s, our courts were a place of safety during difficult years for the neighbourhood. For new immigrants arriving with little else, they became the first place to make friends, find community, and feel at home in a new country.</p>
+      <p>Today CTVA represents that entire network — coordinating tournaments, preserving our history, and now, advocating for the permanent facilities our community has earned.</p>
+    </div>
+    <div class="pillar-list">
+      <div class="pillar">
+        <div class="num">01</div>
+        <h4>Community first</h4>
+        <p>Every club, every event, every decision is rooted in serving the families who built this association.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">02</div>
+        <h4>Open to all</h4>
+        <p>While rooted in Tamil-Canadian history, our courts have always welcomed every background that loves the sport.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">03</div>
+        <h4>Run democratically</h4>
+        <p>CTVA is governed by committees and a voting system, by and for its member clubs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="section-tight" id="mission" style="background: var(--line-white);">
+  <div class="section" style="padding: 0;">
+    <div class="eyebrow">Our mission</div>
+    <h2>A permanent home for the sport we grew up with</h2>
+    <p class="section-lead">CTVA exists to give Tamil-Canadian and broader community volleyball a permanent, recognized place in our city — preserving the history that built us, and securing the facilities our members deserve going forward.</p>
+  </div>
+</section>
+
+<!-- TEAMS BAND -->
+<div class="teams-band">
+  <div class="teams-band-head">
+    <div class="eyebrow">Our member clubs</div>
+    <h2>18 clubs. One association.</h2>
+  </div>
+  <div class="teams-marquee">
+    <span class="team-chip">Ajax Boys</span>
+    <span class="team-chip">New Star</span>
+    <span class="team-chip">Thaimunn</span>
+    <span class="team-chip">Singing Fish</span>
+    <span class="team-chip">Nagarkovil SC</span>
+    <span class="team-chip">Toronto Sports Club</span>
+    <span class="team-chip">Malvern Sports Club</span>
+    <span class="team-chip">Rouge River</span>
+    <span class="team-chip">Super Star</span>
+    <span class="team-chip">Sivasakthi Sports Club</span>
+    <span class="team-chip">Uthaya Nila Sports Club</span>
+    <span class="team-chip">Uthaya Oli Sports Club</span>
+    <span class="team-chip">Captain Miller Sports Club</span>
+    <span class="team-chip">Vanni Boys Sports Club</span>
+    <span class="team-chip">Jaffna Kings Sports Club</span>
+    <span class="team-chip">Toronto Blues Sports Club</span>
+    <span class="team-chip">Vancouver Stars Sports Club</span>
+    <span class="team-chip">Galaxy Sports Club</span>
+    <span class="team-chip">Northern Gorillas Sports Club</span>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<section class="section" id="events">
+  <div class="eyebrow">Events</div>
+  <h2>Tournaments &amp; gatherings</h2>
+  <p class="section-lead">From summer tournaments to community BBQs, CTVA clubs gather throughout the year. Event details are added as they're confirmed.</p>
+  <div class="events-grid">
+    <div class="event-card">
+      <div class="event-img"><span class="icon">PHOTO COMING SOON</span><div class="event-date-tag">Annual</div></div>
+      <div class="event-body"><h4>Summer championship</h4><p>All clubs · Malvern</p></div>
+    </div>
+    <div class="event-card">
+      <div class="event-img"><span class="icon">PHOTO COMING SOON</span><div class="event-date-tag">Annual</div></div>
+      <div class="event-body"><h4>Community BBQ &amp; play day</h4><p>Open to all · Family event</p></div>
+    </div>
+    <div class="event-card">
+      <div class="event-img"><span class="icon">PHOTO COMING SOON</span><div class="event-date-tag">Ongoing</div></div>
+      <div class="event-body"><h4>Inter-club league</h4><p>18 clubs · Weekly matches</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTOS -->
+<section class="section" id="photos" style="background: var(--line-white);">
+  <div class="eyebrow">Photo &amp; video archive</div>
+  <h2>30+ years, captured</h2>
+  <p class="section-lead">A growing archive of tournaments, teams, and community moments since the early days in Malvern. Curated and managed by CTVA.</p>
+  <div class="photo-mosaic">
+    <div class="tile tile-1"><span>ARCHIVE COMING SOON</span></div>
+    <div class="tile tile-2"><span>1990s</span></div>
+    <div class="tile tile-3"><span>2000s</span></div>
+    <div class="tile tile-4"><span>2010s</span></div>
+    <div class="tile tile-5"><span>2020s</span></div>
+  </div>
+  <p class="photo-note">Have photos or videos from past CTVA events? Reach out via the contact section below — our team manages all submissions directly.</p>
+</section>
+
+<!-- PETITION MINI BANNER -->
+<section class="section-tight" id="petition">
+  <div class="section" style="padding: 0;">
+    <div class="petition-banner">
+      <div class="petition-banner-text">
+        <div class="eyebrow">Take action</div>
+        <h3>Help us secure a dedicated volleyball court</h3>
+        <p>After the unannounced demolition of our Malvern court, we're petitioning the City for a permanent, dedicated volleyball space for our community and beyond.</p>
+      </div>
+      <a href="petition.html" class="btn btn-gold">Sign the petition →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="eyebrow">Contact us</div>
+  <h2>Get in touch</h2>
+  <div class="contact-grid">
+    <div>
+      <div class="contact-item">
+        <div class="contact-icon">@</div>
+        <div><h4>Email</h4><p>info@ctva.ca</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">⚑</div>
+        <div><h4>Location</h4><p>Malvern, Toronto, Ontario</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div><h4>Photo &amp; video submissions</h4><p>Send a message below — our team will follow up directly to collect your materials privately.</p></div>
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Message sent';">
+      <div class="form-group"><label>Name</label><input type="text" placeholder="Your name"></div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Club (if applicable)</label><input type="text" placeholder="e.g. Jaffna Kings Sports Club"></div>
+      <div class="form-group"><label>Message</label><textarea rows="4" placeholder="How can we help?"></textarea></div>
+      <button type="submit">Send message</button>
+    </form>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo-block">
+          <div class="logo-mark">CT</div>
+          <div class="logo-text"><div class="full">CTVA</div></div>
+        </div>
+        <p>The official home of Tamil-Canadian volleyball — 18 clubs, one community, rooted in Malvern since the early days.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <a href="#about">About us</a>
+        <a href="#mission">Mission</a>
+        <a href="#events">Events</a>
+        <a href="#photos">Photos</a>
+      </div>
+      <div class="footer-col">
+        <h5>Community</h5>
+        <a href="#petition">Sign the petition</a>
+        <a href="#contact">Contact us</a>
+        <a href="#">Our clubs</a>
+      </div>
+      <div class="footer-col">
+        <h5>CTVA</h5>
+        <p>Malvern, Toronto</p>
+        <p>info@ctva.ca</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Canadian Tamil Volleyball Association</span>
+      <span>Built by the community, for the community</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

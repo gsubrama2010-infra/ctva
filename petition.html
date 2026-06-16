@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Take Action — CTVA Petition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #15241E;
+  --sand: #EDE6D6;
+  --gold: #E8A23D;
+  --court-green: #2F5233;
+  --signal: #C23B3B;
+  --line-white: #FAF8F2;
+  --green-light: #4A7350;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--sand); color: var(--ink); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+
+.topbar { background: var(--ink); color: var(--line-white); padding: 0.5rem 0; font-size: 12px; }
+.topbar-inner { max-width: 1140px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; opacity: 0.75; }
+.navbar { background: var(--ink); border-bottom: 3px solid var(--gold); }
+.nav-inner { max-width: 1140px; margin: 0 auto; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+.logo-block { display: flex; align-items: center; gap: 12px; }
+.logo-mark { width: 42px; height: 42px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 18px; color: var(--ink); }
+.logo-text .full { font-family: 'Anton', sans-serif; font-size: 17px; color: var(--line-white); }
+.logo-text .sub { font-size: 10.5px; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a { color: rgba(250,248,242,0.8); font-size: 14px; font-weight: 500; }
+.nav-links a:hover { color: var(--line-white); }
+.nav-cta { background: var(--signal); color: var(--line-white) !important; padding: 9px 18px; border-radius: 4px; font-weight: 700 !important; font-size: 13px !important; }
+
+.hero {
+  background: var(--ink);
+  padding: 4rem 2rem 3.5rem;
+  text-align: center;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(194,59,59,0.18); border: 1px solid rgba(194,59,59,0.4);
+  color: #e98b8b; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 20px; margin-bottom: 1.4rem;
+}
+.hero h1 {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.6rem;
+  color: var(--line-white);
+  max-width: 640px;
+  margin: 0 auto 1rem;
+  line-height: 1.1;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p { color: rgba(250,248,242,0.7); font-size: 1.02rem; max-width: 540px; margin: 0 auto; line-height: 1.7; }
+
+.section { max-width: 880px; margin: 0 auto; padding: 3.5rem 2rem; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--court-green); margin-bottom: 0.7rem; display: flex; align-items: center; gap: 8px; }
+.eyebrow::before { content: ''; width: 22px; height: 2px; background: var(--gold); }
+.section h2 { font-family: 'Anton', sans-serif; font-size: 1.9rem; color: var(--ink); margin-bottom: 1rem; line-height: 1.15; }
+.section p { color: rgba(21,36,30,0.72); margin-bottom: 1.1rem; line-height: 1.8; }
+
+.demand-list { display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem; }
+.demand-item { display: flex; gap: 14px; background: var(--line-white); border-radius: 8px; border: 1px solid rgba(21,36,30,0.08); padding: 1rem 1.25rem; }
+.demand-num { font-family: 'Anton', sans-serif; font-size: 1.1rem; color: var(--gold-dark, #9C6A1F); width: 28px; flex-shrink: 0; }
+.demand-text strong { display: block; font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.demand-text p { font-size: 13.5px; color: rgba(21,36,30,0.65); margin: 0; line-height: 1.55; }
+
+.petition-card {
+  background: var(--line-white);
+  border-radius: 10px;
+  border: 1px solid rgba(21,36,30,0.08);
+  padding: 2rem;
+  margin-top: 1rem;
+}
+.counter { display: flex; gap: 16px; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(21,36,30,0.1); }
+.counter-num { font-family: 'Anton', sans-serif; font-size: 2.4rem; color: var(--court-green); line-height: 1; }
+.counter-label { font-size: 13.5px; color: rgba(21,36,30,0.6); margin-top: 4px; }
+.progress-bar { width: 100%; height: 6px; background: rgba(21,36,30,0.08); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.progress-fill { height: 100%; background: var(--gold); border-radius: 3px; width: 23%; transition: width 1s ease; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.form-group label { font-size: 13px; color: rgba(21,36,30,0.65); font-weight: 600; }
+.form-group input { border: 1px solid rgba(21,36,30,0.15); border-radius: 6px; padding: 10px 12px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+.form-group input:focus { border-color: var(--court-green); }
+.checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
+.checkbox-row input { margin-top: 3px; accent-color: var(--court-green); }
+.checkbox-row label { font-size: 13px; color: rgba(21,36,30,0.65); line-height: 1.5; }
+.sign-btn { width: 100%; background: var(--signal); color: var(--line-white); border: none; padding: 14px; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; }
+.sign-btn:hover { background: #a82f2f; }
+
+.success-msg { display: none; text-align: center; padding: 1rem; }
+.success-msg .check { font-size: 36px; margin-bottom: 8px; }
+.success-msg h3 { font-family: 'Anton', sans-serif; font-size: 17px; color: var(--court-green); margin-bottom: 6px; }
+.success-msg p { font-size: 14px; color: rgba(21,36,30,0.65); margin: 0; }
+
+.urgent-banner { background: #fdf3e3; border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 10px; }
+.urgent-banner p { font-size: 13.5px; color: #6b4a14; margin: 0; line-height: 1.55; }
+
+.footer { background: var(--ink); padding: 2.5rem 2rem; text-align: center; }
+.footer p { color: rgba(250,248,242,0.55); font-size: 13px; line-height: 1.7; }
+.footer a { color: var(--gold); }
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.9rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-inner"><span>Malvern · Toronto, Ontario</span><span>info@ctva.ca</span></div></div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo-block">
+      <div class="logo-mark">CT</div>
+      <div class="logo-text"><div class="full">CTVA</div><div class="sub">Volleyball Association</div></div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#about">About us</a>
+      <a href="index.html#mission">Mission</a>
+      <a href="index.html#events">Events</a>
+      <a href="index.html#photos">Photos</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="petition.html" class="nav-cta">Take action</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">● Take action</div>
+  <h1>Help us secure a <span class="accent">dedicated volleyball court</span></h1>
+  <p>Our Malvern court was demolished without notice after 30+ years of community use. Add your name to demand accountability from the City — and a permanent home for volleyball in our community.</p>
+</div>
+
+<div class="section">
+  <div class="eyebrow">What happened</div>
+  <h2>30+ years of history, removed overnight</h2>
+  <p>For over three decades, the Malvern volleyball court was a gathering place for our community — a space that gave new immigrants their first friendships and sense of belonging, and stood strong even through the difficult years of the 1990s.</p>
+  <p>The court was demolished without advance notice or consultation, and converted into a pickleball court. A similar loss happened previously at what is now Ali Abbas Park (formerly McLevin Park). If the City can find space for pickleball, it can find space for the sport that has served our community for over 30 years.</p>
+</div>
+
+<div class="section" style="padding-top: 0;">
+  <div class="eyebrow">Our demands</div>
+  <h2>What we're asking the City for</h2>
+  <div class="demand-list">
+    <div class="demand-item">
+      <span class="demand-num">01</span>
+      <div class="demand-text"><strong>Full accountability</strong><p>An explanation for why no advance notice was given before demolition, and why consultation was bypassed.</p></div>
+    </div>
+    <div class="demand-item">
+      <span class="demand-num">02</span>
+      <div class="demand-text"><strong>Mandatory consultation going forward</strong><p>A formal commitment to consult active community users before changing any public recreational space.</p></div>
+    </div>
+    <div class="demand-item">
+      <span class="demand-num">03</span>
+      <div class="demand-text"><strong>A dedicated volleyball court</strong><p>A permanent, accessible space for volleyball — open to our community and every other group that loves the sport.</p></div>
+    </div>
+    <div class="demand-item">
+      <span class="demand-num">04</span>
+      <div class="demand-text"><strong>Action from our elected representatives</strong><p>Our community holds real civic voice. We expect that to translate into active advocacy for this space.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top: 0;">
+  <div class="eyebrow">Sign the petition</div>
+  <h2>Add your name</h2>
+  <div class="urgent-banner">
+    <span>⚠</span>
+    <p>We've formally requested a meeting with the City. Once a date is confirmed, everyone who signs will be notified and asked to attend in person — numbers matter.</p>
+  </div>
+
+  <div class="petition-card">
+    <div class="counter">
+      <div>
+        <div class="counter-num" id="sigCount">115</div>
+        <div class="counter-label">signatures so far · goal 500</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <div id="petitionForm">
+      <div class="form-row">
+        <div class="form-group"><label>First name</label><input type="text" id="fname" placeholder="Your first name"></div>
+        <div class="form-group"><label>Last name</label><input type="text" id="lname" placeholder="Your last name"></div>
+      </div>
+      <div class="form-group"><label>Email address</label><input type="email" id="email" placeholder="you@example.com"></div>
+      <div class="form-group"><label>City / neighbourhood</label><input type="text" id="city" placeholder="e.g. Malvern, Scarborough"></div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="notify" checked>
+        <label for="notify">Notify me when the City meeting date is confirmed so I can attend.</label>
+      </div>
+      <button class="sign-btn" onclick="submitPetition()">Sign the petition</button>
+    </div>
+
+    <div class="success-msg" id="successMsg">
+      <div class="check">✓</div>
+      <h3>Thank you for signing</h3>
+      <p>You're now part of the campaign. We'll be in touch about the City meeting date — share this page to help us grow our numbers.</p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>Canadian Tamil Volleyball Association · Malvern, Toronto<br><a href="index.html">← Back to ctva.ca</a></p>
+</footer>
+
+<script>
+let sigCount = 115;
+function submitPetition() {
+  const fname = document.getElementById('fname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if (!fname || !email) { alert('Please enter your name and email to sign.'); return; }
+  sigCount++;
+  document.getElementById('sigCount').textContent = sigCount;
+  document.getElementById('progressFill').style.width = Math.min((sigCount/500)*100, 100) + '%';
+  document.getElementById('petitionForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
+window.onload = function() {
+  document.getElementById('progressFill').style.width = Math.min((sigCount/500)*100,100) + '%';
+};
+</script>
+</body>
+</html>
