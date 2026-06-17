@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>In Memory of Jeyakumar Tharmalingam — CTVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #15241E;
+  --sand: #EDE6D6;
+  --gold: #E8A23D;
+  --court-green: #2F5233;
+  --signal: #C23B3B;
+  --line-white: #FAF8F2;
+  --gold-dark: #9C6A1F;
+  --green-light: #4A7350;
+  --cream: #FDFBF7;
+  --blush: #F5EDE3;
+  --rose: #8B3A3A;
+  --rose-light: #C47070;
+  --sage: #5a7a5f;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ===== TOPBAR / NAV (matches main site) ===== */
+.topbar { background: var(--ink); color: var(--line-white); padding: 0.5rem 0; font-size: 12px; letter-spacing: 0.04em; }
+.topbar-inner { max-width: 1140px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; opacity: 0.75; }
+.navbar { background: var(--ink); border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 100; }
+.nav-inner { max-width: 1140px; margin: 0 auto; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+.logo-block { display: flex; align-items: center; gap: 12px; }
+.logo-mark { width: 42px; height: 42px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 18px; color: var(--ink); flex-shrink: 0; }
+.logo-text { line-height: 1.1; }
+.logo-text .full { font-family: 'Anton', sans-serif; font-size: 17px; color: var(--line-white); letter-spacing: 0.02em; }
+.logo-text .sub { font-size: 10.5px; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a { color: rgba(250,248,242,0.8); font-size: 14px; font-weight: 500; transition: color 0.15s; }
+.nav-links a:hover { color: var(--line-white); }
+.nav-links a.active { color: var(--gold); }
+.nav-cta { background: var(--signal); color: var(--line-white) !important; padding: 9px 18px; border-radius: 4px; font-weight: 700 !important; font-size: 13px !important; }
+.nav-cta:hover { background: #a82f2f; }
+.nav-toggle { display: none; background: none; border: none; color: var(--line-white); font-size: 24px; cursor: pointer; }
+
+/* ===== HERO MEMORIAL ===== */
+.memorial-hero {
+  background: linear-gradient(170deg, #fff 0%, var(--cream) 50%, var(--blush) 100%);
+  text-align: center;
+  padding: 5rem 2rem 4.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative floral SVG corners */
+.floral-tl, .floral-tr, .floral-bl, .floral-br {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.floral-tl { top: -10px; left: -10px; }
+.floral-tr { top: -10px; right: -10px; transform: scaleX(-1); }
+.floral-bl { bottom: -10px; left: -10px; transform: scaleY(-1); }
+.floral-br { bottom: -10px; right: -10px; transform: scale(-1,-1); }
+
+/* Photo frame */
+.memorial-photo-outer {
+  position: relative;
+  width: 220px;
+  height: 280px;
+  margin: 0 auto 2.8rem;
+}
+.memorial-photo-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  background: linear-gradient(145deg, rgba(201,169,110,0.35), rgba(139,58,58,0.18));
+  border: 1.5px solid rgba(201,169,110,0.4);
+}
+.memorial-photo-wrap {
+  width: 220px;
+  height: 280px;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(21,36,30,0.16), 0 0 0 6px rgba(201,169,110,0.2);
+  position: relative;
+  z-index: 1;
+}
+.memorial-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.memorial-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #d4c5b0, #c9b89e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: rgba(21,36,30,0.4);
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+}
+
+/* Candle */
+.candle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.candle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.flame {
+  width: 14px;
+  height: 22px;
+  background: radial-gradient(ellipse at 50% 80%, #fff 0%, #FFD700 40%, #FF8C00 80%, transparent 100%);
+  border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+  animation: flicker 1.6s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 6px rgba(255,180,0,0.8));
+  position: relative;
+}
+.flame::before {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 6px;
+  background: #888;
+  border-radius: 2px;
+}
+@keyframes flicker {
+  0%   { transform: scaleY(1) rotate(-2deg); opacity: 0.95; }
+  30%  { transform: scaleY(1.06) rotate(1deg); opacity: 1; }
+  60%  { transform: scaleY(0.94) rotate(-1deg); opacity: 0.92; }
+  100% { transform: scaleY(1.04) rotate(2deg); opacity: 0.98; }
+}
+.candle-body {
+  width: 22px;
+  height: 54px;
+  background: linear-gradient(to right, #f0e8d8, #fff8ee, #f0e8d8);
+  border-radius: 2px 2px 3px 3px;
+  box-shadow: inset -3px 0 6px rgba(0,0,0,0.07);
+  position: relative;
+}
+.candle-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 8px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 0 0 3px 3px;
+}
+
+/* Text */
+.in-memory-text {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.9rem;
+  color: var(--rose-light);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.01em;
+}
+.memorial-name {
+  font-family: 'Great Vibes', cursive;
+  font-size: 3.8rem;
+  color: var(--rose);
+  line-height: 1.15;
+  margin-bottom: 0.6rem;
+}
+.memorial-nickname {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(21,36,30,0.5);
+  margin-bottom: 1.2rem;
+}
+.memorial-dates {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: var(--rose);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+.memorial-dates .date-sep {
+  width: 30px;
+  height: 1px;
+  background: var(--rose-light);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* Gold divider */
+.divider-floral {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+  margin: 3rem auto;
+  max-width: 480px;
+}
+.divider-floral::before,
+.divider-floral::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,169,110,0.6));
+}
+.divider-floral::after { background: linear-gradient(to left, transparent, rgba(201,169,110,0.6)); }
+.divider-floral .leaf { color: var(--gold-dark); font-size: 18px; opacity: 0.7; }
+
+/* ===== TRIBUTE CONTENT ===== */
+.tribute-section {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 2rem 5rem;
+}
+.quote-block {
+  background: linear-gradient(135deg, var(--blush), #f8f0e6);
+  border-left: 4px solid var(--rose-light);
+  border-radius: 0 8px 8px 0;
+  padding: 1.8rem 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+}
+.quote-block::before {
+  content: '\201C';
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem;
+  color: var(--rose-light);
+  opacity: 0.2;
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  line-height: 1;
+}
+.quote-block p {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--rose);
+  line-height: 1.85;
+  position: relative;
+  z-index: 1;
+}
+
+.tribute-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+.tribute-card {
+  background: #fff;
+  border: 1px solid rgba(21,36,30,0.07);
+  border-radius: 10px;
+  padding: 1.6rem 1.8rem;
+  box-shadow: 0 2px 12px rgba(21,36,30,0.05);
+}
+.tribute-card .tc-icon {
+  font-size: 22px;
+  margin-bottom: 0.75rem;
+}
+.tribute-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--court-green);
+  margin-bottom: 0.5rem;
+}
+.tribute-card p {
+  font-size: 14px;
+  color: rgba(21,36,30,0.68);
+  line-height: 1.75;
+}
+
+.tribute-body h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  color: var(--ink);
+  margin-bottom: 1.1rem;
+  font-weight: 600;
+}
+.tribute-body p {
+  font-size: 1rem;
+  color: rgba(21,36,30,0.72);
+  line-height: 1.9;
+  margin-bottom: 1.1rem;
+}
+
+/* Community messages */
+.messages-section {
+  background: var(--ink);
+  padding: 4.5rem 2rem;
+}
+.messages-inner {
+  max-width: 820px;
+  margin: 0 auto;
+}
+.messages-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.messages-eyebrow::before { content: ''; width: 22px; height: 2px; background: var(--gold); }
+.messages-inner h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.9rem;
+  color: var(--line-white);
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+.message-card {
+  background: rgba(250,248,242,0.06);
+  border: 1px solid rgba(250,248,242,0.1);
+  border-radius: 10px;
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1rem;
+}
+.message-card p {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.97rem;
+  color: rgba(250,248,242,0.82);
+  line-height: 1.8;
+  margin-bottom: 0.6rem;
+}
+.message-card .from {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-style: normal;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Rest in peace banner */
+.rip-banner {
+  background: linear-gradient(135deg, var(--court-green), var(--ink));
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.rip-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(250,248,242,0.03) 39px, rgba(250,248,242,0.03) 40px);
+}
+.rip-banner-inner { position: relative; }
+.rip-banner .script {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.4rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+.rip-banner .name-small {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--line-white);
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+  margin-bottom: 0.3rem;
+}
+.rip-banner .dates-small {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  color: rgba(250,248,242,0.45);
+  font-style: italic;
+}
+
+/* Footer */
+.footer { background: var(--ink); padding: 3rem 2rem 1.5rem; border-top: 1px solid rgba(250,248,242,0.06); }
+.footer-inner { max-width: 1140px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 2.5rem; padding-bottom: 2.2rem; border-bottom: 1px solid rgba(250,248,242,0.12); }
+.footer-brand p { font-size: 13px; color: rgba(250,248,242,0.5); margin-top: 10px; line-height: 1.6; max-width: 240px; }
+.footer-col h5 { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.footer-col a, .footer-col p { display: block; font-size: 13.5px; color: rgba(250,248,242,0.6); margin-bottom: 9px; }
+.footer-col a:hover { color: var(--line-white); }
+.footer-bottom { padding-top: 1.5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 12.5px; color: rgba(250,248,242,0.4); }
+
+@media (max-width: 880px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .tribute-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .memorial-name { font-size: 2.8rem; }
+  .floral-tl, .floral-tr, .floral-bl, .floral-br { width: 130px; height: 130px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>Scarborough · Toronto, ON</span>
+    <span>info@ctva.ca</span>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="logo-block">
+      <div class="logo-mark">CT</div>
+      <div class="logo-text">
+        <div class="full">CTVA</div>
+        <div class="sub">Volleyball Association</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#about">About us</a>
+      <a href="index.html#events">Events</a>
+      <a href="index.html#photos">Photos</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="tribute.html" class="active" style="color:var(--gold);">In Memory</a>
+      <a href="petition.html" class="nav-cta">Take action</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- FLORAL DECORATIONS -->
+<section class="memorial-hero">
+  <!-- Top-left floral -->
+  <svg class="floral-tl" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="38" fill="#f2d5c0" opacity="0.6"/>
+    <circle cx="60" cy="60" r="24" fill="#e8c4a8" opacity="0.7"/>
+    <circle cx="30" cy="90" r="26" fill="#f5e0d0" opacity="0.5"/>
+    <circle cx="30" cy="90" r="16" fill="#eacdb8" opacity="0.6"/>
+    <circle cx="90" cy="30" r="22" fill="#f0d8c5" opacity="0.5"/>
+    <ellipse cx="50" cy="120" rx="10" ry="18" fill="#8faa8f" opacity="0.45" transform="rotate(-20 50 120)"/>
+    <ellipse cx="100" cy="70" rx="9" ry="16" fill="#7d9e7d" opacity="0.4" transform="rotate(30 100 70)"/>
+    <ellipse cx="20" cy="60" rx="8" ry="15" fill="#8faa8f" opacity="0.38" transform="rotate(-40 20 60)"/>
+    <ellipse cx="120" cy="20" rx="9" ry="16" fill="#7d9e7d" opacity="0.38" transform="rotate(10 120 20)"/>
+    <circle cx="52" cy="58" r="10" fill="#fff" opacity="0.4"/>
+    <circle cx="28" cy="88" r="8" fill="#fff" opacity="0.35"/>
+  </svg>
+  <!-- Top-right floral -->
+  <svg class="floral-tr" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="38" fill="#f2d5c0" opacity="0.6"/>
+    <circle cx="60" cy="60" r="24" fill="#e8c4a8" opacity="0.7"/>
+    <circle cx="30" cy="90" r="26" fill="#f5e0d0" opacity="0.5"/>
+    <circle cx="30" cy="90" r="16" fill="#eacdb8" opacity="0.6"/>
+    <circle cx="90" cy="30" r="22" fill="#f0d8c5" opacity="0.5"/>
+    <ellipse cx="50" cy="120" rx="10" ry="18" fill="#8faa8f" opacity="0.45" transform="rotate(-20 50 120)"/>
+    <ellipse cx="100" cy="70" rx="9" ry="16" fill="#7d9e7d" opacity="0.4" transform="rotate(30 100 70)"/>
+    <ellipse cx="20" cy="60" rx="8" ry="15" fill="#8faa8f" opacity="0.38" transform="rotate(-40 20 60)"/>
+    <ellipse cx="120" cy="20" rx="9" ry="16" fill="#7d9e7d" opacity="0.38" transform="rotate(10 120 20)"/>
+    <circle cx="52" cy="58" r="10" fill="#fff" opacity="0.4"/>
+    <circle cx="28" cy="88" r="8" fill="#fff" opacity="0.35"/>
+  </svg>
+  <!-- Bottom-left floral -->
+  <svg class="floral-bl" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="30" fill="#f2d5c0" opacity="0.5"/>
+    <circle cx="30" cy="90" r="22" fill="#f5e0d0" opacity="0.45"/>
+    <ellipse cx="50" cy="120" rx="10" ry="18" fill="#8faa8f" opacity="0.38" transform="rotate(-20 50 120)"/>
+    <ellipse cx="100" cy="70" rx="9" ry="16" fill="#7d9e7d" opacity="0.35" transform="rotate(30 100 70)"/>
+  </svg>
+  <!-- Bottom-right floral -->
+  <svg class="floral-br" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="30" fill="#f2d5c0" opacity="0.5"/>
+    <circle cx="30" cy="90" r="22" fill="#f5e0d0" opacity="0.45"/>
+    <ellipse cx="50" cy="120" rx="10" ry="18" fill="#8faa8f" opacity="0.38" transform="rotate(-20 50 120)"/>
+    <ellipse cx="100" cy="70" rx="9" ry="16" fill="#7d9e7d" opacity="0.35" transform="rotate(30 100 70)"/>
+  </svg>
+
+  <!-- Candle -->
+  <div class="candle-wrap">
+    <div class="candle">
+      <div class="flame"></div>
+      <div class="candle-body"></div>
+    </div>
+  </div>
+
+  <!-- Photo -->
+  <div class="memorial-photo-outer">
+    <div class="memorial-photo-ring"></div>
+    <div class="memorial-photo-wrap">
+      <img src="images/jarvis.jpg" alt="Jeyakumar Tharmalingam"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="memorial-photo-placeholder" style="display:none;">
+        Place photo at<br>images/jarvis.jpg
+      </div>
+    </div>
+  </div>
+
+  <!-- Text -->
+  <p class="in-memory-text">In loving memory of</p>
+  <h1 class="memorial-name">Jeyakumar Tharmalingam</h1>
+  <p class="memorial-nickname">( Jarvis Mahinthan )</p>
+  <div class="memorial-dates">
+    <span>March 6, 1973</span>
+    <span class="date-sep"></span>
+    <span>August 9, 2025</span>
+  </div>
+</section>
+
+<!-- TRIBUTE CONTENT -->
+<section class="tribute-section">
+
+  <div class="divider-floral"><span class="leaf">&#10048;</span></div>
+
+  <div class="quote-block">
+    <p>He played with his whole heart — every game, every gathering, every season. Jarvis was not just a member of this association; he was its spirit. He showed up for the court, and more importantly, he showed up for the people around it.</p>
+  </div>
+
+  <div class="tribute-grid">
+    <div class="tribute-card">
+      <div class="tc-icon">🏐</div>
+      <h3>Dedicated Player</h3>
+      <p>Jarvis was an active and passionate member of CTVA, continuing to play and contribute to the games right up until his sudden passing. His energy on the court was contagious and his commitment unwavering.</p>
+    </div>
+    <div class="tribute-card">
+      <div class="tc-icon">🤝</div>
+      <h3>Community Pillar</h3>
+      <p>More than a player, Jarvis was a connector — someone who brought people together, supported younger players, and embodied the spirit of what our Tamil-Canadian volleyball community stands for.</p>
+    </div>
+    <div class="tribute-card">
+      <div class="tc-icon">❤️</div>
+      <h3>A Beloved Friend</h3>
+      <p>To those who knew him, Jarvis was more than a teammate. He was a close friend, a trusted presence, and someone whose warmth and humour made every gathering brighter. He is deeply missed.</p>
+    </div>
+    <div class="tribute-card">
+      <div class="tc-icon">🌟</div>
+      <h3>Lasting Legacy</h3>
+      <p>Jarvis leaves behind a legacy of loyalty, sportsmanship, and community service that will continue to inspire every player who steps onto a CTVA court. His memory lives on in every game we play.</p>
+    </div>
+  </div>
+
+  <div class="tribute-body">
+    <h2>A life well lived on and off the court</h2>
+    <p>Jeyakumar Tharmalingam — known to all of us as Jarvis Mahinthan — was born on March 6, 1973. For decades, he was a constant and beloved presence within the Canadian Tamil Volleyball Association. Whether it was a weekend tournament, a weeknight league game, or simply a gathering of friends at the court, Jarvis was there.</p>
+    <p>His sudden passing on August 9, 2025, left a profound void in our community. He was 52 years old, full of life, and still actively playing the sport he loved. Those who played alongside him carry memories of his laughter, his competitive spirit, and the generosity he showed to players of all ages and abilities.</p>
+    <p>Jarvis understood what CTVA is really about — not just volleyball, but belonging. He understood that these courts have always been a place where our Tamil-Canadian community comes to feel at home. He was part of why they felt that way.</p>
+    <p>We hold his memory with deep gratitude and immense love. May he rest in eternal peace.</p>
+  </div>
+
+  <div class="divider-floral" style="margin-top: 3rem;"><span class="leaf">&#10048;</span></div>
+
+</section>
+
+<!-- COMMUNITY MESSAGES -->
+<section class="messages-section">
+  <div class="messages-inner">
+    <div class="messages-eyebrow">Tributes</div>
+    <h2>Words from the community</h2>
+
+    <div class="message-card">
+      <p>Jarvis was always the first to arrive and the last to leave. He gave everything to this community and asked for nothing in return. We will carry his spirit with us every time we step on that court.</p>
+      <span class="from">— CTVA Member</span>
+    </div>
+    <div class="message-card">
+      <p>I learned so much from watching Jarvis play. He was skilled, yes — but more than that, he made everyone around him feel welcome. That's a rare gift, and one we won't soon forget.</p>
+      <span class="from">— Fellow player, CTVA</span>
+    </div>
+    <div class="message-card">
+      <p>He was one of those people you just couldn't imagine not being there. The court feels quieter without him. We miss him terribly — his laugh, his game, his heart.</p>
+      <span class="from">— CTVA Community</span>
+    </div>
+  </div>
+</section>
+
+<!-- REST IN PEACE BANNER -->
+<div class="rip-banner">
+  <div class="rip-banner-inner">
+    <p class="script">Rest in Peace</p>
+    <p class="name-small">Jeyakumar Tharmalingam &nbsp;·&nbsp; Jarvis Mahinthan</p>
+    <p class="dates-small">March 6, 1973 &nbsp;–&nbsp; August 9, 2025</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo-block">
+          <div class="logo-mark">CT</div>
+          <div class="logo-text"><div class="full" style="font-family:'Anton',sans-serif;font-size:17px;color:var(--line-white);letter-spacing:0.02em;">CTVA</div></div>
+        </div>
+        <p>The official home of Tamil-Canadian volleyball — 20+ clubs, one community, rooted in Scarborough since the early days.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <a href="index.html#about">About us</a>
+        <a href="index.html#events">Events</a>
+        <a href="index.html#photos">Photos</a>
+        <a href="tribute.html">In Memory</a>
+      </div>
+      <div class="footer-col">
+        <h5>Community</h5>
+        <a href="petition.html">Sign the petition</a>
+        <a href="index.html#contact">Contact us</a>
+        <a href="index.html">Our clubs</a>
+      </div>
+      <div class="footer-col">
+        <h5>CTVA</h5>
+        <p>Scarborough, Toronto</p>
+        <p>info@ctva.ca</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Canadian Tamil Volleyball Association</span>
+      <span>In loving memory of Jarvis Mahinthan &nbsp;·&nbsp; Forever in our hearts</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
