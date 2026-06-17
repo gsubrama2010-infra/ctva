@@ -425,28 +425,85 @@ img { max-width: 100%; display: block; }
 .poster-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
 .poster-body p { font-size: 12.5px; color: rgba(21,36,30,0.6); margin: 0; }
 
-/* ===== PHOTOS PREVIEW ===== */
-.photo-mosaic {
+/* ===== PHOTO & VIDEO ARCHIVE ===== */
+.archive-filters {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid rgba(21,36,30,0.08);
+}
+.filter-group { display: flex; flex-direction: column; gap: 4px; }
+.filter-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(21,36,30,0.5); }
+.filter-group select {
+  border: 1px solid rgba(21,36,30,0.18);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-family: 'Inter', sans-serif;
+  background: var(--line-white);
+  color: var(--ink);
+  min-width: 150px;
+  outline: none;
+  cursor: pointer;
+}
+.filter-group select:focus { border-color: var(--court-green); }
+.filter-clear {
+  background: none;
+  border: none;
+  color: var(--court-green);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding-bottom: 9px;
+}
+.filter-clear:hover { color: var(--ink); }
+
+.archive-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 140px 140px;
-  gap: 10px;
+  gap: 14px;
 }
-.photo-mosaic .tile:nth-child(1) { grid-column: span 2; grid-row: span 2; }
-.tile {
-  border-radius: 6px;
+.archive-card {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(21,36,30,0.08);
+  background: var(--sand);
+}
+.archive-thumb {
+  aspect-ratio: 4/3;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   overflow: hidden;
 }
-.tile-1 { background: linear-gradient(135deg, #2F5233, #4A7350); }
-.tile-2 { background: linear-gradient(135deg, #E8A23D, #c4822a); }
-.tile-3 { background: linear-gradient(135deg, #15241E, #2c3e35); }
-.tile-4 { background: linear-gradient(135deg, #C23B3B, #952e2e); }
-.tile-5 { background: linear-gradient(135deg, #4A7350, #2F5233); }
-.tile span { font-family: 'Anton', sans-serif; font-size: 11px; color: rgba(250,248,242,0.55); letter-spacing: 0.06em; }
+.archive-thumb iframe { width: 100%; height: 100%; border: none; }
+.archive-thumb .ph-icon { font-family: 'Anton', sans-serif; font-size: 11px; color: rgba(250,248,242,0.5); letter-spacing: 0.05em; text-align: center; padding: 0 10px; }
+.archive-thumb.ph-1 { background: linear-gradient(135deg, #2F5233, #4A7350); }
+.archive-thumb.ph-2 { background: linear-gradient(135deg, #E8A23D, #c4822a); }
+.archive-thumb.ph-3 { background: linear-gradient(135deg, #15241E, #2c3e35); }
+.archive-thumb.ph-4 { background: linear-gradient(135deg, #C23B3B, #952e2e); }
+.video-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(194,59,59,0.92);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  z-index: 2;
+}
+.archive-tags { padding: 0.7rem 0.85rem; }
+.archive-tags .a-event { font-size: 12.5px; font-weight: 700; color: var(--ink); margin-bottom: 3px; display: block; }
+.archive-tags .a-meta { font-size: 11px; color: rgba(21,36,30,0.55); display: flex; gap: 6px; flex-wrap: wrap; }
+.archive-tags .a-meta span { background: rgba(47,82,51,0.08); color: var(--court-green); padding: 1.5px 7px; border-radius: 10px; }
+.archive-empty { color: rgba(21,36,30,0.5); font-size: 14px; text-align: center; padding: 2rem 0; }
+
 .photo-note {
   margin-top: 1.5rem;
   font-size: 13px;
@@ -555,8 +612,9 @@ img { max-width: 100%; display: block; }
   .about-grid, .contact-grid { grid-template-columns: 1fr; }
   .events-grid { grid-template-columns: 1fr; }
   .poster-grid { grid-template-columns: repeat(2, 1fr); }
-  .photo-mosaic { grid-template-columns: repeat(2, 1fr); grid-template-rows: 110px 110px 110px; }
-  .photo-mosaic .tile:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+  .archive-grid { grid-template-columns: repeat(2, 1fr); }
+  .archive-filters { flex-direction: column; align-items: stretch; }
+  .filter-group select { min-width: 100%; }
   .scoreboard-inner { grid-template-columns: repeat(2, 1fr); }
   .score-cell:nth-child(2) { border-right: none; }
   .footer-top { grid-template-columns: 1fr 1fr; }
@@ -740,14 +798,33 @@ img { max-width: 100%; display: block; }
 <section class="section" id="photos" style="background: var(--line-white);">
   <div class="eyebrow">Photo &amp; video archive</div>
   <h2>30+ years, captured</h2>
-  <p class="section-lead">A growing archive of tournaments, teams, and community moments since the early days in Malvern. Curated and managed by CTVA.</p>
-  <div class="photo-mosaic">
-    <div class="tile tile-1"><span>ARCHIVE COMING SOON</span></div>
-    <div class="tile tile-2"><span>1990s</span></div>
-    <div class="tile tile-3"><span>2000s</span></div>
-    <div class="tile tile-4"><span>2010s</span></div>
-    <div class="tile tile-5"><span>2020s</span></div>
+  <p class="section-lead">A growing archive of tournaments, teams, and community moments since the early days in Scarborough — photos and videos, curated and managed by CTVA.</p>
+
+  <div class="archive-filters">
+    <div class="filter-group">
+      <span class="filter-label">Team</span>
+      <select id="filterTeam" onchange="applyArchiveFilters()">
+        <option value="all">All teams</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Year</span>
+      <select id="filterYear" onchange="applyArchiveFilters()">
+        <option value="all">All years</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Event</span>
+      <select id="filterEvent" onchange="applyArchiveFilters()">
+        <option value="all">All events</option>
+      </select>
+    </div>
+    <button class="filter-clear" onclick="clearArchiveFilters()">Clear filters</button>
   </div>
+
+  <div class="archive-grid" id="archiveGrid"></div>
+  <p class="archive-empty" id="archiveEmpty" style="display:none;">No items match these filters yet.</p>
+
   <p class="photo-note">Have photos or videos from past CTVA events? Reach out via the contact section below — our team manages all submissions directly.</p>
 </section>
 
@@ -829,6 +906,84 @@ img { max-width: 100%; display: block; }
     </div>
   </div>
 </footer>
+
+<script>
+// Archive data — replace placeholder entries with real photos/videos as they're gathered.
+// type: 'photo' or 'video'. For video, youtubeId is the YouTube video ID to embed.
+const archiveItems = [
+  { type: 'photo', team: 'Malvern Sports Club', year: '2008', event: 'Summer Championship', caption: 'Tournament finals', ph: 1 },
+  { type: 'photo', team: 'Jaffna Kings Sports Club', year: '2012', event: 'Community BBQ', caption: 'Food & gathering', ph: 2 },
+  { type: 'video', team: 'Toronto Sports Club', year: '2015', event: 'Summer Championship', caption: 'Championship highlights', youtubeId: 'REPLACE_WITH_VIDEO_ID' },
+  { type: 'photo', team: 'Vanni Boys Sports Club', year: '2010', event: 'Inter-Club League', caption: 'Team photo', ph: 3 },
+  { type: 'photo', team: 'Sivasakthi Sports Club', year: '2018', event: 'Community BBQ', caption: 'Audience & crowd', ph: 4 },
+  { type: 'photo', team: 'Galaxy Sports Club', year: '2020', event: 'Summer Championship', caption: 'Match action', ph: 1 },
+];
+
+function uniqueSorted(arr) { return [...new Set(arr)].sort(); }
+
+function populateArchiveFilters() {
+  const teamSel = document.getElementById('filterTeam');
+  const yearSel = document.getElementById('filterYear');
+  const eventSel = document.getElementById('filterEvent');
+  uniqueSorted(archiveItems.map(i => i.team)).forEach(t => {
+    const o = document.createElement('option'); o.value = t; o.textContent = t; teamSel.appendChild(o);
+  });
+  uniqueSorted(archiveItems.map(i => i.year)).sort((a,b) => b - a).forEach(y => {
+    const o = document.createElement('option'); o.value = y; o.textContent = y; yearSel.appendChild(o);
+  });
+  uniqueSorted(archiveItems.map(i => i.event)).forEach(e => {
+    const o = document.createElement('option'); o.value = e; o.textContent = e; eventSel.appendChild(o);
+  });
+}
+
+function renderArchive(items) {
+  const grid = document.getElementById('archiveGrid');
+  const empty = document.getElementById('archiveEmpty');
+  if (items.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = items.map(i => {
+    const thumb = i.type === 'video'
+      ? `<div class="archive-thumb"><div class="video-badge">▶ VIDEO</div><iframe src="https://www.youtube.com/embed/${i.youtubeId}" title="${i.caption}" allowfullscreen loading="lazy"></iframe></div>`
+      : `<div class="archive-thumb ph-${i.ph}"><span class="ph-icon">${i.caption}</span></div>`;
+    return `
+      <div class="archive-card">
+        ${thumb}
+        <div class="archive-tags">
+          <span class="a-event">${i.event}</span>
+          <div class="a-meta"><span>${i.team}</span><span>${i.year}</span></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function applyArchiveFilters() {
+  const team = document.getElementById('filterTeam').value;
+  const year = document.getElementById('filterYear').value;
+  const event = document.getElementById('filterEvent').value;
+  const filtered = archiveItems.filter(i =>
+    (team === 'all' || i.team === team) &&
+    (year === 'all' || i.year === year) &&
+    (event === 'all' || i.event === event)
+  );
+  renderArchive(filtered);
+}
+
+function clearArchiveFilters() {
+  document.getElementById('filterTeam').value = 'all';
+  document.getElementById('filterYear').value = 'all';
+  document.getElementById('filterEvent').value = 'all';
+  renderArchive(archiveItems);
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  populateArchiveFilters();
+  renderArchive(archiveItems);
+});
+</script>
 
 </body>
 </html>
