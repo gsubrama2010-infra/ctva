@@ -392,20 +392,47 @@ img { max-width: 100%; display: block; }
 .event-body p { font-size: 13px; color: rgba(21,36,30,0.6); margin: 0; }
 
 /* ===== TOURNAMENT POSTERS ===== */
-.poster-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.2rem;
-  row-gap: 1.8rem;
+.poster-scroll-wrap {
+  position: relative;
 }
+.poster-grid {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 1.2rem;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.poster-grid::-webkit-scrollbar { height: 5px; }
+.poster-grid::-webkit-scrollbar-track { background: rgba(21,36,30,0.06); border-radius: 3px; }
+.poster-grid::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
 .poster-card {
+  min-width: 200px;
+  max-width: 200px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
   background: var(--line-white);
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid rgba(21,36,30,0.08);
   transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
 }
 .poster-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(21,36,30,0.1); }
+.poster-upcoming-badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: var(--signal);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  z-index: 2;
+}
 .poster-img {
   aspect-ratio: 3/4;
   background: linear-gradient(150deg, var(--court-green), var(--ink) 130%);
@@ -431,8 +458,8 @@ img { max-width: 100%; display: block; }
   line-height: 1.6;
 }
 .poster-body { padding: 0.9rem 1rem; }
-.poster-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
-.poster-body p { font-size: 12.5px; color: rgba(21,36,30,0.6); margin: 0; }
+.poster-body h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.poster-body p { font-size: 11.5px; color: rgba(21,36,30,0.6); margin: 0; }
 
 /* ===== PHOTO & VIDEO ARCHIVE ===== */
 .archive-filters {
@@ -761,7 +788,7 @@ img { max-width: 100%; display: block; }
   .nav-toggle { display: block; }
   .about-grid, .contact-grid { grid-template-columns: 1fr; }
   .events-grid { grid-template-columns: 1fr; }
-  .poster-grid { grid-template-columns: repeat(2, 1fr); }
+  .poster-card { min-width: 165px; max-width: 165px; }
   .archive-grid { grid-template-columns: repeat(2, 1fr); }
   .archive-filters { flex-direction: column; align-items: stretch; }
   .filter-group select { min-width: 100%; }
@@ -933,54 +960,61 @@ img { max-width: 100%; display: block; }
   <h2>Tournament posters</h2>
   <p class="section-lead">Official posters from CTVA member clubs over the years. New posters are added here as events are announced.</p>
   <div class="poster-grid">
+
+    <!-- ── UPCOMING (soonest first) ── -->
     <div class="poster-card">
-      <div class="poster-img"><img src="images/posters/TournamentPoster_RougheRiver.jpeg" alt="Rouge River Volleyball Club 16th Annual Volleyball Tournament poster"></div>
-      <div class="poster-body"><h4>16th Annual Volleyball Tournament</h4><p>Rouge River Volleyball Club · Sat, June 13, 2026 · Murison Park, Scarborough</p></div>
+      <span class="poster-upcoming-badge">Upcoming</span>
+      <div class="poster-img"><img src="images/posters/TournamentPoster_Thaimun.jpeg" alt="Thaimun 15th Annual Volleyball Tournament poster"></div>
+      <div class="poster-body"><h4>15th Annual Volleyball Tournament</h4><p>Thaimun Vilaiyattu Kazhagam · June 27, 2026</p></div>
     </div>
     <div class="poster-card">
-      <div class="poster-img"><img src="images/posters/TournamentPoster_Thaimun.jpeg" alt="Thaimun Vilaiyattu Kazhagam 15th Annual Volleyball Tournament poster"></div>
-      <div class="poster-body"><h4>15th Annual Volleyball Tournament</h4><p>Thaimun Vilaiyattu Kazhagam · Sat, June 27, 2026, 10 AM · Sir Alexander Mackenzie Sr. PS, Scarborough</p></div>
+      <span class="poster-upcoming-badge">Upcoming</span>
+      <div class="poster-img"><img src="images/posters/TournamentPoster_MontrealBlues.jpeg" alt="Montreal Boys Sports Club 2nd Anniversary Memorial Tournament poster"></div>
+      <div class="poster-body"><h4>2nd Anniversary Memorial Tournament</h4><p>Montreal Boys Sports Club · July 18, 2026</p></div>
+    </div>
+
+    <!-- ── PAST (most recent → oldest) ── -->
+    <div class="poster-card">
+      <div class="poster-img"><img src="images/posters/TournamentPoster_RougheRiver.jpeg" alt="Rouge River 16th Annual Volleyball Tournament poster"></div>
+      <div class="poster-body"><h4>16th Annual Volleyball Tournament</h4><p>Rouge River Volleyball Club · June 13, 2026</p></div>
     </div>
     <div class="poster-card">
       <div class="poster-img"><img src="images/posters/TournamentPoster_uthayaNila.jpeg" alt="Uthaya Nila Sally Toronto Volleyball Tournament poster"></div>
-      <div class="poster-body"><h4>Toronto Volleyball Tournament</h4><p>Uthaya Nila Sally · Sat, April 4, 11 AM · ActionZone Indoor</p></div>
-    </div>
-    <div class="poster-card">
-      <div class="poster-img"><img src="images/posters/TournamentPoster_MontrealBlues.jpeg" alt="Montreal Boys Sports Club 2nd Anniversary Memorial Tournament poster"></div>
-      <div class="poster-body"><h4>2nd Anniversary Memorial Tournament</h4><p>Montreal Boys Sports Club · July 18, 2026, 9 AM · McKenzie-King Park, Montreal</p></div>
-    </div>
-    <div class="poster-card">
-      <div class="poster-img"><img src="images/posters/Poster1.jpeg" alt="Young Henry's Sports Club Tournament poster"></div>
-      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Young Henry's Sports Club · Aug 2, 2025</p></div>
+      <div class="poster-body"><h4>Toronto Volleyball Tournament</h4><p>Uthaya Nila Sally · April 4, 2026</p></div>
     </div>
     <div class="poster-card">
       <div class="poster-img"><img src="images/posters/Poster2.jpeg" alt="Nagar Kovil Sports Club Tournament poster"></div>
       <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Nagar Kovil Sports Club · Aug 23, 2025</p></div>
     </div>
     <div class="poster-card">
-      <div class="poster-img"><img src="images/posters/GTA_Sixers_Jan132024_Poster.jpeg" alt="GTA Sixers Tournament poster"></div>
-      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>GTA Sixers · Jan 13, 2024</p></div>
+      <div class="poster-img"><img src="images/posters/Poster1.jpeg" alt="Young Henry's Sports Club Tournament poster"></div>
+      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Young Henry's Sports Club · Aug 2, 2025</p></div>
+    </div>
+    <div class="poster-card">
+      <div class="poster-img"><img src="images/posters/RougeRiver_Aug17_Poster.jpeg" alt="Rouge River Tournament poster"></div>
+      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Rouge River Volleyball Club · Aug 17, 2024</p></div>
     </div>
     <div class="poster-card">
       <div class="poster-img"><img src="images/posters/Jarvis_June222024_Poster.jpeg" alt="Jarvis SC Tournament poster"></div>
       <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Jarvis SC · June 22, 2024</p></div>
     </div>
     <div class="poster-card">
-      <div class="poster-img"><img src="images/posters/RougeRiver_Aug17_Poster.jpeg" alt="Rouge River Tournament poster"></div>
-      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Rouge River Volleyball Club · Aug 17</p></div>
+      <div class="poster-img"><img src="images/posters/GTA_Sixers_Jan132024_Poster.jpeg" alt="GTA Sixers Tournament poster"></div>
+      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>GTA Sixers · Jan 13, 2024</p></div>
+    </div>
+    <div class="poster-card">
+      <div class="poster-img"><img src="images/posters/Thaimun_October13_Poster.jpeg" alt="Thaimun Tournament poster"></div>
+      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Thaimun Vilaiyattu Kazhagam · Oct 13, 2023</p></div>
     </div>
     <div class="poster-card">
       <div class="poster-img"><img src="images/posters/SuperStar_August262023_Poster.jpeg" alt="Super Star Tournament poster"></div>
       <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Super Star Sports Club · Aug 26, 2023</p></div>
     </div>
     <div class="poster-card">
-      <div class="poster-img"><img src="images/posters/Thaimun_October13_Poster.jpeg" alt="Thaimun Tournament poster"></div>
-      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Thaimun Vilaiyattu Kazhagam · Oct 13</p></div>
-    </div>
-    <div class="poster-card">
       <div class="poster-img"><img src="images/posters/UthayaNila_Aug19023.jpeg" alt="Uthaya Nila Tournament poster"></div>
-      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Uthaya Nila Sports Club · Aug 2023</p></div>
+      <div class="poster-body"><h4>Annual Volleyball Tournament</h4><p>Uthaya Nila Sports Club · Aug 19, 2023</p></div>
     </div>
+
   </div>
 </section>
 
