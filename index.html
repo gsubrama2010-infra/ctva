@@ -628,6 +628,38 @@ img { max-width: 100%; display: block; }
   font-style: italic;
 }
 
+/* ===== ARCHIVE PAGINATION ===== */
+.archive-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1.5px solid rgba(21,36,30,0.18);
+  border-radius: 6px;
+  background: var(--line-white);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.page-btn:hover { background: var(--court-green); color: #fff; border-color: var(--court-green); }
+.page-btn.active { background: var(--court-green); color: #fff; border-color: var(--court-green); }
+.page-btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+.page-info {
+  font-size: 12.5px;
+  color: rgba(21,36,30,0.5);
+  margin-left: 8px;
+}
+
 /* ===== PETITION MINI-BANNER ===== */
 .petition-banner {
   background: var(--ink);
@@ -941,6 +973,7 @@ img { max-width: 100%; display: block; }
 
   <div class="archive-grid" id="archiveGrid"></div>
   <p class="archive-empty" id="archiveEmpty" style="display:none;">No items match these filters yet.</p>
+  <div class="archive-pagination" id="archivePagination"></div>
 
   <div class="yt-channels">
     <span class="yt-channels-label">Watch more on YouTube</span>
@@ -1151,16 +1184,20 @@ function populateArchiveFilters() {
   });
 }
 
-function renderArchive(items) {
+function renderArchive(items, pageStart) {
+  pageStart = pageStart || 0;
   const grid = document.getElementById('archiveGrid');
   const empty = document.getElementById('archiveEmpty');
   if (items.length === 0) {
     grid.innerHTML = '';
+    document.getElementById('archivePagination').innerHTML = '';
     empty.style.display = 'block';
     return;
   }
   empty.style.display = 'none';
-  grid.innerHTML = items.map((i, idx) => {
+  const pageItems = items.slice(pageStart, pageStart + ITEMS_PER_PAGE);
+  grid.innerHTML = pageItems.map((i, localIdx) => {
+    const globalIdx = pageStart + localIdx;
     let thumb;
     if (i.type === 'video') {
       thumb = `<div class="archive-thumb"><div class="video-badge">▶ VIDEO</div><iframe src="https://www.youtube.com/embed/${i.youtubeId}" title="${i.caption}" allowfullscreen loading="lazy"></iframe></div>`;
@@ -1172,7 +1209,7 @@ function renderArchive(items) {
       thumb = `<div class="archive-thumb ph-${i.ph}"><span class="ph-icon">${i.caption}</span></div>`;
     }
     return `
-      <div class="archive-card" data-index="${idx}" onclick="openLightbox(currentFilteredItems, ${idx})">
+      <div class="archive-card" onclick="openLightbox(currentFilteredItems, ${globalIdx})">
         ${thumb}
         <div class="archive-tags">
           <span class="a-event">${i.event}</span>
@@ -1181,10 +1218,37 @@ function renderArchive(items) {
       </div>`;
   }).join('');
   currentFilteredItems = items;
+  renderPagination(items.length);
 }
 
+const ITEMS_PER_PAGE = 24;
+let currentPage = 1;
 let currentFilteredItems = [];
 let lbIndex = 0;
+
+function renderPagination(total) {
+  const pagination = document.getElementById('archivePagination');
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&#8592; Prev</button>`;
+  for (let p = 1; p <= totalPages; p++) {
+    if (totalPages > 7 && p > 2 && p < totalPages - 1 && Math.abs(p - currentPage) > 1) {
+      if (p === 3 || p === totalPages - 2) html += `<span style="padding:0 4px;color:rgba(21,36,30,0.4);line-height:36px;">…</span>`;
+      continue;
+    }
+    html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next &#8594;</button>`;
+  html += `<span class="page-info">${total} items</span>`;
+  pagination.innerHTML = html;
+}
+
+function goToPage(page) {
+  currentPage = page;
+  renderArchive(currentFilteredItems, (page - 1) * ITEMS_PER_PAGE);
+  document.getElementById('archiveGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 function openLightbox(items, idx) {
   lbIndex = idx;
@@ -1230,19 +1294,21 @@ function applyArchiveFilters() {
     (year === 'all' || i.year === year) &&
     (event === 'all' || i.event === event)
   );
-  renderArchive(filtered);
+  currentPage = 1;
+  renderArchive(filtered, 0);
 }
 
 function clearArchiveFilters() {
   document.getElementById('filterTeam').value = 'all';
   document.getElementById('filterYear').value = 'all';
   document.getElementById('filterEvent').value = 'all';
-  renderArchive(archiveItems);
+  currentPage = 1;
+  renderArchive(archiveItems, 0);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
   populateArchiveFilters();
-  renderArchive(archiveItems);
+  renderArchive(archiveItems, 0);
 
   document.getElementById('lbClose').onclick = closeLightbox;
   document.getElementById('lbPrev').onclick = () => lbNavigate(-1);
