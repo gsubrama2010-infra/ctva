@@ -504,6 +504,23 @@ img { max-width: 100%; display: block; }
 .archive-tags .a-meta span { background: rgba(47,82,51,0.08); color: var(--court-green); padding: 1.5px 7px; border-radius: 10px; }
 .archive-empty { color: rgba(21,36,30,0.5); font-size: 14px; text-align: center; padding: 2rem 0; }
 
+.yt-channels { margin-top: 2rem; padding-top: 1.6rem; border-top: 1px solid rgba(21,36,30,0.08); }
+.yt-channels-label { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(21,36,30,0.5); display: block; margin-bottom: 10px; }
+.yt-channel-list { display: flex; gap: 10px; flex-wrap: wrap; }
+.yt-channel-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(194,59,59,0.07);
+  border: 1px solid rgba(194,59,59,0.25);
+  color: var(--signal);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 20px;
+  transition: background 0.15s;
+}
+.yt-channel-chip:hover { background: rgba(194,59,59,0.14); }
+.yt-channel-chip .yt-icon { font-size: 11px; }
+
 .photo-note {
   margin-top: 1.5rem;
   font-size: 13px;
@@ -824,6 +841,21 @@ img { max-width: 100%; display: block; }
 
   <div class="archive-grid" id="archiveGrid"></div>
   <p class="archive-empty" id="archiveEmpty" style="display:none;">No items match these filters yet.</p>
+
+  <div class="yt-channels">
+    <span class="yt-channels-label">Watch more on YouTube</span>
+    <div class="yt-channel-list">
+      <a href="https://www.youtube.com/@tamilshootingvolleyball2438" target="_blank" rel="noopener" class="yt-channel-chip">
+        <span class="yt-icon">▶</span> Tamil Shooting Volleyball
+      </a>
+      <a href="https://www.youtube.com/@tamilvolleyballtorontocana6357" target="_blank" rel="noopener" class="yt-channel-chip">
+        <span class="yt-icon">▶</span> Tamil Volleyball Toronto Canada
+      </a>
+      <a href="https://www.youtube.com/@ganeshsubra9986" target="_blank" rel="noopener" class="yt-channel-chip">
+        <span class="yt-icon">▶</span> Canadian Tamil Volleyball Games
+      </a>
+    </div>
+  </div>
 
   <p class="photo-note">Have photos or videos from past CTVA events? Reach out via the contact section below — our team manages all submissions directly.</p>
 </section>
