@@ -412,7 +412,15 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 1rem;
+  padding: 0;
+  overflow: hidden;
+}
+.poster-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
 }
 .poster-img .icon {
   font-family: 'Anton', sans-serif;
@@ -790,23 +798,23 @@ img { max-width: 100%; display: block; }
 <section class="section" id="events">
   <div class="eyebrow">Events</div>
   <h2>Tournament posters</h2>
-  <p class="section-lead">Official posters from CTVA tournaments over the years. New posters are added here as events are announced.</p>
+  <p class="section-lead">Official posters from CTVA member clubs over the years. New posters are added here as events are announced.</p>
   <div class="poster-grid">
     <div class="poster-card">
-      <div class="poster-img"><span class="icon">POSTER<br>COMING SOON</span></div>
-      <div class="poster-body"><h4>Summer Championship</h4><p>All clubs · Malvern</p></div>
+      <div class="poster-img"><img src="images/poster-rougeriver.jpeg" alt="Rouge River Volleyball Club 16th Annual Volleyball Tournament poster"></div>
+      <div class="poster-body"><h4>16th Annual Volleyball Tournament</h4><p>Rouge River Volleyball Club · Sat, June 13, 2026 · Murison Park, Scarborough</p></div>
     </div>
     <div class="poster-card">
-      <div class="poster-img"><span class="icon">POSTER<br>COMING SOON</span></div>
-      <div class="poster-body"><h4>Community BBQ &amp; Play Day</h4><p>Open to all · Family event</p></div>
+      <div class="poster-img"><img src="images/poster-thaimun.jpeg" alt="Thaimun Vilaiyattu Kazhagam 15th Annual Volleyball Tournament poster"></div>
+      <div class="poster-body"><h4>15th Annual Volleyball Tournament</h4><p>Thaimun Vilaiyattu Kazhagam · Sat, June 27, 2026, 10 AM · Sir Alexander Mackenzie Sr. PS, Scarborough</p></div>
     </div>
     <div class="poster-card">
-      <div class="poster-img"><span class="icon">POSTER<br>COMING SOON</span></div>
-      <div class="poster-body"><h4>Inter-Club League</h4><p>20+ clubs · Weekly matches</p></div>
+      <div class="poster-img"><img src="images/poster-uthayanila.jpeg" alt="Uthaya Nila Sally Toronto Volleyball Tournament poster"></div>
+      <div class="poster-body"><h4>Toronto Volleyball Tournament</h4><p>Uthaya Nila Sally · Sat, April 4, 11 AM · ActionZone Indoor</p></div>
     </div>
     <div class="poster-card">
-      <div class="poster-img"><span class="icon">POSTER<br>COMING SOON</span></div>
-      <div class="poster-body"><h4>More tournaments coming</h4><p>Posters added as we receive them</p></div>
+      <div class="poster-img"><img src="images/poster-montreal.jpeg" alt="Montreal Boys Sports Club 2nd Anniversary Memorial Tournament poster"></div>
+      <div class="poster-body"><h4>2nd Anniversary Memorial Tournament</h4><p>Montreal Boys Sports Club · July 18, 2026, 9 AM · McKenzie-King Park, Montreal</p></div>
     </div>
   </div>
 </section>
