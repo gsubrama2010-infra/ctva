@@ -684,6 +684,21 @@ const archiveItems = [
   { type: 'photo', src: 'images/archive/image72.jpg', team: 'CTVA', year: '2026', event: 'June 17 Community Event', caption: 'Community photo 72' },
   { type: 'photo', src: 'images/archive/image73.jpg', team: 'CTVA', year: '2026', event: 'June 17 Community Event', caption: 'Community photo 73' },
   { type: 'photo', src: 'images/archive/image74.jpg', team: 'CTVA', year: '2026', event: 'June 17 Community Event', caption: 'Community photo 74' },
+  { type: 'photo', src: 'images/archive/image75.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 1' },
+  { type: 'photo', src: 'images/archive/image76.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 2' },
+  { type: 'photo', src: 'images/archive/image77.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 3' },
+  { type: 'photo', src: 'images/archive/image78.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 4' },
+  { type: 'photo', src: 'images/archive/image79.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 5' },
+  { type: 'photo', src: 'images/archive/image80.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 6' },
+  { type: 'photo', src: 'images/archive/image81.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 7' },
+  { type: 'photo', src: 'images/archive/image82.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 8' },
+  { type: 'photo', src: 'images/archive/image83.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 9' },
+  { type: 'photo', src: 'images/archive/image84.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 10' },
+  { type: 'photo', src: 'images/archive/image85.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 11' },
+  { type: 'photo', src: 'images/archive/image86.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 12' },
+  { type: 'photo', src: 'images/archive/image87.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 13' },
+  { type: 'photo', src: 'images/archive/image88.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 14' },
+  { type: 'photo', src: 'images/archive/image89.jpg', team: 'CTVA', year: '2026', event: ['Malvern Tournament', 'Sivasakthi'], caption: 'Malvern Tournament photo 15' },
   { type: 'localVideo', src: 'images/archive/video14.mp4', team: 'CTVA', year: '2026', event: 'June 17 Community Event', caption: 'Match video 14' },
   { type: 'localVideo', src: 'images/archive/video15.mp4', team: 'CTVA', year: '2026', event: 'June 17 Community Event', caption: 'Match video 15' },
   { type: 'localVideo', src: 'images/archive/video16.mp4', team: 'CTVA', year: '2026', event: 'June 17 Community Event', caption: 'Match video 16' },
@@ -706,7 +721,7 @@ function populateArchiveFilters() {
   const t = document.getElementById('filterTeam'), y = document.getElementById('filterYear'), e = document.getElementById('filterEvent');
   uniqueSorted(archiveItems.map(i=>i.team)).forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;t.appendChild(o);});
   uniqueSorted(archiveItems.map(i=>i.year)).sort((a,b)=>b-a).forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;y.appendChild(o);});
-  uniqueSorted(archiveItems.map(i=>i.event)).forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;e.appendChild(o);});
+  uniqueSorted(archiveItems.flatMap(i=>Array.isArray(i.event)?i.event:[i.event])).forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;e.appendChild(o);});
 }
 
 function renderArchive(items, pageStart) {
@@ -726,7 +741,8 @@ function renderArchive(items, pageStart) {
     } else {
       thumb = `<div class="archive-thumb" style="aspect-ratio:4/3;background:var(--surface2);"></div>`;
     }
-    return `<div class="archive-card" onclick="openLightbox(currentFilteredItems,${gi})">${thumb}<div class="archive-tags"><span class="a-event">${i.event}</span><div class="a-meta"><span>${i.team}</span><span>${i.year}</span></div></div></div>`;
+    const evLabel = Array.isArray(i.event) ? i.event.join(' · ') : i.event;
+    return `<div class="archive-card" onclick="openLightbox(currentFilteredItems,${gi})">${thumb}<div class="archive-tags"><span class="a-event">${evLabel}</span><div class="a-meta"><span>${i.team}</span><span>${i.year}</span></div></div></div>`;
   }).join('');
   currentFilteredItems = items;
   renderPagination(items.length);
@@ -754,7 +770,7 @@ function goToPage(p) {
 
 function applyArchiveFilters() {
   const t=document.getElementById('filterTeam').value, y=document.getElementById('filterYear').value, e=document.getElementById('filterEvent').value;
-  const f = archiveItems.filter(i=>(t==='all'||i.team===t)&&(y==='all'||i.year===y)&&(e==='all'||i.event===e));
+  const f = archiveItems.filter(i=>(t==='all'||i.team===t)&&(y==='all'||i.year===y)&&(e==='all'||(Array.isArray(i.event)?i.event.includes(e):i.event===e)));
   currentPage=1; renderArchive(f,0);
 }
 function clearArchiveFilters() {
