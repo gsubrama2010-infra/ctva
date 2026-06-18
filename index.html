@@ -122,6 +122,16 @@ img{max-width:100%;display:block;}
 @keyframes scroll-left{to{transform:translateX(-50%);}}
 .team-chip{background:rgba(250,248,242,.08);border:1px solid rgba(250,248,242,.15);color:var(--text);font-size:12.5px;font-weight:500;padding:7px 16px;border-radius:20px;white-space:nowrap;}
 
+/* ── MEMBER CLUBS LOGOS ── */
+.logos-wrap{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.logos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:1rem;}
+.logo-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem .8rem;display:flex;flex-direction:column;align-items:center;gap:10px;transition:border-color .15s,transform .15s;cursor:default;}
+.logo-card:hover{border-color:var(--gold-dim);transform:translateY(-3px);}
+.logo-img-wrap{width:72px;height:72px;border-radius:50%;overflow:hidden;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-img-wrap img{width:100%;height:100%;object-fit:contain;}
+.logo-fallback{width:72px;height:72px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:18px;color:var(--text);letter-spacing:.03em;flex-shrink:0;}
+.logo-name{font-size:11.5px;font-weight:600;color:var(--muted);text-align:center;line-height:1.35;}
+
 /* ── POSTERS ── */
 .poster-scroll{overflow-x:auto;padding-bottom:1rem;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;gap:1.2rem;}
 .poster-scroll::-webkit-scrollbar{height:4px;}
@@ -280,6 +290,7 @@ img{max-width:100%;display:block;}
       <a href="#home" class="active">Home</a>
       <a href="#about">About</a>
       <a href="#events">Events</a>
+      <a href="#clubs">Clubs</a>
       <a href="#photos">Archive</a>
       <a href="#contact">Contact</a>
       <a href="tribute.html" style="color:var(--gold);">In Memory</a>
@@ -389,6 +400,16 @@ img{max-width:100%;display:block;}
 <!-- CLUBS MARQUEE -->
 <div class="marquee-band">
   <div class="marquee-inner" id="marqueeInner"></div>
+</div>
+
+<!-- MEMBER CLUBS LOGOS -->
+<div class="logos-wrap">
+  <section class="section" id="clubs">
+    <div class="eyebrow">Member clubs</div>
+    <h2>Our 27 clubs</h2>
+    <p class="section-lead">The clubs that make CTVA what it is — from Scarborough to Vancouver.</p>
+    <div class="logos-grid" id="logosGrid"></div>
+  </section>
 </div>
 
 <!-- TOURNAMENT POSTERS -->
@@ -769,8 +790,56 @@ function lbNavigate(dir) {
   showLightboxItem(currentFilteredItems,(lbIndex+dir+currentFilteredItems.length)%currentFilteredItems.length);
 }
 
+/* ── LOGOS ── */
+const clubLogos = [
+  { name: 'Ajax Boys',                slug: 'ajax-boys' },
+  { name: 'New Star',                 slug: 'new-star' },
+  { name: 'Thaimunn',                 slug: 'thaimunn' },
+  { name: 'Singing Fish',             slug: 'singing-fish' },
+  { name: 'Nagarkovil SC',            slug: 'nagarkovil-sc' },
+  { name: 'Toronto Sports Club',      slug: 'toronto-sc' },
+  { name: 'Malvern Sports Club',      slug: 'malvern-sc' },
+  { name: 'Rouge River',              slug: 'rouge-river' },
+  { name: 'Super Star',               slug: 'super-star' },
+  { name: 'Sivasakthi SC',            slug: 'sivasakthi-sc' },
+  { name: 'Uthaya Nila SC',           slug: 'uthaya-nila-sc' },
+  { name: 'Uthaya Oli SC',            slug: 'uthaya-oli-sc' },
+  { name: 'Captain Miller SC',        slug: 'captain-miller-sc' },
+  { name: 'Vanni Boys SC',            slug: 'vanni-boys-sc' },
+  { name: 'Jaffna Kings SC',          slug: 'jaffna-kings-sc' },
+  { name: 'Toronto Blues SC',         slug: 'toronto-blues-sc' },
+  { name: 'Vancouver Stars SC',       slug: 'vancouver-stars-sc' },
+  { name: 'Galaxy SC',                slug: 'galaxy-sc' },
+  { name: 'Northern Gorillas SC',     slug: 'northern-gorillas-sc' },
+  { name: 'Flemington SC',            slug: 'flemington-sc' },
+  { name: 'Young Henrys',             slug: 'young-henrys' },
+  { name: 'Shooting Stars',           slug: 'shooting-stars' },
+  { name: 'Peel',                     slug: 'peel' },
+  { name: 'Volley King',              slug: 'volley-king' },
+  { name: 'Jarvis',                   slug: 'jarvis' },
+  { name: 'Dragon',                   slug: 'dragon' },
+  { name: 'Phoenix',                  slug: 'phoenix' },
+];
+
+function initials(name) {
+  return name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+
+function renderLogos() {
+  const grid = document.getElementById('logosGrid');
+  grid.innerHTML = clubLogos.map(c => `
+    <div class="logo-card">
+      <div class="logo-img-wrap">
+        <img src="images/logos/${c.slug}.png" alt="${c.name}"
+          onerror="this.parentElement.innerHTML='<div class=\\"logo-fallback\\">${initials(c.name)}</div>'">
+      </div>
+      <span class="logo-name">${c.name}</span>
+    </div>`).join('');
+}
+
 /* ── INIT ── */
 window.addEventListener('DOMContentLoaded', () => {
+  renderLogos();
   populateArchiveFilters();
   renderArchive(archiveItems, 0);
 
