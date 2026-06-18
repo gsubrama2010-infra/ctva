@@ -825,16 +825,21 @@ function initials(name) {
   return name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
 }
 
+function logoError(img, ini) {
+  img.parentElement.innerHTML = '<div class="logo-fallback">' + ini + '</div>';
+}
+
 function renderLogos() {
   const grid = document.getElementById('logosGrid');
-  grid.innerHTML = clubLogos.map(c => `
-    <div class="logo-card">
+  grid.innerHTML = clubLogos.map(c => {
+    const ini = initials(c.name);
+    return `<div class="logo-card">
       <div class="logo-img-wrap">
-        <img src="images/TeamLogos/${c.slug}.jpeg" alt="${c.name}"
-          onerror="this.parentElement.innerHTML='<div class=\\"logo-fallback\\">${initials(c.name)}</div>'">
+        <img src="images/TeamLogos/${c.slug}.jpeg" alt="${c.name}" style="width:100%;height:100%;object-fit:contain;" onerror="logoError(this,'${ini}')">
       </div>
       <span class="logo-name">${c.name}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ── INIT ── */
