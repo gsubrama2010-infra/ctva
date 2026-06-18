@@ -792,33 +792,33 @@ function lbNavigate(dir) {
 
 /* ── LOGOS ── */
 const clubLogos = [
-  { name: 'Ajax Boys',                slug: 'ajax-boys' },
-  { name: 'New Star',                 slug: 'new-star' },
-  { name: 'Thaimunn',                 slug: 'thaimunn' },
-  { name: 'Singing Fish',             slug: 'singing-fish' },
-  { name: 'Nagarkovil SC',            slug: 'nagarkovil-sc' },
-  { name: 'Toronto Sports Club',      slug: 'toronto-sc' },
-  { name: 'Malvern Sports Club',      slug: 'malvern-sc' },
-  { name: 'Rouge River',              slug: 'rouge-river' },
-  { name: 'Super Star',               slug: 'super-star' },
-  { name: 'Sivasakthi SC',            slug: 'sivasakthi-sc' },
-  { name: 'Uthaya Nila SC',           slug: 'uthaya-nila-sc' },
-  { name: 'Uthaya Oli SC',            slug: 'uthaya-oli-sc' },
-  { name: 'Captain Miller SC',        slug: 'captain-miller-sc' },
-  { name: 'Vanni Boys SC',            slug: 'vanni-boys-sc' },
-  { name: 'Jaffna Kings SC',          slug: 'jaffna-kings-sc' },
-  { name: 'Toronto Blues SC',         slug: 'toronto-blues-sc' },
-  { name: 'Vancouver Stars SC',       slug: 'vancouver-stars-sc' },
-  { name: 'Galaxy SC',                slug: 'galaxy-sc' },
-  { name: 'Northern Gorillas SC',     slug: 'northern-gorillas-sc' },
-  { name: 'Flemington SC',            slug: 'flemington-sc' },
-  { name: 'Young Henrys',             slug: 'young-henrys' },
-  { name: 'Shooting Stars',           slug: 'shooting-stars' },
-  { name: 'Peel',                     slug: 'peel' },
-  { name: 'Volley King',              slug: 'volley-king' },
-  { name: 'Jarvis',                   slug: 'jarvis' },
-  { name: 'Dragon',                   slug: 'dragon' },
-  { name: 'Phoenix',                  slug: 'phoenix' },
+  { name: 'Ajax Boys',                slug: 'AjaxBoys' },
+  { name: 'New Star',                 slug: 'NewStar' },
+  { name: 'Thaimunn',                 slug: 'ThaimunSportsClub' },
+  { name: 'Singing Fish',             slug: 'SingingFish' },
+  { name: 'Nagarkovil SC',            slug: 'NagarkovilSC' },
+  { name: 'Toronto Sports Club',      slug: 'TorontoSportsClub' },
+  { name: 'Malvern Sports Club',      slug: 'MalvernSportsClub' },
+  { name: 'Rouge River',              slug: 'RougeRiverVolleyballClub' },
+  { name: 'Super Star',               slug: 'SuperStar' },
+  { name: 'Sivasakthi SC',            slug: 'SivasakhtiSC' },
+  { name: 'Uthaya Nila SC',           slug: 'UthayaNilaSC' },
+  { name: 'Uthaya Oli SC',            slug: 'UthayaOliSC' },
+  { name: 'Captain Miller SC',        slug: 'CaptainMillerSC' },
+  { name: 'Vanni Boys SC',            slug: 'VanniBoysSC' },
+  { name: 'Jaffna Kings SC',          slug: 'JaffnaKingsSC' },
+  { name: 'Toronto Blues SC',         slug: 'TorontoBluesSC' },
+  { name: 'Vancouver Stars SC',       slug: 'VancouverStarsSC' },
+  { name: 'Galaxy SC',                slug: 'GalaxySC' },
+  { name: 'Northern Gorillas SC',     slug: 'NorthernGorillasSC' },
+  { name: 'Flemington SC',            slug: 'FlemingtonSC' },
+  { name: 'Young Henrys',             slug: 'YoungHenrys' },
+  { name: 'Shooting Stars',           slug: 'ShootingStars' },
+  { name: 'Peel',                     slug: 'Peel' },
+  { name: 'Volley King',              slug: 'VolleyKing' },
+  { name: 'Jarvis',                   slug: 'Jarvis' },
+  { name: 'Dragon',                   slug: 'Dragon' },
+  { name: 'Phoenix',                  slug: 'Phoenix' },
 ];
 
 function initials(name) {
@@ -830,7 +830,7 @@ function renderLogos() {
   grid.innerHTML = clubLogos.map(c => `
     <div class="logo-card">
       <div class="logo-img-wrap">
-        <img src="images/logos/${c.slug}.png" alt="${c.name}"
+        <img src="images/TeamLogos/${c.slug}.jpeg" alt="${c.name}"
           onerror="this.parentElement.innerHTML='<div class=\\"logo-fallback\\">${initials(c.name)}</div>'">
       </div>
       <span class="logo-name">${c.name}</span>
