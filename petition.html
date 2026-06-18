@@ -3,229 +3,443 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Take Action — CTVA Petition</title>
+<title>Sign the Petition — CTVA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #15241E;
-  --sand: #EDE6D6;
-  --gold: #E8A23D;
-  --court-green: #2F5233;
-  --signal: #C23B3B;
-  --line-white: #FAF8F2;
-  --green-light: #4A7350;
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --signal:   #C23B3B;
+  --ink:      #15241E;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', sans-serif; background: var(--sand); color: var(--ink); line-height: 1.6; }
-a { text-decoration: none; color: inherit; }
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+a{text-decoration:none;color:inherit;}
 
-.topbar { background: var(--ink); color: var(--line-white); padding: 0.5rem 0; font-size: 12px; }
-.topbar-inner { max-width: 1140px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; opacity: 0.75; }
-.navbar { background: var(--ink); border-bottom: 3px solid var(--gold); }
-.nav-inner { max-width: 1140px; margin: 0 auto; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
-.logo-block { display: flex; align-items: center; gap: 12px; }
-.logo-mark { width: 42px; height: 42px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 18px; color: var(--ink); }
-.logo-text .full { font-family: 'Anton', sans-serif; font-size: 17px; color: var(--line-white); }
-.logo-text .sub { font-size: 10.5px; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
-.nav-links { display: flex; gap: 2rem; align-items: center; }
-.nav-links a { color: rgba(250,248,242,0.8); font-size: 14px; font-weight: 500; }
-.nav-links a:hover { color: var(--line-white); }
-.nav-cta { background: var(--signal); color: var(--line-white) !important; padding: 9px 18px; border-radius: 4px; font-weight: 700 !important; font-size: 13px !important; }
+/* NAV */
+.topbar{background:#060e09;padding:.45rem 0;font-size:11.5px;letter-spacing:.05em;border-bottom:1px solid rgba(232,162,61,.08);}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;color:var(--muted);}
+.navbar{background:rgba(11,20,16,.95);backdrop-filter:blur(14px);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.logo-block{display:flex;align-items:center;gap:12px;}
+.logo-mark{width:40px;height:40px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:17px;color:var(--ink);flex-shrink:0;}
+.logo-text .full{font-family:'Anton',sans-serif;font-size:17px;color:var(--text);}
+.logo-text .sub{font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;}
+.nav-links{display:flex;gap:1.8rem;align-items:center;}
+.nav-links a{color:var(--muted);font-size:13.5px;font-weight:500;transition:color .15s;}
+.nav-links a:hover{color:var(--text);}
 
-.hero {
-  background: var(--ink);
-  padding: 4rem 2rem 3.5rem;
-  text-align: center;
-}
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(194,59,59,0.18); border: 1px solid rgba(194,59,59,0.4);
-  color: #e98b8b; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 6px 14px; border-radius: 20px; margin-bottom: 1.4rem;
-}
-.hero h1 {
-  font-family: 'Anton', sans-serif;
-  font-size: 2.6rem;
-  color: var(--line-white);
-  max-width: 640px;
-  margin: 0 auto 1rem;
-  line-height: 1.1;
-}
-.hero h1 .accent { color: var(--gold); }
-.hero p { color: rgba(250,248,242,0.7); font-size: 1.02rem; max-width: 540px; margin: 0 auto; line-height: 1.7; }
+/* HERO */
+.petition-hero{background:linear-gradient(135deg,#060e09 0%,#0e1e12 60%,#152510 100%);padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.petition-hero::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(250,248,242,.03) 59px,rgba(250,248,242,.03) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(250,248,242,.03) 59px,rgba(250,248,242,.03) 60px);}
+.petition-hero-inner{position:relative;max-width:720px;margin:0 auto;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(194,59,59,.1);border:1px solid rgba(194,59,59,.3);color:#e07070;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:1.4rem;}
+.petition-hero h1{font-family:'Anton',sans-serif;font-size:3.2rem;line-height:1.0;color:var(--text);margin-bottom:1.2rem;}
+.petition-hero h1 span{color:var(--gold);}
+.petition-hero p{color:var(--muted);font-size:1rem;line-height:1.8;margin-bottom:2rem;max-width:580px;margin-left:auto;margin-right:auto;}
+.counter-badge{display:inline-flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 2rem;}
+.counter-num{font-family:'Anton',sans-serif;font-size:3rem;color:var(--gold);line-height:1;}
+.counter-label strong{display:block;font-size:15px;color:var(--text);margin-bottom:2px;}
+.counter-label{font-size:13px;color:var(--muted);text-align:left;}
+.counter-bar-wrap{width:300px;height:8px;background:rgba(250,248,242,.08);border-radius:4px;margin:1rem auto 0;overflow:hidden;}
+.counter-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--green2));border-radius:4px;transition:width 1s ease;}
+.counter-pct{font-size:11px;color:var(--muted);margin-top:6px;text-align:right;max-width:300px;margin-left:auto;margin-right:auto;}
 
-.section { max-width: 880px; margin: 0 auto; padding: 3.5rem 2rem; }
-.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--court-green); margin-bottom: 0.7rem; display: flex; align-items: center; gap: 8px; }
-.eyebrow::before { content: ''; width: 22px; height: 2px; background: var(--gold); }
-.section h2 { font-family: 'Anton', sans-serif; font-size: 1.9rem; color: var(--ink); margin-bottom: 1rem; line-height: 1.15; }
-.section p { color: rgba(21,36,30,0.72); margin-bottom: 1.1rem; line-height: 1.8; }
+/* BODY */
+.petition-body{max-width:1100px;margin:0 auto;padding:4rem 2rem;display:grid;grid-template-columns:1fr 1.1fr;gap:3rem;align-items:start;}
 
-.demand-list { display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem; }
-.demand-item { display: flex; gap: 14px; background: var(--line-white); border-radius: 8px; border: 1px solid rgba(21,36,30,0.08); padding: 1rem 1.25rem; }
-.demand-num { font-family: 'Anton', sans-serif; font-size: 1.1rem; color: var(--gold-dark, #9C6A1F); width: 28px; flex-shrink: 0; }
-.demand-text strong { display: block; font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-.demand-text p { font-size: 13.5px; color: rgba(21,36,30,0.65); margin: 0; line-height: 1.55; }
+/* FORM */
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:sticky;top:90px;}
+.form-card-head{background:linear-gradient(135deg,var(--green),#1c3220);padding:1.6rem 1.8rem;border-bottom:1px solid var(--border);}
+.form-card-head h2{font-family:'Anton',sans-serif;font-size:1.5rem;color:var(--text);margin-bottom:4px;}
+.form-card-head p{font-size:13px;color:rgba(250,248,242,.6);}
+.form-card-body{padding:1.8rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-group{margin-bottom:14px;}
+.form-group label{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--muted);display:flex;gap:5px;margin-bottom:6px;}
+.form-group label .req{color:var(--signal);}
+.form-group input,.form-group textarea{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s;}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--green2);}
+.form-group input.error,.form-group textarea.error{border-color:var(--signal);}
+.field-err{font-size:11.5px;color:#e07070;margin-top:4px;display:none;}
+.field-err.show{display:block;}
+.form-group textarea{resize:vertical;min-height:80px;}
+.privacy-note{font-size:11.5px;color:rgba(250,248,242,.35);margin-bottom:16px;line-height:1.5;padding:10px 12px;background:rgba(250,248,242,.03);border-radius:6px;border-left:2px solid rgba(250,248,242,.08);}
+.submit-btn{width:100%;background:var(--signal);color:#fff;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:800;font-family:'Anton',sans-serif;letter-spacing:.05em;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.submit-btn:hover:not(:disabled){background:#a82f2f;}
+.submit-btn:disabled{opacity:.55;cursor:not-allowed;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-.petition-card {
-  background: var(--line-white);
-  border-radius: 10px;
-  border: 1px solid rgba(21,36,30,0.08);
-  padding: 2rem;
-  margin-top: 1rem;
-}
-.counter { display: flex; gap: 16px; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(21,36,30,0.1); }
-.counter-num { font-family: 'Anton', sans-serif; font-size: 2.4rem; color: var(--court-green); line-height: 1; }
-.counter-label { font-size: 13.5px; color: rgba(21,36,30,0.6); margin-top: 4px; }
-.progress-bar { width: 100%; height: 6px; background: rgba(21,36,30,0.08); border-radius: 3px; overflow: hidden; margin-top: 8px; }
-.progress-fill { height: 100%; background: var(--gold); border-radius: 3px; width: 23%; transition: width 1s ease; }
+/* SUCCESS */
+.success-msg{display:none;text-align:center;padding:2rem 1rem;}
+.success-msg .check{font-size:3rem;margin-bottom:.8rem;}
+.success-msg h3{font-family:'Anton',sans-serif;font-size:1.6rem;color:var(--text);margin-bottom:.5rem;}
+.success-msg p{color:var(--muted);font-size:14px;line-height:1.7;}
+.sign-again{display:inline-block;margin-top:1.2rem;color:var(--green2);font-size:13px;font-weight:600;text-decoration:underline;cursor:pointer;}
 
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-.form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-.form-group label { font-size: 13px; color: rgba(21,36,30,0.65); font-weight: 600; }
-.form-group input { border: 1px solid rgba(21,36,30,0.15); border-radius: 6px; padding: 10px 12px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
-.form-group input:focus { border-color: var(--court-green); }
-.checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
-.checkbox-row input { margin-top: 3px; accent-color: var(--court-green); }
-.checkbox-row label { font-size: 13px; color: rgba(21,36,30,0.65); line-height: 1.5; }
-.sign-btn { width: 100%; background: var(--signal); color: var(--line-white); border: none; padding: 14px; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; }
-.sign-btn:hover { background: #a82f2f; }
+/* SETUP NOTICE */
+.setup-notice{background:rgba(232,162,61,.06);border:1px solid rgba(232,162,61,.25);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1.5rem;}
+.setup-notice h4{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.setup-notice ol{padding-left:1.2rem;color:var(--muted);font-size:13px;line-height:1.9;}
+.setup-notice ol a{color:var(--gold);text-decoration:underline;}
+.setup-notice code{background:rgba(250,248,242,.07);padding:1px 6px;border-radius:3px;font-size:12px;color:var(--text);}
 
-.success-msg { display: none; text-align: center; padding: 1rem; }
-.success-msg .check { font-size: 36px; margin-bottom: 8px; }
-.success-msg h3 { font-family: 'Anton', sans-serif; font-size: 17px; color: var(--court-green); margin-bottom: 6px; }
-.success-msg p { font-size: 14px; color: rgba(21,36,30,0.65); margin: 0; }
+/* SIGNATORIES */
+.signatories-panel h2{font-family:'Anton',sans-serif;font-size:1.8rem;color:var(--text);margin-bottom:.4rem;}
+.signatories-panel .sub{color:var(--muted);font-size:13.5px;margin-bottom:1.6rem;}
+.sig-list{display:flex;flex-direction:column;gap:10px;max-height:680px;overflow-y:auto;padding-right:4px;}
+.sig-list::-webkit-scrollbar{width:4px;}
+.sig-list::-webkit-scrollbar-track{background:rgba(250,248,242,.04);}
+.sig-list::-webkit-scrollbar-thumb{background:var(--green);border-radius:2px;}
+.sig-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;display:flex;gap:14px;align-items:flex-start;animation:slideIn .3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.sig-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:15px;color:var(--text);flex-shrink:0;}
+.sig-body{flex:1;min-width:0;}
+.sig-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.sig-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
+.sig-comment{font-size:13px;color:rgba(250,248,242,.6);font-style:italic;margin-top:5px;line-height:1.5;border-left:2px solid rgba(232,162,61,.25);padding-left:10px;}
+.sig-num{font-family:'Anton',sans-serif;font-size:11px;color:var(--muted);flex-shrink:0;padding-top:2px;}
+.sig-empty{color:var(--muted);font-size:14px;text-align:center;padding:2rem 0;}
+.sig-loading{color:var(--muted);font-size:13px;text-align:center;padding:2rem 0;display:flex;align-items:center;justify-content:center;gap:8px;}
+.sig-loading .spinner{display:block;}
 
-.urgent-banner { background: #fdf3e3; border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 10px; }
-.urgent-banner p { font-size: 13.5px; color: #6b4a14; margin: 0; line-height: 1.55; }
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green2);margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:22px;height:2px;background:var(--gold);display:inline-block;}
 
-.footer { background: var(--ink); padding: 2.5rem 2rem; text-align: center; }
-.footer p { color: rgba(250,248,242,0.55); font-size: 13px; line-height: 1.7; }
-.footer a { color: var(--gold); }
+.petition-footer{background:#060e09;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);}
+.petition-footer a{color:var(--gold);}
 
-@media (max-width: 600px) {
-  .hero h1 { font-size: 1.9rem; }
-  .form-row { grid-template-columns: 1fr; }
-  .nav-links { display: none; }
+@media(max-width:800px){
+  .petition-body{grid-template-columns:1fr;}
+  .form-card{position:static;}
+  .form-row{grid-template-columns:1fr;}
+  .petition-hero h1{font-size:2.2rem;}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar"><div class="topbar-inner"><span>Malvern · Toronto, Ontario</span><span>info@ctva.ca</span></div></div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>Scarborough · Toronto, ON</span>
+    <span>info@ctva.ca</span>
+  </div>
+</div>
 
 <nav class="navbar">
   <div class="nav-inner">
     <a href="index.html" class="logo-block">
       <div class="logo-mark">CT</div>
-      <div class="logo-text"><div class="full">CTVA</div><div class="sub">Volleyball Association</div></div>
+      <div class="logo-text">
+        <div class="full">CTVA</div>
+        <div class="sub">Volleyball Association</div>
+      </div>
     </a>
     <div class="nav-links">
-      <a href="index.html#about">About us</a>
-      <a href="index.html#mission">Mission</a>
+      <a href="index.html">Home</a>
+      <a href="index.html#about">About</a>
       <a href="index.html#events">Events</a>
-      <a href="index.html#photos">Photos</a>
-      <a href="index.html#contact">Contact</a>
-      <a href="petition.html" class="nav-cta">Take action</a>
+      <a href="index.html#photos">Archive</a>
+      <a href="tribute.html" style="color:var(--gold);">In Memory</a>
     </div>
   </div>
 </nav>
 
-<div class="hero">
-  <div class="hero-eyebrow">● Take action</div>
-  <h1>Help us secure a <span class="accent">dedicated volleyball court</span></h1>
-  <p>Our Malvern court was demolished without notice after 30+ years of community use. Add your name to demand accountability from the City — and a permanent home for volleyball in our community.</p>
-</div>
-
-<div class="section">
-  <div class="eyebrow">What happened</div>
-  <h2>30+ years of history, removed overnight</h2>
-  <p>For over three decades, the Malvern volleyball court was a gathering place for our community — a space that gave new immigrants their first friendships and sense of belonging, and stood strong even through the difficult years of the 1990s.</p>
-  <p>The court was demolished without advance notice or consultation, and converted into a pickleball court. A similar loss happened previously at what is now Ali Abbas Park (formerly McLevin Park). If the City can find space for pickleball, it can find space for the sport that has served our community for over 30 years.</p>
-</div>
-
-<div class="section" style="padding-top: 0;">
-  <div class="eyebrow">Our demands</div>
-  <h2>What we're asking the City for</h2>
-  <div class="demand-list">
-    <div class="demand-item">
-      <span class="demand-num">01</span>
-      <div class="demand-text"><strong>Full accountability</strong><p>An explanation for why no advance notice was given before demolition, and why consultation was bypassed.</p></div>
+<!-- HERO -->
+<div class="petition-hero">
+  <div class="petition-hero-inner">
+    <div class="hero-eyebrow">&#9888; Community Action</div>
+    <h1>Restore Our Court.<br><span>Give Tamil Volleyball</span><br>a Permanent Home.</h1>
+    <p>The Malvern court where thousands of Tamil-Canadian families played for decades was demolished without notice. We are asking the City of Toronto to provide a dedicated, permanent volleyball space for our community.</p>
+    <div class="counter-badge">
+      <div class="counter-num" id="sigCount">–</div>
+      <div class="counter-label">
+        <strong>people have signed</strong>
+        Help us reach 1,000 signatures
+      </div>
     </div>
-    <div class="demand-item">
-      <span class="demand-num">02</span>
-      <div class="demand-text"><strong>Mandatory consultation going forward</strong><p>A formal commitment to consult active community users before changing any public recreational space.</p></div>
-    </div>
-    <div class="demand-item">
-      <span class="demand-num">03</span>
-      <div class="demand-text"><strong>A dedicated volleyball court</strong><p>A permanent, accessible space for volleyball — open to our community and every other group that loves the sport.</p></div>
-    </div>
-    <div class="demand-item">
-      <span class="demand-num">04</span>
-      <div class="demand-text"><strong>Action from our elected representatives</strong><p>Our community holds real civic voice. We expect that to translate into active advocacy for this space.</p></div>
-    </div>
+    <div class="counter-bar-wrap"><div class="counter-bar" id="counterBar" style="width:0%"></div></div>
+    <div class="counter-pct" id="counterPct"></div>
   </div>
 </div>
 
-<div class="section" style="padding-top: 0;">
-  <div class="eyebrow">Sign the petition</div>
-  <h2>Add your name</h2>
-  <div class="urgent-banner">
-    <span>⚠</span>
-    <p>We've formally requested a meeting with the City. Once a date is confirmed, everyone who signs will be notified and asked to attend in person — numbers matter.</p>
+<!-- BODY -->
+<div class="petition-body">
+
+  <!-- FORM SIDE -->
+  <div>
+    <!-- Firebase setup instructions — hidden once configured -->
+    <div class="setup-notice" id="setupNotice" style="display:none;">
+      <h4>&#9888; One-time Firebase setup needed</h4>
+      <ol>
+        <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> and create a free project</li>
+        <li>Click the web icon <code>&lt;/&gt;</code>, register your app, and copy the config</li>
+        <li>Go to <strong>Firestore Database → Create database → Start in test mode</strong></li>
+        <li>Paste your config values into the <code>firebaseConfig</code> object at the bottom of this file</li>
+      </ol>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-head">
+        <h2>Sign the petition</h2>
+        <p>Add your name — every signature counts.</p>
+      </div>
+      <div class="form-card-body">
+        <form id="petitionForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full name <span class="req">*</span></label>
+              <input type="text" id="f-name" placeholder="Your full name" autocomplete="name">
+              <div class="field-err" id="err-name">Please enter your name.</div>
+            </div>
+            <div class="form-group">
+              <label>Phone number <span class="req">*</span></label>
+              <input type="tel" id="f-phone" placeholder="e.g. 416-555-0123" autocomplete="tel">
+              <div class="field-err" id="err-phone">Please enter a valid phone number.</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email address <span class="req">*</span></label>
+            <input type="email" id="f-email" placeholder="you@example.com" autocomplete="email">
+            <div class="field-err" id="err-email">Please enter a valid email address.</div>
+          </div>
+          <div class="form-group">
+            <label>City / Neighbourhood <span class="req">*</span></label>
+            <input type="text" id="f-city" placeholder="e.g. Scarborough, Malvern, Brampton…" autocomplete="address-level2">
+            <div class="field-err" id="err-city">Please enter your city or neighbourhood.</div>
+          </div>
+          <div class="form-group">
+            <label>Comment <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+            <textarea id="f-comment" placeholder="Share why this matters to you…" rows="3"></textarea>
+          </div>
+          <p class="privacy-note">&#128274; Your phone number and email are kept private and never displayed. Only your name, city, and comment are shown publicly.</p>
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span id="submitLabel">&#9995; Sign the petition</span>
+            <div class="spinner" id="submitSpinner"></div>
+          </button>
+        </form>
+
+        <div class="success-msg" id="successMsg">
+          <div class="check">&#10004;&#65039;</div>
+          <h3>Thank you for signing!</h3>
+          <p>Your name has been added. Please share this page with friends and family — every signature matters.</p>
+          <span class="sign-again" onclick="resetForm()">Sign with a different name</span>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="petition-card">
-    <div class="counter">
-      <div>
-        <div class="counter-num" id="sigCount">115</div>
-        <div class="counter-label">signatures so far · goal 500</div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      </div>
-    </div>
-
-    <div id="petitionForm">
-      <div class="form-row">
-        <div class="form-group"><label>First name</label><input type="text" id="fname" placeholder="Your first name"></div>
-        <div class="form-group"><label>Last name</label><input type="text" id="lname" placeholder="Your last name"></div>
-      </div>
-      <div class="form-group"><label>Email address</label><input type="email" id="email" placeholder="you@example.com"></div>
-      <div class="form-group"><label>City / neighbourhood</label><input type="text" id="city" placeholder="e.g. Malvern, Scarborough"></div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="notify" checked>
-        <label for="notify">Notify me when the City meeting date is confirmed so I can attend.</label>
-      </div>
-      <button class="sign-btn" onclick="submitPetition()">Sign the petition</button>
-    </div>
-
-    <div class="success-msg" id="successMsg">
-      <div class="check">✓</div>
-      <h3>Thank you for signing</h3>
-      <p>You're now part of the campaign. We'll be in touch about the City meeting date — share this page to help us grow our numbers.</p>
+  <!-- SIGNATORIES SIDE -->
+  <div class="signatories-panel">
+    <div class="eyebrow">Signatories</div>
+    <h2>People who signed</h2>
+    <p class="sub">Signatures appear in real-time as people sign.</p>
+    <div class="sig-list" id="sigList">
+      <div class="sig-loading"><div class="spinner" style="border:2px solid rgba(250,248,242,.15);border-top-color:var(--green2);"></div>&nbsp; Loading signatures…</div>
     </div>
   </div>
+
 </div>
 
-<footer class="footer">
-  <p>Canadian Tamil Volleyball Association · Malvern, Toronto<br><a href="index.html">← Back to ctva.ca</a></p>
-</footer>
+<div class="petition-footer">
+  <a href="index.html">← Back to CTVA home</a> &nbsp;·&nbsp;
+  Canadian Tamil Volleyball Association &nbsp;·&nbsp; info@ctva.ca
+</div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     FIREBASE — FREE REAL-TIME DATABASE
+     ───────────────────────────────────────────────────────────
+     Signatures are stored permanently in Google Firebase Firestore.
+     Nothing is lost — data lives in Google's cloud, not on this file.
+
+     SETUP (one time, ~5 minutes):
+     1. Visit https://console.firebase.google.com
+     2. Click "Add project" → give it any name → Continue
+     3. Click the </> Web icon → register app → copy config
+     4. In Firebase console: Firestore Database → Create database
+        → Start in TEST mode → choose a region → Done
+     5. Replace the placeholder values below with your real config
+     ═══════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-let sigCount = 115;
-function submitPetition() {
-  const fname = document.getElementById('fname').value.trim();
-  const email = document.getElementById('email').value.trim();
-  if (!fname || !email) { alert('Please enter your name and email to sign.'); return; }
-  sigCount++;
-  document.getElementById('sigCount').textContent = sigCount;
-  document.getElementById('progressFill').style.width = Math.min((sigCount/500)*100, 100) + '%';
-  document.getElementById('petitionForm').style.display = 'none';
-  document.getElementById('successMsg').style.display = 'block';
-}
-window.onload = function() {
-  document.getElementById('progressFill').style.width = Math.min((sigCount/500)*100,100) + '%';
+/* ── PASTE YOUR FIREBASE CONFIG HERE ── */
+const firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
 };
+/* ──────────────────────────────────── */
+
+let db = null;
+let ready = false;
+
+(function initFirebase() {
+  if (firebaseConfig.apiKey === 'YOUR_API_KEY') {
+    document.getElementById('setupNotice').style.display = 'block';
+    document.getElementById('sigList').innerHTML =
+      '<p class="sig-empty">Signatures will appear here once Firebase is set up.</p>';
+    document.getElementById('sigCount').textContent = '–';
+    return;
+  }
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    ready = true;
+    listenForSignatures();
+  } catch(e) {
+    console.error('Firebase init failed:', e);
+    document.getElementById('setupNotice').style.display = 'block';
+  }
+})();
+
+/* ── AVATAR HELPERS ── */
+const AVATAR_COLORS = ['#2F5233','#3D6B42','#4A7350','#1C3A22','#3B6E45','#265C30','#1E4A28'];
+function avatarColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+function avatarLetters(name) {
+  const p = name.trim().split(/\s+/).filter(Boolean);
+  return p.length >= 2 ? (p[0][0] + p[p.length-1][0]).toUpperCase() : p[0].slice(0,2).toUpperCase();
+}
+function fmtDate(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-CA', { year:'numeric', month:'short', day:'numeric' });
+}
+
+/* ── RENDER SIGNATURES ── */
+function listenForSignatures() {
+  db.collection('ctva_petition')
+    .orderBy('signedAt', 'desc')
+    .onSnapshot(snapshot => {
+      const docs = snapshot.docs;
+      const total = docs.length;
+
+      document.getElementById('sigCount').textContent = total.toLocaleString();
+      const pct = Math.min(Math.round((total / 1000) * 100), 100);
+      document.getElementById('counterBar').style.width = pct + '%';
+      document.getElementById('counterPct').textContent = pct + '% of 1,000 goal';
+
+      if (!total) {
+        document.getElementById('sigList').innerHTML =
+          '<p class="sig-empty">Be the first to sign!</p>';
+        return;
+      }
+
+      document.getElementById('sigList').innerHTML = docs.map((doc, i) => {
+        const d = doc.data();
+        const av = avatarLetters(d.name);
+        const col = avatarColor(d.name);
+        const comment = d.comment
+          ? `<div class="sig-comment">"${escHtml(d.comment)}"</div>` : '';
+        return `<div class="sig-card">
+          <div class="sig-avatar" style="background:${col};">${av}</div>
+          <div class="sig-body">
+            <div class="sig-name">${escHtml(d.name)}</div>
+            <div class="sig-meta">
+              <span>&#128205; ${escHtml(d.city)}</span>
+              <span>&#128197; ${fmtDate(d.signedAt)}</span>
+            </div>
+            ${comment}
+          </div>
+          <div class="sig-num">#${total - i}</div>
+        </div>`;
+      }).join('');
+    }, err => {
+      console.error('Firestore error:', err);
+      document.getElementById('sigList').innerHTML =
+        '<p class="sig-empty">Could not load signatures. Check Firebase configuration.</p>';
+    });
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── VALIDATION ── */
+function setErr(fieldId, errId, show) {
+  document.getElementById(fieldId).classList.toggle('error', show);
+  document.getElementById(errId).classList.toggle('show', show);
+}
+function validate() {
+  const name  = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const city  = document.getElementById('f-city').value.trim();
+  setErr('f-name',  'err-name',  !name);
+  setErr('f-phone', 'err-phone', !phone || !/^[\d\s\-\+\(\)]{7,}$/.test(phone));
+  setErr('f-email', 'err-email', !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  setErr('f-city',  'err-city',  !city);
+  return name && /^[\d\s\-\+\(\)]{7,}$/.test(phone) &&
+         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && city;
+}
+
+/* ── SUBMIT ── */
+document.getElementById('petitionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!validate()) return;
+  if (!ready) {
+    alert('Firebase is not configured yet. Please set up your Firebase project first.');
+    return;
+  }
+  const btn     = document.getElementById('submitBtn');
+  const label   = document.getElementById('submitLabel');
+  const spinner = document.getElementById('submitSpinner');
+  btn.disabled = true;
+  label.style.display = 'none';
+  spinner.style.display = 'block';
+  try {
+    await db.collection('ctva_petition').add({
+      name:     document.getElementById('f-name').value.trim(),
+      phone:    document.getElementById('f-phone').value.trim(),
+      email:    document.getElementById('f-email').value.trim(),
+      city:     document.getElementById('f-city').value.trim(),
+      comment:  document.getElementById('f-comment').value.trim(),
+      signedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('petitionForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+  } catch(err) {
+    console.error('Submit error:', err);
+    alert('Something went wrong saving your signature. Please try again.');
+    btn.disabled = false;
+    label.style.display = 'inline';
+    spinner.style.display = 'none';
+  }
+});
+
+/* ── RESET ── */
+function resetForm() {
+  ['f-name','f-phone','f-email','f-city','f-comment'].forEach(id =>
+    document.getElementById(id).value = '');
+  ['f-name','f-phone','f-email','f-city'].forEach(id => {
+    document.getElementById(id).classList.remove('error');
+    document.getElementById('err-' + id.slice(2)).classList.remove('show');
+  });
+  document.getElementById('petitionForm').style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  document.getElementById('submitLabel').style.display = 'inline';
+  document.getElementById('submitSpinner').style.display = 'none';
+}
 </script>
 </body>
 </html>
