@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Tournament Results — CTVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --signal:   #C23B3B;
+  --ink:      #15241E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+
+/* GATE */
+#gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+.gate-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:360px;text-align:center;}
+.gate-box h2{font-family:'Anton',sans-serif;font-size:1.8rem;color:var(--text);margin-bottom:.5rem;}
+.gate-box p{color:var(--muted);font-size:13.5px;margin-bottom:1.5rem;}
+.gate-box input{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;}
+.gate-box input:focus{border-color:var(--green2);}
+.gate-err{color:#e07070;font-size:12.5px;margin-bottom:10px;display:none;}
+
+/* ADMIN SHELL */
+#admin{display:none;}
+.admin-topbar{background:#060e09;padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);}
+.admin-topbar strong{font-family:'Anton',sans-serif;font-size:1.1rem;color:var(--text);}
+.admin-topbar a{color:var(--gold);font-size:13px;}
+.admin-body{max-width:1100px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:1fr 1.4fr;gap:2rem;align-items:start;}
+
+/* TOURNAMENT LIST */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.panel-head{padding:1rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.panel-head h3{font-family:'Anton',sans-serif;font-size:1.1rem;color:var(--text);}
+.t-list-item{padding:.9rem 1.3rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
+.t-list-item:last-child{border-bottom:none;}
+.t-list-item:hover,.t-list-item.selected{background:rgba(47,82,51,.2);}
+.t-list-item.selected{border-left:3px solid var(--gold);}
+.t-list-name{font-size:14px;font-weight:600;color:var(--text);}
+.t-list-meta{font-size:11.5px;color:var(--muted);}
+.t-list-del{background:none;border:none;color:rgba(194,59,59,.5);cursor:pointer;font-size:16px;padding:2px 4px;border-radius:4px;transition:color .12s;}
+.t-list-del:hover{color:var(--signal);}
+.no-t{padding:1.5rem;text-align:center;color:var(--muted);font-size:13.5px;}
+
+/* FORM PANEL */
+.form-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;}
+.form-panel-head{padding:1rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem;}
+.form-panel-head h3{font-family:'Anton',sans-serif;font-size:1.1rem;color:var(--text);}
+.form-body{padding:1.3rem;}
+
+.form-group{margin-bottom:14px;}
+.form-group label{font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:9px 12px;font-size:13.5px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green2);}
+.form-group select option{background:var(--surface2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.section-divider{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:.5rem 0 .7rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+
+/* TEAMS */
+.team-entry-row{display:flex;gap:6px;margin-bottom:8px;}
+.team-entry-row input{flex:1;}
+.icon-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;padding:6px 10px;font-size:14px;transition:all .12s;}
+.icon-btn:hover{border-color:var(--signal);color:var(--signal);}
+.icon-btn.add{border-color:var(--green2);color:var(--green2);}
+.icon-btn.add:hover{background:rgba(47,82,51,.2);}
+.teams-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.t-chip{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:3px 10px;font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:5px;}
+.t-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;line-height:1;padding:0;}
+.t-chip button:hover{color:var(--signal);}
+
+/* BRACKET BUILDER */
+.round-block{margin-bottom:1rem;}
+.round-block-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+.round-block-head span{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.match-row-build{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem;margin-bottom:6px;display:grid;grid-template-columns:1fr auto 1fr auto;gap:6px;align-items:center;}
+.match-row-build input{border:1px solid rgba(250,248,242,.08);border-radius:5px;padding:5px 8px;font-size:12.5px;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);outline:none;width:100%;}
+.match-row-build input:focus{border-color:var(--green2);}
+.vs{font-size:11px;font-weight:700;color:var(--muted);text-align:center;}
+.score-input{width:48px!important;text-align:center;}
+
+/* BUTTONS */
+.btn{border:none;border-radius:8px;padding:10px 18px;font-size:13.5px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;}
+.btn-gold{background:var(--gold);color:var(--ink);}
+.btn-gold:hover{background:#d4913a;}
+.btn-green{background:var(--green);color:var(--text);}
+.btn-green:hover{background:#3d6b42;}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--muted);color:var(--text);}
+.btn-danger{background:rgba(194,59,59,.15);border:1px solid rgba(194,59,59,.3);color:#e07070;}
+.btn-danger:hover{background:rgba(194,59,59,.25);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;}
+.save-status{font-size:12.5px;margin-top:.6rem;min-height:18px;}
+.save-status.ok{color:#6dbc7e;}
+.save-status.err{color:#e07070;}
+
+@media(max-width:800px){
+  .admin-body{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-box">
+    <div style="font-size:2.2rem;margin-bottom:.6rem;">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Enter the admin password to manage tournament results.</p>
+    <div class="gate-err" id="gateErr">Incorrect password.</div>
+    <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="btn btn-gold" style="width:100%;" onclick="checkPw()">Enter</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin">
+  <div class="admin-topbar">
+    <strong>🏐 CTVA — Tournament Admin</strong>
+    <a href="tournaments.html">← View public page</a>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- LEFT: tournament list -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Tournaments</h3>
+          <button class="btn btn-green btn-sm" onclick="newTournament()">+ New</button>
+        </div>
+        <div id="tAdminList"><p class="no-t">Loading…</p></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: edit form -->
+    <div class="form-panel" id="editPanel">
+      <div class="form-panel-head">
+        <span style="font-size:1.2rem;">📋</span>
+        <h3 id="formTitle">Select or create a tournament</h3>
+      </div>
+      <div class="form-body" id="formBody">
+        <p style="color:var(--muted);font-size:13.5px;">Select a tournament from the list or click <strong>+ New</strong> to create one.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const ADMIN_PASSWORD = 'ctva2026';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyA1L_Wx_csuB_4M7iCBmJBJgpU1US3sxn0",
+  authDomain:        "ctva-petition.firebaseapp.com",
+  projectId:         "ctva-petition",
+  storageBucket:     "ctva-petition.firebasestorage.app",
+  messagingSenderId: "899824677710",
+  appId:             "1:899824677710:web:c5c5c010431c12c39ae41f"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* ── GATE ── */
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('gate').style.display  = 'none';
+    document.getElementById('admin').style.display = 'block';
+    initAdmin();
+  } else {
+    const e = document.getElementById('gateErr');
+    e.style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+/* ── STATE ── */
+let tournaments = [];
+let selectedId  = null;
+let currentTeams = [];
+
+/* ── INIT ── */
+function initAdmin() {
+  db.collection('ctva_tournaments').orderBy('date','desc').onSnapshot(snap => {
+    tournaments = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+    renderAdminList();
+    if (selectedId) {
+      const t = tournaments.find(t => t.id === selectedId);
+      if (t) loadForm(t);
+    }
+  });
+}
+
+/* ── ADMIN LIST ── */
+function renderAdminList() {
+  const el = document.getElementById('tAdminList');
+  if (!tournaments.length) { el.innerHTML = '<p class="no-t">No tournaments yet. Click + New.</p>'; return; }
+  el.innerHTML = tournaments.map(t => `
+    <div class="t-list-item${selectedId===t.id?' selected':''}" onclick="selectTournament('${t.id}')">
+      <div>
+        <div class="t-list-name">${esc(t.data.name||'Unnamed')}</div>
+        <div class="t-list-meta">${t.data.status||''} ${t.data.date?'· '+fmtDate(t.data.date):''}</div>
+      </div>
+      <button class="t-list-del" title="Delete" onclick="deleteTournament(event,'${t.id}')">🗑</button>
+    </div>`).join('');
+}
+
+function selectTournament(id) {
+  selectedId = id;
+  const t = tournaments.find(t => t.id === id);
+  if (t) loadForm(t);
+  renderAdminList();
+}
+
+function newTournament() {
+  selectedId = null;
+  currentTeams = [];
+  renderAdminList();
+  renderForm(null);
+}
+
+async function deleteTournament(e, id) {
+  e.stopPropagation();
+  if (!confirm('Delete this tournament? This cannot be undone.')) return;
+  await db.collection('ctva_tournaments').doc(id).delete();
+  if (selectedId === id) { selectedId = null; renderForm(null); }
+}
+
+/* ── FORM ── */
+function loadForm(t) {
+  currentTeams = Array.isArray(t.data.teams) ? [...t.data.teams] : [];
+  renderForm(t);
+}
+
+function renderForm(t) {
+  const d = t ? t.data : {};
+  const brackets = d.brackets || {};
+  const prizes   = d.prizes   || {};
+  const mvp      = d.mvp      || {};
+
+  document.getElementById('formTitle').textContent = t ? (d.name||'Edit Tournament') : 'New Tournament';
+
+  const rounds = [
+    { key:'quarterfinals', label:'Quarterfinals', defaultCount:4 },
+    { key:'semifinals',    label:'Semifinals',    defaultCount:2 },
+    { key:'thirdPlace',    label:'3rd Place Match',defaultCount:1 },
+    { key:'final',         label:'Final',          defaultCount:1 },
+  ];
+
+  document.getElementById('formBody').innerHTML = `
+    <!-- INFO -->
+    <div class="section-divider">Tournament Info</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tournament Name *</label>
+        <input type="text" id="f-name" value="${esc(d.name||'')}" placeholder="e.g. Rouge River 16th Annual">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="f-status">
+          <option value="upcoming"${d.status==='upcoming'?' selected':''}>Upcoming</option>
+          <option value="in_progress"${d.status==='in_progress'?' selected':''}>In Progress</option>
+          <option value="completed"${d.status==='completed'?' selected':''}>Completed</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="f-date" value="${d.date ? (d.date.toDate ? d.date.toDate().toISOString().split('T')[0] : d.date) : ''}">
+      </div>
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" id="f-location" value="${esc(d.location||'')}" placeholder="e.g. Malvern Community Park">
+      </div>
+    </div>
+
+    <!-- TEAMS -->
+    <div class="section-divider">Teams Entered</div>
+    <div class="teams-chips" id="teamsChips"></div>
+    <div class="team-entry-row">
+      <input type="text" id="teamInput" placeholder="Team name" onkeydown="if(event.key==='Enter'){event.preventDefault();addTeam();}">
+      <button class="icon-btn add" onclick="addTeam()">+ Add</button>
+    </div>
+
+    <!-- BRACKET -->
+    <div class="section-divider">Bracket Results</div>
+    ${rounds.map(r => {
+      const existing = brackets[r.key] ? (Array.isArray(brackets[r.key]) ? brackets[r.key] : [brackets[r.key]]) : [];
+      const count = Math.max(existing.length, r.defaultCount);
+      const matches = [];
+      for (let i = 0; i < count; i++) {
+        const m = existing[i] || {};
+        matches.push(`<div class="match-row-build" id="match_${r.key}_${i}">
+          <input type="text" placeholder="Team A" id="m_${r.key}_${i}_t1" value="${esc(m.team1||'')}">
+          <div class="vs">VS</div>
+          <input type="text" placeholder="Team B" id="m_${r.key}_${i}_t2" value="${esc(m.team2||'')}">
+          <input type="text" class="score-input" placeholder="–" id="m_${r.key}_${i}_s1" value="${m.score1!==undefined?m.score1:''}">
+          <span style="color:var(--muted);font-size:12px;text-align:center;">:</span>
+          <input type="text" class="score-input" placeholder="–" id="m_${r.key}_${i}_s2" value="${m.score2!==undefined?m.score2:''}">
+        </div>`);
+      }
+      return `<div class="round-block">
+        <div class="round-block-head">
+          <span>${r.label}</span>
+          <div style="display:flex;gap:4px;">
+            <button class="icon-btn add btn-sm" onclick="addMatchRow('${r.key}')">+ Match</button>
+          </div>
+        </div>
+        <div id="matches_${r.key}">${matches.join('')}</div>
+      </div>`;
+    }).join('')}
+
+    <!-- AWARDS -->
+    <div class="section-divider">Prize Winners</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>🥇 1st Place</label>
+        <input type="text" id="f-p1" value="${esc(prizes.first||'')}" placeholder="Winning team">
+      </div>
+      <div class="form-group">
+        <label>🥈 2nd Place</label>
+        <input type="text" id="f-p2" value="${esc(prizes.second||'')}" placeholder="Runner-up">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>🥉 3rd Place</label>
+        <input type="text" id="f-p3" value="${esc(prizes.third||'')}" placeholder="3rd place team">
+      </div>
+      <div class="form-group"></div>
+    </div>
+
+    <div class="section-divider">MVP</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>⭐ MVP Name</label>
+        <input type="text" id="f-mvp-name" value="${esc(mvp.name||'')}" placeholder="Player name">
+      </div>
+      <div class="form-group">
+        <label>MVP Team</label>
+        <input type="text" id="f-mvp-team" value="${esc(mvp.team||'')}" placeholder="Their team">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="saveTournament()">💾 Save Tournament</button>
+      <button class="btn btn-ghost" onclick="newTournament()">Clear</button>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  `;
+
+  renderTeamChips();
+}
+
+/* ── TEAMS ── */
+function addTeam() {
+  const input = document.getElementById('teamInput');
+  const name  = input.value.trim();
+  if (!name || currentTeams.includes(name)) { input.value=''; return; }
+  currentTeams.push(name);
+  input.value = '';
+  renderTeamChips();
+}
+
+function removeTeam(idx) {
+  currentTeams.splice(idx, 1);
+  renderTeamChips();
+}
+
+function renderTeamChips() {
+  const el = document.getElementById('teamsChips');
+  if (!el) return;
+  el.innerHTML = currentTeams.map((t, i) =>
+    `<span class="t-chip">${esc(t)}<button onclick="removeTeam(${i})" title="Remove">×</button></span>`
+  ).join('');
+}
+
+/* ── BRACKET MATCH ROWS ── */
+const matchCounts = { quarterfinals:4, semifinals:2, thirdPlace:1, final:1 };
+
+function addMatchRow(round) {
+  const container = document.getElementById('matches_'+round);
+  const idx = container.children.length;
+  matchCounts[round] = (matchCounts[round]||0) + 1;
+  const div = document.createElement('div');
+  div.className = 'match-row-build';
+  div.id = `match_${round}_${idx}`;
+  div.innerHTML = `
+    <input type="text" placeholder="Team A" id="m_${round}_${idx}_t1">
+    <div class="vs">VS</div>
+    <input type="text" placeholder="Team B" id="m_${round}_${idx}_t2">
+    <input type="text" class="score-input" placeholder="–" id="m_${round}_${idx}_s1">
+    <span style="color:var(--muted);font-size:12px;text-align:center;">:</span>
+    <input type="text" class="score-input" placeholder="–" id="m_${round}_${idx}_s2">
+  `;
+  container.appendChild(div);
+}
+
+/* ── SAVE ── */
+async function saveTournament() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { showStatus('Tournament name is required.', false); return; }
+
+  const dateVal = document.getElementById('f-date').value;
+
+  const rounds = ['quarterfinals','semifinals','thirdPlace','final'];
+  const brackets = {};
+  rounds.forEach(r => {
+    const container = document.getElementById('matches_'+r);
+    if (!container) return;
+    const count = container.children.length;
+    const matches = [];
+    for (let i = 0; i < count; i++) {
+      const t1 = (document.getElementById(`m_${r}_${i}_t1`)||{}).value||'';
+      const t2 = (document.getElementById(`m_${r}_${i}_t2`)||{}).value||'';
+      const s1 = (document.getElementById(`m_${r}_${i}_s1`)||{}).value||'';
+      const s2 = (document.getElementById(`m_${r}_${i}_s2`)||{}).value||'';
+      if (t1 || t2) matches.push({ team1:t1.trim(), team2:t2.trim(), score1:s1.trim(), score2:s2.trim() });
+    }
+    if (matches.length) {
+      brackets[r] = (r==='final'||r==='thirdPlace') ? matches[0] : matches;
+    }
+  });
+
+  const data = {
+    name,
+    status:   document.getElementById('f-status').value,
+    location: document.getElementById('f-location').value.trim(),
+    date:     dateVal ? firebase.firestore.Timestamp.fromDate(new Date(dateVal)) : null,
+    teams:    [...currentTeams],
+    brackets,
+    prizes: {
+      first:  document.getElementById('f-p1').value.trim(),
+      second: document.getElementById('f-p2').value.trim(),
+      third:  document.getElementById('f-p3').value.trim(),
+    },
+    mvp: {
+      name: document.getElementById('f-mvp-name').value.trim(),
+      team: document.getElementById('f-mvp-team').value.trim(),
+    },
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  try {
+    if (selectedId) {
+      await db.collection('ctva_tournaments').doc(selectedId).set(data, { merge: true });
+    } else {
+      data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      const ref = await db.collection('ctva_tournaments').add(data);
+      selectedId = ref.id;
+    }
+    showStatus('✓ Saved successfully!', true);
+    renderAdminList();
+  } catch(e) {
+    showStatus('Error saving: ' + e.message, false);
+  }
+}
+
+function showStatus(msg, ok) {
+  const el = document.getElementById('saveStatus');
+  el.textContent = msg;
+  el.className = 'save-status ' + (ok ? 'ok' : 'err');
+  if (ok) setTimeout(() => el.textContent = '', 3000);
+}
+
+/* ── HELPERS ── */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
+}
+</script>
+</body>
+</html>
