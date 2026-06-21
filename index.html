@@ -45,7 +45,12 @@ img{max-width:100%;display:block;}
 .nav-links a:hover,.nav-links a.active{color:var(--text);}
 .nav-cta{background:var(--signal);color:var(--text)!important;padding:8px 16px;border-radius:4px;font-weight:700!important;font-size:12.5px!important;}
 .nav-cta:hover{background:#a82f2f;}
-.nav-toggle{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;}
+.nav-toggle{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;}
+.mobile-menu{display:none;flex-direction:column;background:rgba(11,20,16,.98);border-top:1px solid var(--border);padding:1rem 1.5rem 1.5rem;}
+.mobile-menu a{color:var(--muted);font-size:15px;font-weight:500;padding:.65rem 0;border-bottom:1px solid rgba(250,248,242,.05);transition:color .15s;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover,.mobile-menu a.active{color:var(--text);}
+.mobile-menu.open{display:flex;}
 
 /* ── HERO ── */
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;}
@@ -297,7 +302,18 @@ img{max-width:100%;display:block;}
       <a href="tribute.html" style="color:var(--gold);">In Memory</a>
       <a href="petition.html" class="nav-cta">Take action</a>
     </div>
-    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <button class="nav-toggle" aria-label="Menu" onclick="toggleMobileMenu(this)">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home" onclick="closeMobileMenu()">Home</a>
+    <a href="#about" onclick="closeMobileMenu()">About</a>
+    <a href="#events" onclick="closeMobileMenu()">Events</a>
+    <a href="#clubs" onclick="closeMobileMenu()">Clubs</a>
+    <a href="#photos" onclick="closeMobileMenu()">Archive</a>
+    <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+    <a href="tournaments.html">Tournaments</a>
+    <a href="tribute.html" style="color:var(--gold);">In Memory</a>
+    <a href="petition.html" style="color:var(--signal);font-weight:700;">Take action</a>
   </div>
 </nav>
 
@@ -901,6 +917,17 @@ window.addEventListener('DOMContentLoaded', () => {
     if (e.key==='ArrowRight') lbNavigate(1);
   });
 });
+
+function toggleMobileMenu(btn) {
+  const menu = document.getElementById('mobileMenu');
+  const open = menu.classList.toggle('open');
+  btn.textContent = open ? '✕' : '☰';
+}
+function closeMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.remove('open');
+  document.querySelector('.nav-toggle').textContent = '☰';
+}
 </script>
 <script src="club-logo-hover.js"></script>
 </body>
