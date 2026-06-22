@@ -137,6 +137,16 @@ img{max-width:100%;display:block;}
 .logo-fallback{width:72px;height:72px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:18px;color:var(--text);letter-spacing:.03em;flex-shrink:0;}
 .logo-name{font-size:11.5px;font-weight:600;color:var(--muted);text-align:center;line-height:1.35;}
 
+/* ── PROMO VIDEO ── */
+.promo-video-wrap{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3.5rem 2rem;}
+.promo-video-inner{max-width:900px;margin:0 auto;}
+.promo-video-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(194,59,59,.12);border:1px solid rgba(194,59,59,.35);color:#e07070;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:1rem;}
+.promo-video-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#e07070;animation:pulse 1.5s infinite;}
+.promo-video-inner h3{font-family:'Anton',sans-serif;font-size:1.8rem;color:var(--text);margin-bottom:.3rem;}
+.promo-video-inner p{font-size:13.5px;color:var(--muted);margin-bottom:1.4rem;}
+.promo-video-player{width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#000;aspect-ratio:16/9;}
+.promo-video-player video{width:100%;height:100%;display:block;}
+
 /* ── POSTERS ── */
 .poster-scroll{overflow-x:auto;padding-bottom:1rem;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;display:flex;gap:1.2rem;}
 .poster-scroll::-webkit-scrollbar{height:4px;}
@@ -412,6 +422,20 @@ img{max-width:100%;display:block;}
       </div>
     </div>
   </section>
+</div>
+
+<!-- PROMO VIDEO -->
+<div class="promo-video-wrap">
+  <div class="promo-video-inner">
+    <div class="promo-video-badge">🎬 Promo Video</div>
+    <h3>15th Annual Tournament — Thaimun Volleyball Sports Team</h3>
+    <p>📅 June 27, 2026 &nbsp;·&nbsp; 📍 Sir Alexander Mackenzie Sr. PS, Scarborough</p>
+    <div class="promo-video-player">
+      <video controls preload="metadata" poster="">
+        <source src="images/posters/ThaimunVideoPromotion_June252026.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
 </div>
 
 <!-- CLUBS MARQUEE -->
