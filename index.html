@@ -422,10 +422,11 @@ img{max-width:100%;display:block;}
       <div class="upcoming-card">
         <div class="upcoming-card-body">
           <span class="upcoming-badge">&#128197; Upcoming</span>
-          <h3>15th Annual Volleyball Tournament</h3>
-          <p class="club">Thaimun Vilaiyattu Kazhagam</p>
-          <div class="countdown" data-event="2026-06-27T10:00:00"></div>
-          <p class="location">&#128205; Sir Alexander Mackenzie Sr. PS, Scarborough &nbsp;·&nbsp; Sat June 27, 2026 · 10 AM</p>
+          <h3>New Star Montreal Tournament</h3>
+          <p class="club">New Star Sports Club</p>
+          <div class="countdown" data-event="2026-07-11T10:30:00"></div>
+          <p class="location">&#128205; Saint Maxim Park, 3690 Blvd Lévesque, Laval H7V1E8 &nbsp;·&nbsp; July 11, 2026 · 10:30 AM</p>
+          <p class="location" style="margin-top:.5rem;">&#128222; Kalai: 438-994-1049 &nbsp;·&nbsp; Prasath: 514-546-9234</p>
         </div>
       </div>
       <div class="upcoming-card">
@@ -439,20 +440,6 @@ img{max-width:100%;display:block;}
       </div>
     </div>
   </section>
-</div>
-
-<!-- PROMO VIDEO -->
-<div class="promo-video-wrap">
-  <div class="promo-video-inner">
-    <div class="promo-video-badge">🎬 Promo Video</div>
-    <h3>15th Annual Tournament — Thaimun Volleyball Sports Team</h3>
-    <p>📅 June 27, 2026 &nbsp;·&nbsp; 📍 Sir Alexander Mackenzie Sr. PS, Scarborough</p>
-    <div class="promo-video-player">
-      <video controls preload="metadata" poster="">
-        <source src="images/posters/ThaimunVideoPromotion_June252026.mp4" type="video/mp4">
-      </video>
-    </div>
-  </div>
 </div>
 
 <!-- CLUBS MARQUEE -->
@@ -477,7 +464,7 @@ img{max-width:100%;display:block;}
     <h2 style="font-family:'Anton',sans-serif;font-size:2.4rem;color:var(--text);margin-bottom:1rem;">Tournament posters</h2>
     <p style="color:var(--muted);margin-bottom:2rem;font-size:1rem;">Official posters from CTVA member clubs — upcoming first, then past events newest to oldest.</p>
     <div class="poster-scroll">
-      <div class="poster-card"><span class="poster-upcoming-badge">Upcoming</span><div class="poster-img"><img src="images/posters/TournamentPoster_Thaimun.jpeg" alt="Thaimun 15th Annual"></div><div class="poster-body"><h4>15th Annual Tournament</h4><p>Thaimun · June 27, 2026</p></div></div>
+      <div class="poster-card"><div class="poster-img"><img src="images/posters/TournamentPoster_Thaimun.jpeg" alt="Thaimun 15th Annual"></div><div class="poster-body"><h4>15th Annual Tournament</h4><p>Thaimun · June 27, 2026</p></div></div>
       <div class="poster-card"><span class="poster-upcoming-badge">Upcoming</span><div class="poster-img"><img src="images/posters/TournamentPoster_MontrealBlues.jpeg" alt="Montreal Blues"></div><div class="poster-body"><h4>2nd Anniversary Memorial</h4><p>Montreal Boys · July 18, 2026</p></div></div>
       <div class="poster-card"><div class="poster-img"><img src="images/posters/TournamentPoster_RougheRiver.jpeg" alt="Rouge River 16th Annual"></div><div class="poster-body"><h4>16th Annual Tournament</h4><p>Rouge River · June 13, 2026</p></div></div>
       <div class="poster-card"><div class="poster-img"><img src="images/posters/TournamentPoster_uthayaNila.jpeg" alt="Uthaya Nila"></div><div class="poster-body"><h4>Toronto Volleyball Tournament</h4><p>Uthaya Nila · April 4, 2026</p></div></div>
@@ -1190,6 +1177,7 @@ document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el))
 
 /* ── ARCHIVE DATA ── */
 const archiveItems = [
+  { type: 'localVideo', src: 'images/posters/ThaimunVideoPromotion_June252026.mp4', team: 'Thaimun SC', year: '2026', event: 'Thaimunn 2026', caption: 'Thaimun 2026 Promo Video' },
   { type: 'photo', src: 'images/archive/image108.jpg', team: 'New Star', year: '2026', event: ['New Star', 'Politicians'], caption: 'New Star photo 4' },
   { type: 'photo', src: 'images/archive/image131.jpg', team: 'Sivasakthi SC', year: '2026', event: ['Sivasakthi', 'Politicians'], caption: 'Sivasakthi photo 13' },
   { type: 'photo', src: 'images/archive/image132.jpg', team: 'Sivasakthi SC', year: '2026', event: ['Sivasakthi', 'Politicians'], caption: 'Sivasakthi photo 14' },
