@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏐</text></svg>">
+<link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v2.png">
 <title>CTVA — Canadian Tamil Volleyball Association</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,6 +41,8 @@ img{max-width:100%;display:block;}
 .logo-mark{width:40px;height:40px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:17px;color:var(--ink);flex-shrink:0;}
 .logo-text .full{font-family:'Anton',sans-serif;font-size:17px;color:var(--text);letter-spacing:.02em;}
 .logo-text .sub{font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;}
+.ctva-nav-logo{height:46px;width:auto;object-fit:contain;display:block;}
+.ctva-footer-logo{height:54px;margin-bottom:.6rem;}
 .nav-links{display:flex;gap:1.8rem;align-items:center;}
 .nav-links a{color:var(--muted);font-size:13.5px;font-weight:500;transition:color .15s;letter-spacing:.02em;}
 .nav-links a:hover,.nav-links a.active{color:var(--text);}
@@ -314,13 +316,7 @@ img{max-width:100%;display:block;}
 
 <nav class="navbar">
   <div class="nav-inner">
-    <div class="logo-block">
-      <div class="logo-mark">CT</div>
-      <div class="logo-text">
-        <div class="full">CTVA</div>
-        <div class="sub">Volleyball Association</div>
-      </div>
-    </div>
+    <a href="#home"><img src="images/TeamLogos/CTVA_Logo_v2.png" alt="CTVA" class="ctva-nav-logo"></a>
     <div class="nav-links">
       <a href="#home" class="active">Home</a>
       <a href="#about">About</a>
@@ -1109,7 +1105,7 @@ img{max-width:100%;display:block;}
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="logo-block"><div class="logo-mark">CT</div><div class="logo-text"><div class="full" style="font-family:'Anton',sans-serif;font-size:17px;color:var(--text);">CTVA</div></div></div>
+        <img src="images/TeamLogos/CTVA_Logo_v2.png" alt="CTVA" class="ctva-nav-logo ctva-footer-logo">
         <p>The official home of Tamil-Canadian volleyball — 29 clubs, one community, rooted in Scarborough since the early days.</p>
       </div>
       <div class="footer-col"><h5>Explore</h5><a href="#about">About us</a><a href="#events">Events</a><a href="#photos">Archive</a><a href="tribute.html">In Memory</a></div>
@@ -1136,6 +1132,7 @@ img{max-width:100%;display:block;}
 <script>
 /* ── CLUBS MARQUEE ── */
 const marqueeLogos = [
+  { name: 'CTVA', slug: 'CTVA_Logo_v2', ext: 'png' },
   { name: 'Ajax Boys', slug: 'AjaxBoys', ext: 'png' },
   { name: 'GTA Sixers', slug: 'GTASixersSportsClub' },
   { name: 'Allakais', slug: 'Allakais' },
