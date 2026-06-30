@@ -122,11 +122,14 @@ img{max-width:100%;display:block;}
 .cd-lbl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
 
 /* ── CLUBS MARQUEE ── */
-.marquee-band{background:var(--green);padding:1.4rem 0;overflow:hidden;border-top:1px solid rgba(232,162,61,.2);border-bottom:1px solid rgba(232,162,61,.2);}
+.marquee-band{background:var(--green);padding:1rem 0;overflow:hidden;border-top:1px solid rgba(232,162,61,.2);border-bottom:1px solid rgba(232,162,61,.2);}
 .marquee-inner{display:flex;gap:12px;width:max-content;animation:scroll-left 50s linear infinite;}
 .marquee-inner:hover{animation-play-state:paused;}
 @keyframes scroll-left{to{transform:translateX(-50%);}}
-.team-chip{background:rgba(250,248,242,.08);border:1px solid rgba(250,248,242,.15);color:var(--text);font-size:12.5px;font-weight:500;padding:7px 16px;border-radius:20px;white-space:nowrap;}
+.logo-chip{display:inline-flex;flex-direction:column;align-items:center;gap:5px;padding:6px 10px;background:rgba(250,248,242,.06);border:1px solid rgba(250,248,242,.1);border-radius:10px;white-space:nowrap;vertical-align:top;}
+.logo-chip img{width:48px;height:48px;object-fit:contain;border-radius:6px;display:block;}
+.logo-chip-fb{width:48px;height:48px;border-radius:6px;background:var(--surface2);display:none;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--gold);}
+.logo-chip-name{font-size:10px;color:var(--muted);font-weight:500;max-width:70px;text-align:center;overflow:hidden;text-overflow:ellipsis;}
 
 /* ── MEMBER CLUBS LOGOS ── */
 .logos-wrap{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
@@ -1132,10 +1135,48 @@ img{max-width:100%;display:block;}
 
 <script>
 /* ── CLUBS MARQUEE ── */
-const clubs = ['Ajax Boys','New Star','Thaimunn','Singing Fish','Nagarkovil SC','Toronto Sports Club','Malvern Sports Club','Rouge River','Super Star','Sivasakthi Sports Club','Uthaya Nila Sports Club','Uthaya Oli Sports Club','Captain Miller Sports Club','Vanni Boys Sports Club','Jaffna Kings Sports Club','Toronto Blues Sports Club','Vancouver Stars Sports Club','Galaxy Sports Club','Northern Gorillas Sports Club','Flemington Sports Club','Young Henrys','Shooting Stars','Peel','Volley King','Jarvis','Dragon','Phoenix'];
+const marqueeLogos = [
+  { name: 'Ajax Boys', slug: 'AjaxBoys', ext: 'png' },
+  { name: 'GTA Sixers', slug: 'GTASixersSportsClub' },
+  { name: 'Allakais', slug: 'Allakais' },
+  { name: 'New Star', slug: 'NewStar' },
+  { name: 'Thaimunn', slug: 'ThaimunSportsClub' },
+  { name: 'Singing Fish', slug: 'SingingFishVolleyballClub' },
+  { name: 'Nagarkovil SC', slug: 'NagarkovilSC' },
+  { name: 'Toronto Sports Club', slug: 'TorontoSportsClub' },
+  { name: 'Malvern Sports Club', slug: 'MalvernSportsClub' },
+  { name: 'Rouge River', slug: 'RougeRiverVolleyballClub' },
+  { name: 'Super Star', slug: 'SuperStar' },
+  { name: 'Sivasakthi SC', slug: 'SivasakhtiSC' },
+  { name: 'Uthaya Nila SC', slug: 'UthayaNilaSC' },
+  { name: 'Uthaya Oli SC', slug: 'UthayaOliSC' },
+  { name: 'Captain Miller SC', slug: 'CaptainMillerSC' },
+  { name: 'Vanni Boys SC', slug: 'VanniBoysSC' },
+  { name: 'Jaffna Kings SC', slug: 'JaffnaKingsSC' },
+  { name: 'Toronto Blues SC', slug: 'TorontoBluesSC' },
+  { name: 'Vancouver Stars SC', slug: 'VancouverStarsSC' },
+  { name: 'Galaxy SC', slug: 'GalaxySC' },
+  { name: 'Northern Gorillas SC', slug: 'NorthernGorillasSC' },
+  { name: 'Flemington SC', slug: 'FlemingtonSC' },
+  { name: 'Young Henrys', slug: 'YoungHenrys' },
+  { name: 'Shooting Stars', slug: 'ShootingStars' },
+  { name: 'Peel', slug: 'Peel' },
+  { name: 'Volley King', slug: 'VolleyKing' },
+  { name: 'Jarvis', slug: 'Jarvis' },
+  { name: 'Dragon', slug: 'Dragon' },
+  { name: 'Phoenix', slug: 'Phoenix' },
+];
 const mi = document.getElementById('marqueeInner');
-const doubled = [...clubs, ...clubs];
-mi.innerHTML = doubled.map(c => `<span class="team-chip">${c}</span>`).join('');
+const doubled = [...marqueeLogos, ...marqueeLogos];
+mi.innerHTML = doubled.map(c => {
+  const ext = c.ext || 'jpeg';
+  const fb = c.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  return `<span class="logo-chip">
+    <img src="images/TeamLogos/${c.slug}.${ext}" alt="${c.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <span class="logo-chip-fb">${fb}</span>
+    <span class="logo-chip-name">${c.name}</span>
+  </span>`;
+}).join('');
 
 /* ── COUNTDOWN ── */
 function updateCountdowns() {
