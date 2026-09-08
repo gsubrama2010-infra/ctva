@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
-<title>Tournament Results — CTVA</title>
+<title>League — CTVA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -21,8 +21,6 @@
   --green2:   #4A7350;
   --signal:   #C23B3B;
   --ink:      #15241E;
-  --silver:   #A8B5C0;
-  --bronze:   #CD7F32;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -33,10 +31,6 @@ a{text-decoration:none;color:inherit;}
 .topbar-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;color:var(--muted);}
 .navbar{background:rgba(11,20,16,.95);backdrop-filter:blur(14px);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200;}
 .nav-inner{max-width:1200px;margin:0 auto;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
-.logo-block{display:flex;align-items:center;gap:12px;}
-.logo-mark{width:40px;height:40px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:17px;color:var(--ink);flex-shrink:0;}
-.logo-text .full{font-family:'Anton',sans-serif;font-size:17px;color:var(--text);}
-.logo-text .sub{font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;}
 .nav-links{display:flex;gap:1.8rem;align-items:center;}
 .nav-links a{color:var(--muted);font-size:13.5px;font-weight:500;transition:color .15s;}
 .nav-links a:hover,.nav-links a.active{color:var(--text);}
@@ -62,7 +56,7 @@ a{text-decoration:none;color:inherit;}
 .stab.active,.stab:hover{background:var(--green);border-color:var(--green2);color:var(--text);}
 .stab.active{border-color:var(--gold);}
 
-/* TOURNAMENT CARD */
+/* LEAGUE CARD */
 .t-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:1.4rem;overflow:hidden;}
 .t-card-head{padding:1.4rem 1.6rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:1rem;transition:background .15s;}
 .t-card-head:hover{background:rgba(250,248,242,.03);}
@@ -93,38 +87,32 @@ a{text-decoration:none;color:inherit;}
 .team-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:13px;color:var(--text);}
 .teams-count{font-size:12px;color:var(--muted);margin-bottom:10px;}
 
-/* BRACKET */
-.round-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;}
-.matches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:1.6rem;}
+/* STANDINGS */
+.standings-table{width:100%;border-collapse:collapse;font-size:13px;}
+.standings-table th{text-align:left;padding:9px 10px;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);}
+.standings-table td{padding:9px 10px;border-bottom:1px solid rgba(250,248,242,.05);}
+.standings-table .num{text-align:center;}
+.standings-table tr:nth-child(1) td:first-child{color:var(--gold);}
+.standings-table tr:nth-child(1) .team-name::after{content:' 🥇';}
+.standings-table tr:nth-child(2) .team-name::after{content:' 🥈';}
+.standings-table tr:nth-child(3) .team-name::after{content:' 🥉';}
+.team-name{font-weight:600;}
+.standings-note{font-size:11.5px;color:var(--muted);margin-top:.8rem;}
+
+/* SCHEDULE */
+.round-block{margin-bottom:1rem;}
+.round-block-head{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;display:flex;align-items:center;gap:10px;}
+.round-block-head .rdate{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none;}
+.matches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:1.4rem;}
 .match-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-.match-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem .9rem;gap:.5rem;}
+.match-row{display:flex;align-items:center;justify-content:space-between;padding:.55rem .85rem;gap:.5rem;}
 .match-row.winner{background:rgba(47,82,51,.2);}
-.match-team{font-size:13.5px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.match-score{font-family:'Anton',sans-serif;font-size:1.3rem;color:var(--gold);flex-shrink:0;min-width:28px;text-align:center;}
+.match-team{font-size:13px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.match-score{font-family:'Anton',sans-serif;font-size:1.2rem;color:var(--gold);flex-shrink:0;min-width:26px;text-align:center;}
 .match-score.loser{color:var(--muted);}
 .match-divider{height:1px;background:var(--border);}
-.match-label{font-size:10px;color:var(--muted);padding:.35rem .9rem;background:rgba(250,248,242,.02);}
+.match-label{font-size:10px;color:var(--muted);padding:.3rem .85rem;background:rgba(250,248,242,.02);}
 .no-results{color:var(--muted);font-size:13.5px;padding:.5rem 0;}
-
-/* PRIZES */
-.prizes-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1.4rem;}
-.prize-card{flex:1;min-width:160px;background:var(--surface2);border-radius:10px;padding:1rem 1.2rem;text-align:center;border:1px solid var(--border);}
-.prize-card.first{border-color:var(--gold);}
-.prize-card.second{border-color:var(--silver);}
-.prize-card.third{border-color:var(--bronze);}
-.prize-medal{font-size:2rem;margin-bottom:.4rem;}
-.prize-place{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
-.prize-card.first .prize-place{color:var(--gold);}
-.prize-card.second .prize-place{color:var(--silver);}
-.prize-card.third .prize-place{color:var(--bronze);}
-.prize-team{font-family:'Anton',sans-serif;font-size:1.1rem;color:var(--text);}
-
-/* MVP */
-.mvp-card{background:linear-gradient(135deg,rgba(47,82,51,.3),rgba(232,162,61,.08));border:1px solid rgba(232,162,61,.3);border-radius:12px;padding:1.2rem 1.4rem;display:flex;align-items:center;gap:1rem;}
-.mvp-icon{font-size:2.2rem;flex-shrink:0;}
-.mvp-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
-.mvp-name{font-family:'Anton',sans-serif;font-size:1.4rem;color:var(--text);}
-.mvp-team{font-size:13px;color:var(--muted);}
 
 .t-empty{text-align:center;padding:4rem 2rem;color:var(--muted);}
 .t-empty-icon{font-size:3rem;margin-bottom:1rem;}
@@ -134,8 +122,9 @@ a{text-decoration:none;color:inherit;}
 
 @media(max-width:600px){
   .t-hero h1{font-size:2.1rem;}
-  .prizes-row{flex-direction:column;}
   .matches-grid{grid-template-columns:1fr;}
+  .standings-table{font-size:11.5px;}
+  .standings-table th,.standings-table td{padding:7px 5px;}
 }
 </style>
 </head>
@@ -156,8 +145,8 @@ a{text-decoration:none;color:inherit;}
       <a href="index.html#about">About</a>
       <a href="index.html#events">Events</a>
       <a href="index.html#photos">Archive</a>
-      <a href="tournaments.html" class="active" style="color:var(--gold);">Tournaments</a>
-      <a href="league.html">League</a>
+      <a href="tournaments.html">Tournaments</a>
+      <a href="league.html" class="active" style="color:var(--gold);">League</a>
       <a href="auction.html">Auction</a>
       <a href="tribute.html">In Memory</a>
     </div>
@@ -166,22 +155,22 @@ a{text-decoration:none;color:inherit;}
 
 <div class="t-hero">
   <div class="t-hero-inner">
-    <div class="eyebrow">Results &amp; standings</div>
-    <h1>Tournament <span>Tracker</span></h1>
-    <p>Scores, brackets, prize winners, and MVPs — every CTVA tournament in one place.</p>
-    <a href="admin-tournaments.html" class="admin-link">⚙ Admin — Add / Edit Results</a>
+    <div class="eyebrow">Standings &amp; schedule</div>
+    <h1>Sunday <span>League</span></h1>
+    <p>10 teams, single round robin, every Sunday 10 AM – 12 Noon. Standings update automatically as scores are entered.</p>
+    <a href="admin-league.html" class="admin-link">⚙ Admin — Enter Scores</a>
   </div>
 </div>
 
 <div class="t-body">
   <div class="status-tabs">
-    <button class="stab active" onclick="filterTournaments('all')">All</button>
-    <button class="stab" onclick="filterTournaments('completed')">Completed</button>
-    <button class="stab" onclick="filterTournaments('in_progress')">In Progress</button>
-    <button class="stab" onclick="filterTournaments('upcoming')">Upcoming</button>
+    <button class="stab active" onclick="filterLeagues('all')">All</button>
+    <button class="stab" onclick="filterLeagues('in_progress')">In Progress</button>
+    <button class="stab" onclick="filterLeagues('upcoming')">Upcoming</button>
+    <button class="stab" onclick="filterLeagues('completed')">Completed</button>
   </div>
 
-  <div id="tList"><p class="t-empty"><span class="t-empty-icon">🏐</span><br>Loading tournaments…</p></div>
+  <div id="lList"><p class="t-empty"><span class="t-empty-icon">🏐</span><br>Loading league…</p></div>
 </div>
 
 <div class="t-footer">
@@ -204,28 +193,68 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let allTournaments = [];
+let allLeagues = [];
 let activeFilter = 'all';
 
 const STATUS_LABEL = { completed:'Completed', in_progress:'In Progress', upcoming:'Upcoming' };
-const ROUND_LABELS = { quarterfinals:'Quarterfinals', semifinals:'Semifinals', thirdPlace:'3rd Place Match', final:'Final' };
 
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function fmtDate(ts) {
   if (!ts) return '';
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   return d.toLocaleDateString('en-CA',{year:'numeric',month:'long',day:'numeric'});
 }
+function fmtDateShort(s) {
+  if (!s) return '';
+  const d = new Date(s + 'T00:00:00');
+  return d.toLocaleDateString('en-CA',{month:'short',day:'numeric'});
+}
 
-function renderMatch(m, idx) {
-  if (!m || !m.team1) return '';
-  const s1 = m.score1 !== undefined && m.score1 !== '' ? m.score1 : '–';
-  const s2 = m.score2 !== undefined && m.score2 !== '' ? m.score2 : '–';
-  const w1 = Number(m.score1) > Number(m.score2);
-  const w2 = Number(m.score2) > Number(m.score1);
+/* ── STANDINGS ── */
+function computeStandings(teams, matches) {
+  const table = {};
+  (teams||[]).forEach(t => table[t] = { team:t, played:0, wins:0, losses:0, pf:0, pa:0 });
+  (matches||[]).forEach(m => {
+    if (!table[m.team1] || !table[m.team2]) return;
+    if (m.score1 === '' || m.score1 === undefined || m.score2 === '' || m.score2 === undefined) return;
+    const s1 = Number(m.score1), s2 = Number(m.score2);
+    if (isNaN(s1) || isNaN(s2)) return;
+    table[m.team1].played++; table[m.team2].played++;
+    table[m.team1].pf += s1; table[m.team1].pa += s2;
+    table[m.team2].pf += s2; table[m.team2].pa += s1;
+    if (s1 > s2) { table[m.team1].wins++; table[m.team2].losses++; }
+    else if (s2 > s1) { table[m.team2].wins++; table[m.team1].losses++; }
+  });
+  return Object.values(table)
+    .map(r => ({ ...r, pts: r.wins*2, diff: r.pf-r.pa }))
+    .sort((a,b) => b.pts-a.pts || b.diff-a.diff || b.pf-a.pf);
+}
+
+function renderStandingsPanel(teams, matches) {
+  if (!teams || !teams.length) return '<p class="no-results">No teams entered yet.</p>';
+  const rows = computeStandings(teams, matches);
+  return `<table class="standings-table">
+    <tr><th>#</th><th>Team</th><th class="num">GP</th><th class="num">W</th><th class="num">L</th><th class="num">PF</th><th class="num">PA</th><th class="num">Diff</th><th class="num">Pts</th></tr>
+    ${rows.map((r,i)=>`<tr>
+      <td>${i+1}</td><td class="team-name">${esc(r.team)}</td>
+      <td class="num">${r.played}</td><td class="num">${r.wins}</td><td class="num">${r.losses}</td>
+      <td class="num">${r.pf}</td><td class="num">${r.pa}</td>
+      <td class="num">${r.diff>0?'+':''}${r.diff}</td><td class="num"><strong>${r.pts}</strong></td>
+    </tr>`).join('')}
+  </table>
+  <p class="standings-note">Pts: win = 2, loss = 0. Ties broken by point differential, then points for.</p>`;
+}
+
+/* ── SCHEDULE ── */
+function renderMatch(m) {
+  const played = m.score1 !== '' && m.score1 !== undefined && m.score2 !== '' && m.score2 !== undefined;
+  const s1 = played ? m.score1 : '–';
+  const s2 = played ? m.score2 : '–';
+  const w1 = played && Number(m.score1) > Number(m.score2);
+  const w2 = played && Number(m.score2) > Number(m.score1);
   return `<div class="match-card">
-    <div class="match-label">Match ${idx+1}</div>
+    <div class="match-label">${esc(m.court||'')}</div>
     <div class="match-row${w1?' winner':''}">
       <span class="match-team">${esc(m.team1)}${w1?' 🏆':''}</span>
       <span class="match-score${w2?' loser':''}">${s1}</span>
@@ -238,34 +267,27 @@ function renderMatch(m, idx) {
   </div>`;
 }
 
-function renderBracketPanel(brackets) {
-  if (!brackets) return '<p class="no-results">No bracket results yet.</p>';
-  const rounds = ['quarterfinals','semifinals','thirdPlace','final'];
-  let html = '';
-  let hasAny = false;
-  rounds.forEach(r => {
-    const data = brackets[r];
-    if (!data) return;
-    const matches = Array.isArray(data) ? data : [data];
-    if (!matches.length || !matches[0].team1) return;
-    hasAny = true;
-    html += `<div class="round-label">${ROUND_LABELS[r]}</div>
-      <div class="matches-grid">${matches.map((m,i)=>renderMatch(m,i)).join('')}</div>`;
-  });
-  return hasAny ? html : '<p class="no-results">No bracket results yet.</p>';
+function renderSchedulePanel(matches) {
+  if (!matches || !matches.length) return '<p class="no-results">No schedule published yet.</p>';
+  const byRound = {};
+  matches.forEach(m => { (byRound[m.round] = byRound[m.round] || []).push(m); });
+  return Object.keys(byRound).sort((a,b)=>a-b).map(r => {
+    const ms = byRound[r];
+    return `<div class="round-block">
+      <div class="round-block-head"><span>Round ${r}</span><span class="rdate">${fmtDateShort(ms[0].date)}</span></div>
+      <div class="matches-grid">${ms.map(renderMatch).join('')}</div>
+    </div>`;
+  }).join('');
 }
 
-function renderCard(t, idx) {
-  const id = t.id;
-  const d  = t.data;
-  const teams  = d.teams  || [];
-  const prizes = d.prizes || {};
-  const mvp    = d.mvp    || {};
-  const brackets = d.brackets || null;
-  const hasTeams   = teams.length > 0;
-  const hasPrizes  = prizes.first || prizes.second || prizes.third;
-  const hasMvp     = mvp.name;
-  const hasBracket = brackets && Object.keys(brackets).length > 0;
+/* ── CARD ── */
+function renderCard(l) {
+  const id = l.id;
+  const d  = l.data;
+  const teams   = d.teams   || [];
+  const matches = d.matches || [];
+  const hasTeams = teams.length > 0;
+  const hasMatches = matches.length > 0;
 
   return `<div class="t-card" id="tc_${id}">
     <div class="t-card-head" onclick="toggleCard('${id}')">
@@ -273,8 +295,9 @@ function renderCard(t, idx) {
         <div class="t-status ${esc(d.status)}">${STATUS_LABEL[d.status]||d.status||''}</div>
         <div class="t-name">${esc(d.name)}</div>
         <div class="t-meta">
-          ${d.date?`<span>📅 ${fmtDate(d.date)}</span>`:''}
+          ${d.startDate?`<span>📅 Starts ${fmtDate(d.startDate)}</span>`:''}
           ${d.location?`<span>📍 ${esc(d.location)}</span>`:''}
+          ${d.timeSlot?`<span>🕐 ${esc(d.timeSlot)}</span>`:''}
           ${hasTeams?`<span>🏐 ${teams.length} teams</span>`:''}
         </div>
       </div>
@@ -282,51 +305,36 @@ function renderCard(t, idx) {
     </div>
     <div class="t-card-body">
       <div class="inner-tabs">
-        ${hasTeams?`<div class="itab active" onclick="switchTab('${id}','teams',this)">Teams (${teams.length})</div>`:''}
-        ${hasBracket?`<div class="itab${!hasTeams?' active':''}" onclick="switchTab('${id}','bracket',this)">Bracket</div>`:''}
-        ${(hasPrizes||hasMvp)?`<div class="itab${!hasTeams&&!hasBracket?' active':''}" onclick="switchTab('${id}','awards',this)">Awards</div>`:''}
+        <div class="itab active" onclick="switchTab('${id}','standings',this)">Standings</div>
+        <div class="itab" onclick="switchTab('${id}','schedule',this)">Schedule</div>
+        ${hasTeams?`<div class="itab" onclick="switchTab('${id}','teams',this)">Teams (${teams.length})</div>`:''}
       </div>
-      <div id="tp_${id}_teams" class="inner-panel${hasTeams?' active':''}">
+      <div id="tp_${id}_standings" class="inner-panel active">
+        ${renderStandingsPanel(teams, matches)}
+      </div>
+      <div id="tp_${id}_schedule" class="inner-panel">
+        ${renderSchedulePanel(matches)}
+      </div>
+      <div id="tp_${id}_teams" class="inner-panel">
         <p class="teams-count">${teams.length} team${teams.length!==1?'s':''} entered</p>
         <div class="teams-grid">${teams.map(t=>`<span class="team-chip">${esc(t)}</span>`).join('')}</div>
-      </div>
-      <div id="tp_${id}_bracket" class="inner-panel${!hasTeams&&hasBracket?' active':''}">
-        ${renderBracketPanel(brackets)}
-      </div>
-      <div id="tp_${id}_awards" class="inner-panel${!hasTeams&&!hasBracket&&(hasPrizes||hasMvp)?' active':''}">
-        ${hasPrizes?`<div class="prizes-row">
-          ${prizes.first?`<div class="prize-card first"><div class="prize-medal">🥇</div><div class="prize-place">1st Place</div><div class="prize-team">${esc(prizes.first)}</div></div>`:''}
-          ${prizes.second?`<div class="prize-card second"><div class="prize-medal">🥈</div><div class="prize-place">2nd Place</div><div class="prize-team">${esc(prizes.second)}</div></div>`:''}
-          ${prizes.third?`<div class="prize-card third"><div class="prize-medal">🥉</div><div class="prize-place">3rd Place</div><div class="prize-team">${esc(prizes.third)}</div></div>`:''}
-        </div>`:''}
-        ${hasMvp?`<div class="mvp-card">
-          <div class="mvp-icon">⭐</div>
-          <div>
-            <div class="mvp-label">Most Valuable Player</div>
-            <div class="mvp-name">${esc(mvp.name)}</div>
-            ${mvp.team?`<div class="mvp-team">${esc(mvp.team)}</div>`:''}
-          </div>
-        </div>`:''}
-        ${!hasPrizes&&!hasMvp?'<p class="no-results">Awards not yet recorded.</p>':''}
       </div>
     </div>
   </div>`;
 }
 
 function toggleCard(id) {
-  const card = document.getElementById('tc_'+id);
-  card.classList.toggle('open');
+  document.getElementById('tc_'+id).classList.toggle('open');
 }
 
 function switchTab(tid, tab, el) {
   el.closest('.t-card-body').querySelectorAll('.itab').forEach(t=>t.classList.remove('active'));
   el.closest('.t-card-body').querySelectorAll('.inner-panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
-  const panel = document.getElementById('tp_'+tid+'_'+tab);
-  if (panel) panel.classList.add('active');
+  document.getElementById('tp_'+tid+'_'+tab).classList.add('active');
 }
 
-function filterTournaments(status) {
+function filterLeagues(status) {
   activeFilter = status;
   document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
   event.target.classList.add('active');
@@ -335,25 +343,25 @@ function filterTournaments(status) {
 
 function renderList() {
   const list = activeFilter === 'all'
-    ? allTournaments
-    : allTournaments.filter(t => t.data.status === activeFilter);
+    ? allLeagues
+    : allLeagues.filter(l => l.data.status === activeFilter);
 
-  const el = document.getElementById('tList');
+  const el = document.getElementById('lList');
   if (!list.length) {
-    el.innerHTML = `<div class="t-empty"><div class="t-empty-icon">🏐</div><p>No tournaments found.</p></div>`;
+    el.innerHTML = `<div class="t-empty"><div class="t-empty-icon">🏐</div><p>No leagues found.</p></div>`;
     return;
   }
-  el.innerHTML = list.map((t,i)=>renderCard(t,i)).join('');
+  el.innerHTML = list.map(renderCard).join('');
 }
 
-db.collection('ctva_tournaments')
-  .orderBy('date','desc')
+db.collection('ctva_leagues')
+  .orderBy('startDate','desc')
   .onSnapshot(snap => {
-    allTournaments = snap.docs.map(d=>({id:d.id,data:d.data()}));
+    allLeagues = snap.docs.map(d=>({id:d.id,data:d.data()}));
     renderList();
   }, err => {
-    document.getElementById('tList').innerHTML =
-      `<div class="t-empty"><div class="t-empty-icon">⚠️</div><p>Could not load tournaments.</p></div>`;
+    document.getElementById('lList').innerHTML =
+      `<div class="t-empty"><div class="t-empty-icon">⚠️</div><p>Could not load the league.</p></div>`;
     console.error(err);
   });
 </script>

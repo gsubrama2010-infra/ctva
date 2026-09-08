@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
+<title>Player Auction — CTVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --signal:   #C23B3B;
+  --ink:      #15241E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+a{text-decoration:none;color:inherit;}
+
+.topbar{background:#060e09;padding:.45rem 0;font-size:11.5px;letter-spacing:.05em;border-bottom:1px solid rgba(232,162,61,.08);}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;color:var(--muted);}
+.navbar{background:rgba(11,20,16,.95);backdrop-filter:blur(14px);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.nav-links{display:flex;gap:1.8rem;align-items:center;}
+.nav-links a{color:var(--muted);font-size:13.5px;font-weight:500;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+
+.t-hero{background:linear-gradient(135deg,#060e09 0%,#0e1e12 60%,#152510 100%);padding:4rem 2rem 3rem;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.t-hero::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(250,248,242,.03) 59px,rgba(250,248,242,.03) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(250,248,242,.03) 59px,rgba(250,248,242,.03) 60px);}
+.t-hero-inner{position:relative;max-width:900px;margin:0 auto;}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green2);margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:22px;height:2px;background:var(--gold);display:inline-block;}
+.t-hero h1{font-family:'Anton',sans-serif;font-size:3rem;line-height:1.0;margin-bottom:.8rem;}
+.t-hero h1 span{color:var(--gold);}
+.t-hero p{color:var(--muted);font-size:1rem;max-width:560px;}
+.admin-link{display:inline-flex;align-items:center;gap:6px;margin-top:1.4rem;background:rgba(232,162,61,.08);border:1px solid rgba(232,162,61,.25);color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.05em;padding:7px 14px;border-radius:20px;}
+
+.t-body{max-width:1100px;margin:0 auto;padding:3rem 2rem;}
+.status-box{text-align:center;padding:4rem 2rem;color:var(--muted);}
+.status-box .icon{font-size:3rem;margin-bottom:1rem;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.6rem;margin-bottom:1.4rem;}
+.form-group{margin-bottom:14px;}
+.form-group label{font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;}
+.form-group input,.form-group select{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;}
+.form-group select option{background:var(--surface2);}
+.btn{border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}
+.btn-gold{background:var(--gold);color:var(--ink);}
+.btn-gold:disabled{opacity:.45;cursor:not-allowed;}
+.btn-full{width:100%;}
+.msg{font-size:13px;margin-top:10px;min-height:18px;}
+.msg.err{color:#e07070;}
+.msg.ok{color:#6dbc7e;}
+
+/* CAPTAIN DASHBOARD BAR */
+.captain-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:linear-gradient(135deg,rgba(47,82,51,.3),rgba(232,162,61,.08));border:1px solid rgba(232,162,61,.3);border-radius:12px;padding:1rem 1.4rem;margin-bottom:1.4rem;}
+.captain-bar .name{font-family:'Anton',sans-serif;font-size:1.2rem;}
+.captain-bar .stat{font-size:12.5px;color:var(--muted);}
+.captain-bar .stat strong{color:var(--gold);font-size:1rem;}
+
+/* TEAMS GRID (captains_selected) */
+.teams-grid-simple{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;}
+.team-mini{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.team-mini .tname{font-family:'Anton',sans-serif;font-size:1.05rem;color:var(--gold);}
+.team-mini .cname{font-size:12.5px;color:var(--muted);margin-top:3px;}
+
+/* LOTS GRID */
+.lots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.lot-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;}
+.lot-card.leading{border-color:var(--gold);}
+.lot-card.closed{opacity:.65;}
+.lot-name{font-family:'Anton',sans-serif;font-size:1.05rem;}
+.lot-pos{font-size:11px;color:var(--muted);margin-bottom:.6rem;}
+.lot-bid-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem;}
+.lot-bid{font-family:'Anton',sans-serif;font-size:1.5rem;color:var(--gold);}
+.lot-leader{font-size:12px;color:var(--muted);}
+.lot-time{font-size:11px;color:var(--muted);margin-bottom:.7rem;}
+.lot-time.closing{color:var(--signal);}
+.lot-time.closed-tag{color:#6dbc7e;}
+.bid-row{display:flex;gap:6px;}
+.bid-row input{flex:1;border:1px solid rgba(250,248,242,.1);border-radius:6px;padding:7px 8px;font-size:13px;background:var(--surface2);color:var(--text);outline:none;}
+.bid-row button{border:none;border-radius:6px;padding:7px 12px;font-size:12.5px;font-weight:700;background:var(--gold);color:var(--ink);cursor:pointer;}
+.bid-row button:disabled{opacity:.4;cursor:not-allowed;}
+.lot-note{font-size:11.5px;color:var(--muted);}
+.lot-note.win{color:#6dbc7e;font-weight:700;}
+
+/* COMPLETED ROSTERS */
+.team-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden;}
+.team-block-head{background:var(--surface2);padding:.8rem 1.1rem;display:flex;justify-content:space-between;align-items:center;}
+.team-block-head strong{font-family:'Anton',sans-serif;font-size:1.1rem;}
+.team-block-head span{font-size:12px;color:var(--muted);}
+.roster-row{display:flex;justify-content:space-between;padding:.5rem 1.1rem;border-bottom:1px solid rgba(250,248,242,.04);font-size:13.5px;}
+.roster-row:last-child{border-bottom:none;}
+.roster-row .price{color:var(--gold);font-weight:700;}
+
+.t-footer{background:#060e09;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);}
+.t-footer a{color:var(--gold);}
+@media(max-width:600px){ .t-hero h1{font-size:2.1rem;} }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-inner"><span>Scarborough · Toronto, ON</span><span>info@ctva.ca</span></div></div>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html"><img src="images/TeamLogos/CTVA_Logo_v3.png" alt="CTVA" style="height:46px;width:auto;object-fit:contain;display:block;"></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tournaments.html">Tournaments</a>
+      <a href="league.html">League</a>
+      <a href="auction.html" class="active" style="color:var(--gold);">Auction</a>
+      <a href="tribute.html">In Memory</a>
+    </div>
+  </div>
+</nav>
+
+<div class="t-hero">
+  <div class="t-hero-inner">
+    <div class="eyebrow" id="phaseLabel">Player auction</div>
+    <h1 id="heroTitle">Sunday <span>Auction</span></h1>
+    <p id="heroSub">60 players, 10 captains, $5,000 budgets. Captains bid to build their 6-player squads before the round robin.</p>
+  </div>
+</div>
+
+<div class="t-body" id="body"><p style="color:var(--muted);">Loading…</p></div>
+
+<div class="t-footer">
+  <a href="index.html">← Back to CTVA home</a> &nbsp;·&nbsp;
+  Canadian Tamil Volleyball Association &nbsp;·&nbsp; info@ctva.ca
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey:            "AIzaSyA1L_Wx_csuB_4M7iCBmJBJgpU1US3sxn0",
+  authDomain:        "ctva-petition.firebaseapp.com",
+  projectId:         "ctva-petition",
+  storageBucket:     "ctva-petition.firebasestorage.app",
+  messagingSenderId: "899824677710",
+  appId:             "1:899824677710:web:c5c5c010431c12c39ae41f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+
+let auction = null;
+let unlockedCaptain = null;
+
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function toMs(ts){ return ts && ts.toMillis ? ts.toMillis() : new Date(ts).getTime(); }
+function fmtRemaining(ms) {
+  if (ms <= 0) return 'Closed';
+  const d = Math.floor(ms/86400000), h = Math.floor((ms%86400000)/3600000), m = Math.floor((ms%3600000)/60000);
+  if (d > 0) return `${d}d ${h}h left`;
+  if (h > 0) return `${h}h ${m}m left`;
+  return `${m}m left`;
+}
+
+function render() {
+  const el = document.getElementById('body');
+  if (!auction) { el.innerHTML = `<div class="status-box"><div class="icon">🏐</div><p>No auction is currently running.</p></div>`; return; }
+
+  switch (auction.status) {
+    case 'registration':     el.innerHTML = renderRegistrationView(); break;
+    case 'voting':            el.innerHTML = renderVotingView(); break;
+    case 'captains_review':   el.innerHTML = `<div class="status-box"><div class="icon">🗳️</div><p>Voting has closed. Captains are being finalized.</p></div>`; break;
+    case 'captains_selected': el.innerHTML = renderCaptainsSelectedView(); break;
+    case 'auction':           el.innerHTML = renderAuctionView(); wireBidHandlers(); break;
+    case 'completed':         el.innerHTML = renderCompletedView(); break;
+    default:                  el.innerHTML = `<div class="status-box"><p>Unknown state.</p></div>`;
+  }
+  if (auction.status === 'auction' && !unlockedCaptain) wireLoginHandler();
+}
+
+function renderRegistrationView() {
+  const players = auction.players || [];
+  return `<div class="card">
+    <h3 style="font-family:'Anton',sans-serif;margin-bottom:.4rem;">Registration Open</h3>
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:1rem;">${players.length} / ${auction.playerCap} players signed up.</p>
+    <a href="auction-signup.html" class="btn btn-gold btn-full" style="display:block;text-align:center;text-decoration:none;">Sign Up to Play →</a>
+  </div>`;
+}
+
+function renderVotingView() {
+  return `<div class="card">
+    <h3 style="font-family:'Anton',sans-serif;margin-bottom:.4rem;">Captain Voting Open</h3>
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:1rem;">Registered players are voting for the ${auction.captainsCount} team captains. Results are revealed once voting closes.</p>
+    <a href="auction-vote.html" class="btn btn-gold btn-full" style="display:block;text-align:center;text-decoration:none;">Cast Your Vote →</a>
+  </div>`;
+}
+
+function renderCaptainsSelectedView() {
+  const captains = (auction.players||[]).filter(p => p.isCaptain);
+  return `<div class="card">
+    <h3 style="font-family:'Anton',sans-serif;margin-bottom:1rem;">Captains Are In — Auction Starting Soon</h3>
+    <div class="teams-grid-simple">
+      ${captains.map(c => `<div class="team-mini"><div class="tname">${esc(c.teamName)}</div><div class="cname">Captain: ${esc(c.name)}</div></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderAuctionView() {
+  const players = auction.players || [];
+  const byId = Object.fromEntries(players.map(p => [p.id, p]));
+  const lots = auction.lots || [];
+  const now = Date.now();
+
+  let captainBar = '';
+  if (unlockedCaptain) {
+    const live = byId[unlockedCaptain.id] || unlockedCaptain;
+    const won = lots.filter(l => l.currentBidderTeamId === live.teamId);
+    const committed = won.reduce((s,l)=>s+l.currentBid,0);
+    captainBar = `<div class="captain-bar">
+      <div><div class="name">${esc(live.teamName)}</div><div class="stat">Captain: ${esc(live.name)}</div></div>
+      <div class="stat">Budget left<br><strong>$${auction.budgetPerCaptain - committed}</strong></div>
+      <div class="stat">Slots filled<br><strong>${won.length} / ${auction.teamSize-1}</strong></div>
+    </div>`;
+  } else {
+    const captains = players.filter(p=>p.isCaptain).slice().sort((a,b)=>a.name.localeCompare(b.name));
+    captainBar = `<div class="card">
+      <h3 style="font-family:'Anton',sans-serif;margin-bottom:1rem;font-size:1.1rem;">Captain Login</h3>
+      <div class="form-group"><label>Team</label>
+        <select id="f-captain">${captains.map(c=>`<option value="${esc(c.id)}">${esc(c.teamName)} — ${esc(c.name)}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>PIN</label><input type="text" id="f-pin" inputmode="numeric" maxlength="6" placeholder="Your PIN"></div>
+      <button class="btn btn-gold btn-full" id="btnLogin">Unlock Bidding</button>
+      <div class="msg" id="loginMsg"></div>
+    </div>`;
+  }
+
+  const lotCards = lots.map(l => {
+    const p = byId[l.playerId];
+    const leader = l.currentBidderTeamId ? byId[l.currentBidderTeamId] : null;
+    const endMs = toMs(l.endTime);
+    const remaining = endMs - now;
+    const closed = remaining <= 0;
+    const closingSoon = !closed && remaining < 3600000;
+    const iAmLeading = unlockedCaptain && leader && leader.teamId === (byId[unlockedCaptain.id]||unlockedCaptain).teamId;
+
+    let bidArea;
+    if (closed) {
+      bidArea = `<div class="lot-note ${leader?'win':''}">${leader ? 'Sold to '+esc(leader.teamName) : 'No bids'}</div>`;
+    } else if (!unlockedCaptain) {
+      bidArea = `<div class="lot-note">Log in as a captain to bid</div>`;
+    } else if (iAmLeading) {
+      bidArea = `<div class="lot-note win">You're winning this player</div>`;
+    } else {
+      const minBid = l.currentBid > 0 ? l.currentBid + auction.minIncrement : auction.minIncrement;
+      bidArea = `<div class="bid-row">
+        <input type="number" step="${auction.minIncrement}" min="${minBid}" placeholder="$${minBid}+" id="bid_${esc(l.playerId)}">
+        <button data-bid-player="${esc(l.playerId)}">Bid</button>
+      </div>`;
+    }
+
+    return `<div class="lot-card ${iAmLeading?'leading':''} ${closed?'closed':''}">
+      <div class="lot-name">${esc(p?p.name:'?')}</div>
+      <div class="lot-pos">${esc(p?p.position:'')||'—'}</div>
+      <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?esc(leader.teamName):'no bids'}</span></div>
+      <div class="lot-time ${closed?'closed-tag':closingSoon?'closing':''}">${closed?'Closed':fmtRemaining(remaining)}</div>
+      ${bidArea}
+    </div>`;
+  }).join('');
+
+  return `${captainBar}<div class="lots-grid">${lotCards}</div>`;
+}
+
+function renderCompletedView() {
+  const players = auction.players || [];
+  const captains = players.filter(p => p.isCaptain);
+  return captains.map(c => {
+    const roster = players.filter(p => p.soldTo === c.teamId);
+    const spent = roster.reduce((s,p)=>s+(p.soldPrice||0),0);
+    return `<div class="team-block">
+      <div class="team-block-head"><strong>${esc(c.teamName)}</strong><span>$${spent} spent · $${auction.budgetPerCaptain-spent} left</span></div>
+      <div class="roster-row"><span>👑 ${esc(c.name)} (Captain)</span><span class="price">–</span></div>
+      ${roster.map(p=>`<div class="roster-row"><span>${esc(p.name)}</span><span class="price">$${p.soldPrice}</span></div>`).join('')}
+    </div>`;
+  }).join('') + `<div class="card"><a href="league.html" style="color:var(--gold);font-weight:700;">→ See the round-robin league &amp; schedule</a></div>`;
+}
+
+/* ── CAPTAIN LOGIN ── */
+function wireLoginHandler() {
+  const btn = document.getElementById('btnLogin');
+  if (!btn) return;
+  btn.onclick = async () => {
+    const msg = document.getElementById('loginMsg');
+    const id  = document.getElementById('f-captain').value;
+    const pin = document.getElementById('f-pin').value.trim();
+    const player = (auction.players||[]).find(p => p.id === id);
+    const hash = await sha256Hex(pin);
+    if (!player || hash !== player.pinHash) { msg.textContent = 'Incorrect PIN.'; msg.className = 'msg err'; return; }
+    unlockedCaptain = player;
+    sessionStorage.setItem('ctva_auction_captain', player.id);
+    render();
+  };
+}
+
+/* ── BIDDING (Firestore transaction to avoid race conditions) ── */
+function wireBidHandlers() {
+  document.querySelectorAll('[data-bid-player]').forEach(btn => {
+    btn.onclick = () => placeBid(btn.dataset.bidPlayer, btn);
+  });
+}
+
+async function placeBid(playerId, btnEl) {
+  const input = document.getElementById('bid_' + playerId);
+  const amount = parseInt(input.value);
+  if (!amount || amount <= 0) { alert('Enter a valid bid amount.'); return; }
+
+  btnEl.disabled = true;
+  try {
+    await db.runTransaction(async (tx) => {
+      const snap = await tx.get(AUCTION_REF);
+      const data = snap.data();
+      const myLive = (data.players||[]).find(p => p.id === unlockedCaptain.id);
+      if (!myLive || !myLive.isCaptain) throw new Error('Captain not found.');
+      const myTeamId = myLive.teamId;
+
+      const lots = data.lots || [];
+      const idx = lots.findIndex(l => l.playerId === playerId);
+      if (idx === -1) throw new Error('Player not found in auction.');
+      const lot = lots[idx];
+
+      const endMs = toMs(lot.endTime);
+      if (endMs <= Date.now()) throw new Error('This lot has already closed.');
+
+      const minBid = lot.currentBid > 0 ? lot.currentBid + data.minIncrement : data.minIncrement;
+      if (amount < minBid) throw new Error(`Minimum bid is $${minBid}.`);
+
+      const otherWon = lots.filter((l,i) => i !== idx && l.currentBidderTeamId === myTeamId);
+      if (otherWon.length >= data.teamSize - 1) throw new Error(`You've already secured ${data.teamSize-1} players — your roster is full.`);
+
+      const committed = otherWon.reduce((s,l)=>s+l.currentBid,0);
+      if (committed + amount > data.budgetPerCaptain) throw new Error(`Not enough budget — you have $${data.budgetPerCaptain - committed} left.`);
+
+      const newLot = { ...lot, currentBid: amount, currentBidderTeamId: myTeamId, bids: [...(lot.bids||[]), { teamId: myTeamId, amount, at: firebase.firestore.Timestamp.now() }] };
+
+      const snipeMs = (data.antiSnipeMinutes||2) * 60000;
+      if (endMs - Date.now() < snipeMs) {
+        newLot.endTime = firebase.firestore.Timestamp.fromMillis(Date.now() + snipeMs);
+      }
+
+      const newLots = lots.slice();
+      newLots[idx] = newLot;
+      tx.update(AUCTION_REF, { lots: newLots, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    });
+    input.value = '';
+  } catch (e) {
+    alert(e.message);
+  } finally {
+    btnEl.disabled = false;
+  }
+}
+
+/* ── LOAD ── */
+AUCTION_REF.onSnapshot(snap => {
+  auction = snap.exists ? snap.data() : null;
+  if (auction && !unlockedCaptain) {
+    const savedId = sessionStorage.getItem('ctva_auction_captain');
+    if (savedId) {
+      const p = (auction.players||[]).find(pl => pl.id === savedId && pl.isCaptain);
+      if (p) unlockedCaptain = p;
+    }
+  }
+  if (auction) {
+    document.getElementById('phaseLabel').textContent =
+      auction.status === 'auction' ? 'Bidding live' :
+      auction.status === 'completed' ? 'Rosters final' : 'Player auction';
+  }
+  render();
+}, err => {
+  document.getElementById('body').innerHTML = `<div class="status-box"><div class="icon">⚠️</div><p>Could not load the auction.</p></div>`;
+  console.error(err);
+});
+
+setInterval(() => { if (auction && auction.status === 'auction' && unlockedCaptain) render(); }, 15000);
+</script>
+</body>
+</html>

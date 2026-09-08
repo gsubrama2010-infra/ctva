@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
+<title>Player Sign-Up — CTVA Auction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --signal:   #C23B3B;
+  --ink:      #15241E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;}
+a{text-decoration:none;color:inherit;}
+
+.topbar{background:#060e09;padding:.45rem 0;font-size:11.5px;letter-spacing:.05em;border-bottom:1px solid rgba(232,162,61,.08);}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;color:var(--muted);}
+.navbar{background:rgba(11,20,16,.95);backdrop-filter:blur(14px);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.nav-links{display:flex;gap:1.8rem;align-items:center;}
+.nav-links a{color:var(--muted);font-size:13.5px;font-weight:500;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+
+.wrap{max-width:640px;margin:0 auto;padding:3rem 2rem;}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green2);margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:22px;height:2px;background:var(--gold);display:inline-block;}
+h1{font-family:'Anton',sans-serif;font-size:2.4rem;line-height:1.05;margin-bottom:.6rem;}
+h1 span{color:var(--gold);}
+.sub{color:var(--muted);font-size:1rem;margin-bottom:2rem;max-width:520px;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.6rem;margin-bottom:1.4rem;}
+.progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+.progress-label{font-size:12.5px;color:var(--muted);}
+.progress-count{font-family:'Anton',sans-serif;font-size:1.3rem;color:var(--gold);}
+.progress-bar{height:8px;background:var(--surface2);border-radius:5px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green2),var(--gold));border-radius:5px;transition:width .3s;}
+
+.form-group{margin-bottom:14px;}
+.form-group label{font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;}
+.form-group input,.form-group select{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--green2);}
+.form-group select option{background:var(--surface2);}
+
+.btn{border:none;border-radius:8px;padding:13px 20px;font-size:14.5px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;width:100%;}
+.btn-gold{background:var(--gold);color:var(--ink);}
+.btn-gold:hover{background:#d4913a;}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;}
+
+.msg{font-size:13px;margin-top:10px;min-height:18px;}
+.msg.err{color:#e07070;}
+.msg.ok{color:#6dbc7e;}
+
+.closed-box,.full-box{text-align:center;padding:2.5rem 1.5rem;}
+.closed-box .icon,.full-box .icon{font-size:2.6rem;margin-bottom:.8rem;}
+
+/* PIN MODAL */
+.pin-overlay{position:fixed;inset:0;background:rgba(6,14,9,.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:500;padding:1.5rem;}
+.pin-overlay.show{display:flex;}
+.pin-box{background:var(--surface);border:2px solid var(--gold);border-radius:16px;padding:2.2rem;max-width:420px;width:100%;text-align:center;}
+.pin-box .icon{font-size:2.4rem;margin-bottom:.6rem;}
+.pin-box h2{font-family:'Anton',sans-serif;font-size:1.5rem;margin-bottom:.5rem;}
+.pin-box p{color:var(--muted);font-size:13.5px;margin-bottom:1.2rem;}
+.pin-display{font-family:'Anton',sans-serif;font-size:2.6rem;letter-spacing:.25em;color:var(--gold);background:var(--surface2);border:1px dashed rgba(232,162,61,.4);border-radius:10px;padding:1rem;margin-bottom:1rem;}
+.pin-warn{background:rgba(194,59,59,.1);border:1px solid rgba(194,59,59,.3);color:#e88;font-size:12.5px;border-radius:8px;padding:.7rem .9rem;margin-bottom:1.2rem;text-align:left;}
+
+.t-footer{background:#060e09;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);margin-top:1rem;}
+.t-footer a{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>Scarborough · Toronto, ON</span>
+    <span>info@ctva.ca</span>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html"><img src="images/TeamLogos/CTVA_Logo_v3.png" alt="CTVA" style="height:46px;width:auto;object-fit:contain;display:block;"></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tournaments.html">Tournaments</a>
+      <a href="league.html">League</a>
+      <a href="auction.html">Auction</a>
+      <a href="tribute.html">In Memory</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Player auction</div>
+  <h1>Sign Up to <span>Play</span></h1>
+  <p class="sub">Register once. All registered players vote for 10 team captains, then captains bid on players with a $5,000 budget to build their 6-player squads.</p>
+
+  <div class="card">
+    <div class="progress-row">
+      <span class="progress-label">Registered players</span>
+      <span class="progress-count" id="countText">–</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
+  </div>
+
+  <div class="card" id="formCard">
+    <p style="color:var(--muted);font-size:13.5px;">Loading…</p>
+  </div>
+</div>
+
+<div class="t-footer">
+  <a href="index.html">← Back to CTVA home</a> &nbsp;·&nbsp;
+  Canadian Tamil Volleyball Association &nbsp;·&nbsp; info@ctva.ca
+</div>
+
+<!-- PIN MODAL -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-box">
+    <div class="icon">🔑</div>
+    <h2>You're In!</h2>
+    <p>This is your personal PIN. You'll need it to vote for captains and, if elected, to bid in the auction.</p>
+    <div class="pin-display" id="pinValue">------</div>
+    <div class="pin-warn">⚠ This PIN is shown <strong>only once</strong> and is not emailed or texted to you. Write it down or screenshot this now — there's no automatic recovery if you lose it (ask an admin to reset it).</div>
+    <button class="btn btn-gold" onclick="document.getElementById('pinOverlay').classList.remove('show')">I've Saved My PIN</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey:            "AIzaSyA1L_Wx_csuB_4M7iCBmJBJgpU1US3sxn0",
+  authDomain:        "ctva-petition.firebaseapp.com",
+  projectId:         "ctva-petition",
+  storageBucket:     "ctva-petition.firebasestorage.app",
+  messagingSenderId: "899824677710",
+  appId:             "1:899824677710:web:c5c5c010431c12c39ae41f"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+
+let auctionData = null;
+
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function genPin() { return String(Math.floor(100000 + Math.random() * 900000)); }
+function genId() { return (crypto.randomUUID ? crypto.randomUUID() : 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2)); }
+
+function renderForm() {
+  const card  = document.getElementById('formCard');
+  const players = (auctionData && auctionData.players) || [];
+  const cap = (auctionData && auctionData.playerCap) || 60;
+  const status = auctionData && auctionData.status;
+
+  document.getElementById('countText').textContent = `${players.length} / ${cap}`;
+  document.getElementById('progressFill').style.width = Math.min(100, (players.length / cap) * 100) + '%';
+
+  if (!auctionData) {
+    card.innerHTML = `<div class="closed-box"><div class="icon">🏐</div><p>No auction is currently open for sign-ups.</p></div>`;
+    return;
+  }
+  if (status !== 'registration') {
+    card.innerHTML = `<div class="closed-box"><div class="icon">🔒</div><p>Registration is closed for this auction.</p><p style="margin-top:8px;"><a href="auction.html" style="color:var(--gold);">→ View auction status</a></p></div>`;
+    return;
+  }
+  if (players.length >= cap) {
+    card.innerHTML = `<div class="full-box"><div class="icon">✅</div><p>Registration is full (${cap}/${cap}). Check back for the next season!</p></div>`;
+    return;
+  }
+
+  card.innerHTML = `
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="f-name" placeholder="e.g. Arun Kumar">
+    </div>
+    <div class="form-group">
+      <label>Phone or Email *</label>
+      <input type="text" id="f-contact" placeholder="So we can reach you if needed">
+    </div>
+    <div class="form-group">
+      <label>Position (optional)</label>
+      <select id="f-position">
+        <option value="">Not sure / any</option>
+        <option value="Setter">Setter</option>
+        <option value="Outside Hitter">Outside Hitter</option>
+        <option value="Middle Blocker">Middle Blocker</option>
+        <option value="Opposite">Opposite</option>
+        <option value="Libero">Libero</option>
+      </select>
+    </div>
+    <button class="btn btn-gold" id="submitBtn" onclick="submitSignup()">Register</button>
+    <div class="msg" id="formMsg"></div>
+  `;
+}
+
+async function submitSignup() {
+  const msg = document.getElementById('formMsg');
+  const name    = document.getElementById('f-name').value.trim();
+  const contact = document.getElementById('f-contact').value.trim();
+  const position = document.getElementById('f-position').value;
+
+  if (!name || !contact) { msg.textContent = 'Name and contact are required.'; msg.className = 'msg err'; return; }
+
+  const players = (auctionData && auctionData.players) || [];
+  if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+    msg.textContent = 'That name is already registered. Use your full name to avoid duplicates, or contact an admin.';
+    msg.className = 'msg err';
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Registering…';
+
+  try {
+    const pin     = genPin();
+    const pinHash = await sha256Hex(pin);
+    const player = {
+      id: genId(),
+      name, contact, position,
+      pinHash,
+      registeredAt: firebase.firestore.Timestamp.now(),
+      votesCount: 0,
+      isCaptain: false,
+      teamName: '',
+      teamId: '',
+      budgetRemaining: 0,
+      status: 'pending'
+    };
+
+    await AUCTION_REF.update({
+      players: firebase.firestore.FieldValue.arrayUnion(player),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    document.getElementById('pinValue').textContent = pin;
+    document.getElementById('pinOverlay').classList.add('show');
+    msg.textContent = '';
+  } catch (e) {
+    msg.textContent = 'Error registering: ' + e.message;
+    msg.className = 'msg err';
+    btn.disabled = false;
+    btn.textContent = 'Register';
+  }
+}
+
+AUCTION_REF.onSnapshot(snap => {
+  auctionData = snap.exists ? snap.data() : null;
+  renderForm();
+}, err => {
+  document.getElementById('formCard').innerHTML = `<div class="closed-box"><div class="icon">⚠️</div><p>Could not load sign-up status.</p></div>`;
+  console.error(err);
+});
+</script>
+</body>
+</html>

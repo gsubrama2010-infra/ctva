@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
+<title>Admin — Player Auction — CTVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --signal:   #C23B3B;
+  --ink:      #15241E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+
+/* GATE */
+#gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+.gate-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:360px;text-align:center;}
+.gate-box h2{font-family:'Anton',sans-serif;font-size:1.8rem;margin-bottom:.5rem;}
+.gate-box p{color:var(--muted);font-size:13.5px;margin-bottom:1.5rem;}
+.gate-box input{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;}
+.gate-err{color:#e07070;font-size:12.5px;margin-bottom:10px;display:none;}
+
+#admin{display:none;}
+.admin-topbar{background:#060e09;padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);}
+.admin-topbar strong{font-family:'Anton',sans-serif;font-size:1.1rem;}
+.admin-topbar a{color:var(--gold);font-size:13px;}
+.admin-body{max-width:1000px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* PHASE STEPPER */
+.stepper{display:flex;gap:6px;margin-bottom:1.6rem;flex-wrap:wrap;}
+.step{flex:1;min-width:100px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
+.step.done{background:rgba(47,82,51,.25);border-color:var(--green2);color:#8fd39a;}
+.step.active{background:rgba(232,162,61,.12);border-color:var(--gold);color:var(--gold);}
+
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;}
+.panel h3{font-family:'Anton',sans-serif;font-size:1.15rem;margin-bottom:.3rem;}
+.panel .desc{color:var(--muted);font-size:13px;margin-bottom:1rem;}
+
+.form-group{margin-bottom:14px;}
+.form-group label{font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;}
+.form-group input,.form-group select{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:9px 12px;font-size:13.5px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;}
+.form-group input:focus,.form-group select:focus{border-color:var(--green2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+table.dtable{width:100%;border-collapse:collapse;font-size:13px;}
+table.dtable th{text-align:left;padding:7px 8px;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);}
+table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);vertical-align:middle;}
+table.dtable .num{text-align:center;}
+.rank-1 td:first-child,.rank-2 td:first-child,.rank-3 td:first-child{color:var(--gold);font-weight:700;}
+
+.btn{border:none;border-radius:8px;padding:10px 18px;font-size:13.5px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;}
+.btn-gold{background:var(--gold);color:var(--ink);}
+.btn-gold:hover{background:#d4913a;}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed;}
+.btn-green{background:var(--green);color:var(--text);}
+.btn-green:hover{background:#3d6b42;}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--muted);color:var(--text);}
+.btn-danger{background:rgba(194,59,59,.15);border:1px solid rgba(194,59,59,.3);color:#e07070;}
+.btn-danger:hover{background:rgba(194,59,59,.25);}
+.btn-sm{padding:5px 10px;font-size:11.5px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;}
+.save-status{font-size:12.5px;margin-top:.6rem;min-height:18px;}
+.save-status.ok{color:#6dbc7e;}
+.save-status.err{color:#e07070;}
+.hint{font-size:11.5px;color:var(--muted);margin-top:6px;}
+.warn-box{background:rgba(232,162,61,.08);border:1px solid rgba(232,162,61,.25);border-radius:8px;padding:.7rem .9rem;font-size:12.5px;color:var(--gold);margin-bottom:1rem;}
+
+.captain-row{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;padding:.5rem 0;border-bottom:1px solid rgba(250,248,242,.05);}
+.captain-row input{border:1px solid rgba(250,248,242,.08);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--surface2);color:var(--text);outline:none;}
+
+.team-block{margin-bottom:1.2rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.team-block-head{background:var(--surface2);padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center;}
+.team-block-head strong{font-family:'Anton',sans-serif;font-size:1rem;}
+.team-block-head span{font-size:12px;color:var(--muted);}
+.team-block-body{padding:.4rem 1rem;}
+.roster-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(250,248,242,.04);font-size:13px;}
+.roster-row:last-child{border-bottom:none;}
+.roster-row .price{color:var(--gold);font-weight:700;}
+
+@media(max-width:700px){
+  .form-row,.form-row-3{grid-template-columns:1fr;}
+  .captain-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <div style="font-size:2.2rem;margin-bottom:.6rem;">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Enter the admin password to manage the auction.</p>
+    <div class="gate-err" id="gateErr">Incorrect password.</div>
+    <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="btn btn-gold" style="width:100%;" onclick="checkPw()">Enter</button>
+  </div>
+</div>
+
+<div id="admin">
+  <div class="admin-topbar">
+    <strong>🏐 CTVA — Auction Admin</strong>
+    <a href="auction.html">← View public page</a>
+  </div>
+  <div class="admin-body">
+    <div class="stepper" id="stepper"></div>
+    <div id="phaseBody"><p style="color:var(--muted);">Loading…</p></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const ADMIN_PASSWORD = 'ctva2026';
+const firebaseConfig = {
+  apiKey:            "AIzaSyA1L_Wx_csuB_4M7iCBmJBJgpU1US3sxn0",
+  authDomain:        "ctva-petition.firebaseapp.com",
+  projectId:         "ctva-petition",
+  storageBucket:     "ctva-petition.firebasestorage.app",
+  messagingSenderId: "899824677710",
+  appId:             "1:899824677710:web:c5c5c010431c12c39ae41f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('gate').style.display  = 'none';
+    document.getElementById('admin').style.display = 'block';
+    initAdmin();
+  } else {
+    document.getElementById('gateErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+let auction = null;
+
+function initAdmin() {
+  AUCTION_REF.onSnapshot(snap => {
+    auction = snap.exists ? snap.data() : null;
+    render();
+  }, err => {
+    document.getElementById('phaseBody').innerHTML = `<p style="color:#e07070;">Failed to load: ${err.message}</p>`;
+  });
+}
+
+const PHASES = ['registration','voting','captains_review','captains_selected','auction','completed'];
+const PHASE_LABEL = { registration:'Registration', voting:'Voting', captains_review:'Review Captains', captains_selected:'Captains Set', auction:'Auction', completed:'Completed' };
+
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDateTime(ts){ if(!ts) return ''; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString('en-CA',{dateStyle:'medium',timeStyle:'short'}); }
+function genId(){ return (crypto.randomUUID ? crypto.randomUUID() : 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2)); }
+
+function renderStepper() {
+  const el = document.getElementById('stepper');
+  const status = auction ? auction.status : null;
+  const idx = PHASES.indexOf(status);
+  el.innerHTML = PHASES.map((p,i) => {
+    let cls = '';
+    if (status && i < idx) cls = 'done';
+    else if (status && i === idx) cls = 'active';
+    return `<div class="step ${cls}">${PHASE_LABEL[p]}</div>`;
+  }).join('');
+}
+
+function render() {
+  renderStepper();
+  const body = document.getElementById('phaseBody');
+  if (!auction) {
+    body.innerHTML = renderSetup();
+  } else {
+    switch (auction.status) {
+      case 'registration':      body.innerHTML = renderRegistration(); break;
+      case 'voting':             body.innerHTML = renderVoting(); break;
+      case 'captains_review':    body.innerHTML = renderCaptainsReview(); break;
+      case 'captains_selected':  body.innerHTML = renderCaptainsSelected(); break;
+      case 'auction':            body.innerHTML = renderAuctionLive(); break;
+      case 'completed':          body.innerHTML = renderCompleted(); break;
+      default:                   body.innerHTML = '<p>Unknown state.</p>';
+    }
+  }
+  wireEvents();
+}
+
+/* ── SETUP ── */
+function renderSetup() {
+  return `<div class="panel">
+    <h3>Start a New Auction</h3>
+    <p class="desc">Sets up the registration form, voting, and auction rules. You can adjust most of this later except the player cap.</p>
+    <div class="form-group"><label>Auction / Season Name</label><input id="s-name" value="CTVA Player Auction 2026"></div>
+    <div class="form-row-3">
+      <div class="form-group"><label>Total Players</label><input id="s-cap" type="number" value="60"></div>
+      <div class="form-group"><label>Number of Captains</label><input id="s-captains" type="number" value="10"></div>
+      <div class="form-group"><label>Team Size</label><input id="s-teamsize" type="number" value="6"></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group"><label>Budget / Captain ($)</label><input id="s-budget" type="number" value="5000"></div>
+      <div class="form-group"><label>Min Bid Increment ($)</label><input id="s-incr" type="number" value="50"></div>
+      <div class="form-group"><label>Anti-Snipe Extension (min)</label><input id="s-snipe" type="number" value="2"></div>
+    </div>
+    <div class="form-group"><label>Auction Window (days, once opened)</label><input id="s-window" type="number" value="6"></div>
+    <button class="btn btn-gold" id="btnCreate">Create Auction &amp; Open Registration</button>
+    <div class="save-status" id="saveStatus"></div>
+  </div>`;
+}
+
+async function createAuction() {
+  const data = {
+    name:             document.getElementById('s-name').value.trim() || 'CTVA Player Auction',
+    status:           'registration',
+    playerCap:        parseInt(document.getElementById('s-cap').value) || 60,
+    captainsCount:    parseInt(document.getElementById('s-captains').value) || 10,
+    teamSize:         parseInt(document.getElementById('s-teamsize').value) || 6,
+    budgetPerCaptain: parseInt(document.getElementById('s-budget').value) || 5000,
+    minIncrement:     parseInt(document.getElementById('s-incr').value) || 50,
+    antiSnipeMinutes: parseInt(document.getElementById('s-snipe').value) || 2,
+    auctionWindowDays:parseInt(document.getElementById('s-window').value) || 6,
+    players: [],
+    votes: [],
+    lots: [],
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  await AUCTION_REF.set(data);
+}
+
+/* ── REGISTRATION ── */
+function renderRegistration() {
+  const players = auction.players || [];
+  return `<div class="panel">
+    <h3>Registration Open</h3>
+    <p class="desc">${players.length} / ${auction.playerCap} players registered. Share the sign-up link: <code>auction-signup.html</code></p>
+    <table class="dtable">
+      <tr><th>#</th><th>Name</th><th>Contact</th><th>Position</th><th></th></tr>
+      ${players.map((p,i)=>`<tr>
+        <td>${i+1}</td><td>${esc(p.name)}</td><td>${esc(p.contact)}</td><td>${esc(p.position)||'–'}</td>
+        <td><button class="btn btn-danger btn-sm" data-remove="${esc(p.id)}">Remove</button></td>
+      </tr>`).join('') || '<tr><td colspan="5" style="color:var(--muted);">No players yet.</td></tr>'}
+    </table>
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btnCloseReg">Close Registration &amp; Open Voting</button>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>`;
+}
+
+async function removePlayer(id) {
+  if (!confirm('Remove this player?')) return;
+  const players = (auction.players||[]).filter(p => p.id !== id);
+  await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+async function closeRegistration() {
+  const players = auction.players || [];
+  if (players.length < auction.captainsCount) {
+    alert(`Need at least ${auction.captainsCount} players to elect ${auction.captainsCount} captains.`);
+    return;
+  }
+  if (!confirm(`Close registration with ${players.length} players and open voting?`)) return;
+  await AUCTION_REF.update({ status: 'voting', votingOpenedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+/* ── VOTING ── */
+function tally() {
+  const counts = {};
+  (auction.votes||[]).forEach(v => { counts[v.candidateId] = (counts[v.candidateId]||0) + 1; });
+  return (auction.players||[]).map(p => ({ ...p, votes: counts[p.id] || 0 }))
+    .sort((a,b) => b.votes - a.votes);
+}
+
+function renderVoting() {
+  const ranked = tally();
+  const voted  = (auction.votes||[]).length;
+  return `<div class="panel">
+    <h3>Voting Open</h3>
+    <p class="desc">${voted} / ${(auction.players||[]).length} players have voted. Results stay hidden from the public page until you close voting.</p>
+    <table class="dtable">
+      <tr><th>#</th><th>Name</th><th class="num">Votes</th></tr>
+      ${ranked.map((p,i)=>`<tr class="${i<auction.captainsCount?'rank-'+Math.min(i+1,3):''}"><td>${i+1}</td><td>${esc(p.name)}</td><td class="num">${p.votes}</td></tr>`).join('')}
+    </table>
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btnCloseVote">Close Voting &amp; Review Captains</button>
+    </div>
+  </div>`;
+}
+
+async function closeVoting() {
+  if (!confirm('Close voting? Results will move to captain review.')) return;
+  await AUCTION_REF.update({ status: 'captains_review', votingClosedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+/* ── CAPTAINS REVIEW ── */
+function renderCaptainsReview() {
+  const ranked = tally();
+  const n = auction.captainsCount;
+  return `<div class="panel">
+    <h3>Review &amp; Confirm Captains</h3>
+    <p class="desc">Top ${n} by votes are pre-checked. Adjust for ties or preference — you must select exactly ${n} before confirming.</p>
+    <table class="dtable">
+      <tr><th></th><th>#</th><th>Name</th><th class="num">Votes</th></tr>
+      ${ranked.map((p,i)=>`<tr>
+        <td><input type="checkbox" class="cap-check" data-id="${esc(p.id)}" ${i<n?'checked':''}></td>
+        <td>${i+1}</td><td>${esc(p.name)}</td><td class="num">${p.votes}</td>
+      </tr>`).join('')}
+    </table>
+    <p class="hint" id="selCount"></p>
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btnConfirmCaptains">Confirm Selected Captains</button>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>`;
+}
+
+function updateSelCount() {
+  const el = document.getElementById('selCount');
+  if (!el || !auction) return;
+  const n = auction.captainsCount;
+  const checked = document.querySelectorAll('.cap-check:checked').length;
+  el.textContent = `${checked} / ${n} selected`; el.style.color = checked===n ? '#6dbc7e' : 'var(--gold)';
+}
+
+async function confirmCaptains() {
+  const n = auction.captainsCount;
+  const ids = Array.from(document.querySelectorAll('.cap-check:checked')).map(cb => cb.dataset.id);
+  if (ids.length !== n) { alert(`Select exactly ${n} captains (currently ${ids.length}).`); return; }
+
+  const players = (auction.players||[]).map(p => {
+    if (ids.includes(p.id)) {
+      return { ...p, isCaptain: true, teamId: p.id, teamName: p.teamName || (p.name + "'s Team"), budgetRemaining: auction.budgetPerCaptain, status: 'captain' };
+    }
+    return p;
+  });
+  await AUCTION_REF.update({ players, status: 'captains_selected', updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+/* ── CAPTAINS SELECTED ── */
+function renderCaptainsSelected() {
+  const captains = (auction.players||[]).filter(p => p.isCaptain);
+  const remaining = (auction.players||[]).filter(p => !p.isCaptain).length;
+  return `<div class="panel">
+    <h3>Captains Confirmed</h3>
+    <p class="desc">Edit team names below if needed, then open the auction for the remaining ${remaining} players.</p>
+    ${captains.map(c => `<div class="captain-row">
+      <span>${esc(c.name)}</span>
+      <input type="text" class="team-name-input" data-id="${esc(c.id)}" value="${esc(c.teamName)}">
+      <span style="color:var(--muted);font-size:12px;">$${auction.budgetPerCaptain} budget</span>
+    </div>`).join('')}
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" id="btnSaveNames">Save Team Names</button>
+      <button class="btn btn-gold" id="btnOpenAuction">Open Auction (${auction.auctionWindowDays}-day window)</button>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>`;
+}
+
+async function saveTeamNames() {
+  const inputs = document.querySelectorAll('.team-name-input');
+  const names = {};
+  inputs.forEach(i => names[i.dataset.id] = i.value.trim());
+  const players = (auction.players||[]).map(p => names[p.id] !== undefined && p.isCaptain ? { ...p, teamName: names[p.id] || p.teamName } : p);
+  await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+  document.getElementById('saveStatus').textContent = '✓ Saved';
+  document.getElementById('saveStatus').className = 'save-status ok';
+}
+
+async function openAuction() {
+  await saveTeamNames();
+  const nonCaptains = (auction.players||[]).filter(p => !p.isCaptain);
+  const endTime = firebase.firestore.Timestamp.fromMillis(Date.now() + auction.auctionWindowDays * 86400000);
+  const lots = nonCaptains.map(p => ({
+    playerId: p.id, currentBid: 0, currentBidderTeamId: '', bids: [], endTime
+  }));
+  await AUCTION_REF.update({ lots, status: 'auction', auctionOpenedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+/* ── AUCTION LIVE ── */
+function renderAuctionLive() {
+  const players = auction.players || [];
+  const byId = Object.fromEntries(players.map(p => [p.id, p]));
+  const captains = players.filter(p => p.isCaptain);
+  const lots = auction.lots || [];
+  const now = Date.now();
+
+  const captainStats = captains.map(c => {
+    const won = lots.filter(l => l.currentBidderTeamId === c.teamId);
+    const committed = won.reduce((s,l) => s + l.currentBid, 0);
+    return { ...c, slots: won.length, committed, remaining: auction.budgetPerCaptain - committed };
+  });
+
+  const allEnded = lots.every(l => (l.endTime.toMillis ? l.endTime.toMillis() : new Date(l.endTime).getTime()) <= now);
+
+  return `<div class="panel">
+    <h3>Auction Live</h3>
+    <p class="desc">${lots.length} players up for bidding. ${allEnded ? 'All lots have closed — ready to finalize.' : 'Still in progress.'}</p>
+    <table class="dtable">
+      <tr><th>Captain / Team</th><th class="num">Slots</th><th class="num">Committed</th><th class="num">Remaining</th></tr>
+      ${captainStats.map(c=>`<tr><td>${esc(c.teamName)}</td><td class="num">${c.slots}/${auction.teamSize-1}</td><td class="num">$${c.committed}</td><td class="num">$${c.remaining}</td></tr>`).join('')}
+    </table>
+  </div>
+  <div class="panel">
+    <h3>Lots</h3>
+    <table class="dtable">
+      <tr><th>Player</th><th>Position</th><th class="num">Current Bid</th><th>Leading</th><th>Ends</th></tr>
+      ${lots.map(l => {
+        const p = byId[l.playerId];
+        const leader = l.currentBidderTeamId ? byId[l.currentBidderTeamId] : null;
+        const ended = (l.endTime.toMillis ? l.endTime.toMillis() : new Date(l.endTime).getTime()) <= now;
+        return `<tr><td>${esc(p?p.name:'?')}</td><td>${esc(p?p.position:'')||'–'}</td><td class="num">$${l.currentBid}</td><td>${leader?esc(leader.teamName):'<span style="color:var(--muted);">no bids</span>'}</td><td style="color:${ended?'#e07070':'var(--muted)'};font-size:11.5px;">${ended?'closed':fmtDateTime(l.endTime)}</td></tr>`;
+      }).join('')}
+    </table>
+    <div class="warn-box">Finalizing will lock in all current highest bids as final sales, even for lots still open. Only do this once the window has fully ended (or you're intentionally closing early).</div>
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btnFinalize">Finalize Auction &amp; Build Rosters</button>
+    </div>
+    <div class="save-status" id="saveStatus"></div>
+  </div>`;
+}
+
+async function finalizeAuction() {
+  if (!confirm('Finalize the auction? This locks in all current bids as final and cannot be undone easily.')) return;
+  const lots = auction.lots || [];
+  const players = (auction.players||[]).map(p => {
+    const lot = lots.find(l => l.playerId === p.id);
+    if (!lot) return p;
+    if (lot.currentBidderTeamId) {
+      const captain = (auction.players||[]).find(c => c.teamId === lot.currentBidderTeamId);
+      return { ...p, status: 'sold', soldTo: lot.currentBidderTeamId, soldPrice: lot.currentBid, teamName: captain ? captain.teamName : '' };
+    }
+    return { ...p, status: 'unsold' };
+  });
+  await AUCTION_REF.update({ players, status: 'completed', completedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+/* ── COMPLETED ── */
+function renderCompleted() {
+  const players = auction.players || [];
+  const captains = players.filter(p => p.isCaptain);
+  const unsold = players.filter(p => p.status === 'unsold');
+  return `<div class="panel">
+    <h3>Auction Complete</h3>
+    ${unsold.length ? `<div class="warn-box">${unsold.length} player(s) went unsold (no bids received): ${unsold.map(p=>esc(p.name)).join(', ')}. Assign them to a team manually if needed before starting the league.</div>` : ''}
+    ${captains.map(c => {
+      const roster = players.filter(p => p.soldTo === c.teamId);
+      const spent = roster.reduce((s,p)=>s+(p.soldPrice||0),0);
+      return `<div class="team-block">
+        <div class="team-block-head"><strong>${esc(c.teamName)}</strong><span>Spent $${spent} / $${auction.budgetPerCaptain} · $${auction.budgetPerCaptain-spent} left</span></div>
+        <div class="team-block-body">
+          <div class="roster-row"><span>👑 ${esc(c.name)} (Captain)</span><span class="price">–</span></div>
+          ${roster.map(p=>`<div class="roster-row"><span>${esc(p.name)}</span><span class="price">$${p.soldPrice}</span></div>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btnPushLeague">Push Teams to League →</button>
+    </div>
+    <p class="hint">Creates a new league with these ${captains.length} team names. You'll set the start date and generate the round-robin schedule on the League Admin page.</p>
+    <div class="save-status" id="saveStatus"></div>
+  </div>`;
+}
+
+async function pushToLeague() {
+  if (!confirm('Create a new league using these team names?')) return;
+  const captains = (auction.players||[]).filter(p => p.isCaptain);
+  const data = {
+    name: auction.name + ' — League',
+    status: 'upcoming',
+    location: '', startDate: null, pointsToWin: 15, courts: 2, timeSlot: '10:00 AM – 12:00 PM',
+    teams: captains.map(c => c.teamName),
+    matches: [],
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  const ref = await db.collection('ctva_leagues').add(data);
+  const st = document.getElementById('saveStatus');
+  st.className = 'save-status ok';
+  st.innerHTML = `✓ League created. <a href="admin-league.html" style="color:var(--gold);">Go finish setup on League Admin →</a>`;
+}
+
+/* ── EVENTS ── */
+function wireEvents() {
+  const b = id => document.getElementById(id);
+  if (b('btnCreate')) b('btnCreate').onclick = () => createAuction().catch(e=>{ b('saveStatus').textContent='Error: '+e.message; b('saveStatus').className='save-status err'; });
+  if (b('btnCloseReg')) b('btnCloseReg').onclick = () => closeRegistration().catch(e=>alert(e.message));
+  if (b('btnCloseVote')) b('btnCloseVote').onclick = () => closeVoting().catch(e=>alert(e.message));
+  if (b('btnConfirmCaptains')) b('btnConfirmCaptains').onclick = () => confirmCaptains().catch(e=>{ b('saveStatus').textContent='Error: '+e.message; b('saveStatus').className='save-status err'; });
+  if (b('btnSaveNames')) b('btnSaveNames').onclick = () => saveTeamNames().catch(e=>alert(e.message));
+  if (b('btnOpenAuction')) b('btnOpenAuction').onclick = () => openAuction().catch(e=>alert(e.message));
+  if (b('btnFinalize')) b('btnFinalize').onclick = () => finalizeAuction().catch(e=>alert(e.message));
+  if (b('btnPushLeague')) b('btnPushLeague').onclick = () => pushToLeague().catch(e=>alert(e.message));
+  document.querySelectorAll('[data-remove]').forEach(btn => btn.onclick = () => removePlayer(btn.dataset.remove).catch(e=>alert(e.message)));
+  document.querySelectorAll('.cap-check').forEach(cb => cb.onchange = updateSelCount);
+  updateSelCount();
+}
+</script>
+</body>
+</html>
