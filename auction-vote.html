@@ -146,7 +146,7 @@ function render() {
     <div class="candidate-list">
       ${candidates.map(c => `<div class="candidate-row" onclick="document.getElementById('c_${esc(c.id)}').checked=true;">
         <input type="radio" name="candidate" id="c_${esc(c.id)}" value="${esc(c.id)}">
-        <label for="c_${esc(c.id)}">${esc(c.name)}${c.position?' <span style=\"color:var(--muted);\">— '+esc(c.position)+'</span>':''}</label>
+        <label for="c_${esc(c.id)}">${esc(c.name)}</label>
       </div>`).join('')}
     </div>
     <button class="btn btn-gold" id="btnVote">Cast My Vote</button>

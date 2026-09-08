@@ -249,9 +249,9 @@ function renderRegistration() {
     <h3>Registration Open</h3>
     <p class="desc">${players.length} / ${auction.playerCap} players registered. Share the sign-up link: <code>auction-signup.html</code></p>
     <table class="dtable">
-      <tr><th>#</th><th>Name</th><th>Contact</th><th>Position</th><th></th></tr>
+      <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th></th></tr>
       ${players.map((p,i)=>`<tr>
-        <td>${i+1}</td><td>${esc(p.name)}</td><td>${esc(p.contact)}</td><td>${esc(p.position)||'–'}</td>
+        <td>${i+1}</td><td>${esc(p.name)}</td><td>${esc(p.email)}</td><td>${esc(p.phone)}</td>
         <td><button class="btn btn-danger btn-sm" data-remove="${esc(p.id)}">Remove</button></td>
       </tr>`).join('') || '<tr><td colspan="5" style="color:var(--muted);">No players yet.</td></tr>'}
     </table>
@@ -418,12 +418,12 @@ function renderAuctionLive() {
   <div class="panel">
     <h3>Lots</h3>
     <table class="dtable">
-      <tr><th>Player</th><th>Position</th><th class="num">Current Bid</th><th>Leading</th><th>Ends</th></tr>
+      <tr><th>Player</th><th class="num">Current Bid</th><th>Leading</th><th>Ends</th></tr>
       ${lots.map(l => {
         const p = byId[l.playerId];
         const leader = l.currentBidderTeamId ? byId[l.currentBidderTeamId] : null;
         const ended = (l.endTime.toMillis ? l.endTime.toMillis() : new Date(l.endTime).getTime()) <= now;
-        return `<tr><td>${esc(p?p.name:'?')}</td><td>${esc(p?p.position:'')||'–'}</td><td class="num">$${l.currentBid}</td><td>${leader?esc(leader.teamName):'<span style="color:var(--muted);">no bids</span>'}</td><td style="color:${ended?'#e07070':'var(--muted)'};font-size:11.5px;">${ended?'closed':fmtDateTime(l.endTime)}</td></tr>`;
+        return `<tr><td>${esc(p?p.name:'?')}</td><td class="num">$${l.currentBid}</td><td>${leader?esc(leader.teamName):'<span style="color:var(--muted);">no bids</span>'}</td><td style="color:${ended?'#e07070':'var(--muted)'};font-size:11.5px;">${ended?'closed':fmtDateTime(l.endTime)}</td></tr>`;
       }).join('')}
     </table>
     <div class="warn-box">Finalizing will lock in all current highest bids as final sales, even for lots still open. Only do this once the window has fully ended (or you're intentionally closing early).</div>

@@ -79,8 +79,7 @@ a{text-decoration:none;color:inherit;}
 .lot-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;}
 .lot-card.leading{border-color:var(--gold);}
 .lot-card.closed{opacity:.65;}
-.lot-name{font-family:'Anton',sans-serif;font-size:1.05rem;}
-.lot-pos{font-size:11px;color:var(--muted);margin-bottom:.6rem;}
+.lot-name{font-family:'Anton',sans-serif;font-size:1.05rem;margin-bottom:.6rem;}
 .lot-bid-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem;}
 .lot-bid{font-family:'Anton',sans-serif;font-size:1.5rem;color:var(--gold);}
 .lot-leader{font-size:12px;color:var(--muted);}
@@ -269,7 +268,6 @@ function renderAuctionView() {
 
     return `<div class="lot-card ${iAmLeading?'leading':''} ${closed?'closed':''}">
       <div class="lot-name">${esc(p?p.name:'?')}</div>
-      <div class="lot-pos">${esc(p?p.position:'')||'—'}</div>
       <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?esc(leader.teamName):'no bids'}</span></div>
       <div class="lot-time ${closed?'closed-tag':closingSoon?'closing':''}">${closed?'Closed':fmtRemaining(remaining)}</div>
       ${bidArea}

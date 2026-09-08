@@ -192,19 +192,12 @@ function renderForm() {
       <input type="text" id="f-name" placeholder="e.g. Arun Kumar">
     </div>
     <div class="form-group">
-      <label>Phone or Email *</label>
-      <input type="text" id="f-contact" placeholder="So we can reach you if needed">
+      <label>Email *</label>
+      <input type="email" id="f-email" placeholder="you@example.com">
     </div>
     <div class="form-group">
-      <label>Position (optional)</label>
-      <select id="f-position">
-        <option value="">Not sure / any</option>
-        <option value="Setter">Setter</option>
-        <option value="Outside Hitter">Outside Hitter</option>
-        <option value="Middle Blocker">Middle Blocker</option>
-        <option value="Opposite">Opposite</option>
-        <option value="Libero">Libero</option>
-      </select>
+      <label>Phone Number *</label>
+      <input type="tel" id="f-phone" placeholder="e.g. 416-555-1234">
     </div>
     <button class="btn btn-gold" id="submitBtn" onclick="submitSignup()">Register</button>
     <div class="msg" id="formMsg"></div>
@@ -213,11 +206,11 @@ function renderForm() {
 
 async function submitSignup() {
   const msg = document.getElementById('formMsg');
-  const name    = document.getElementById('f-name').value.trim();
-  const contact = document.getElementById('f-contact').value.trim();
-  const position = document.getElementById('f-position').value;
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
 
-  if (!name || !contact) { msg.textContent = 'Name and contact are required.'; msg.className = 'msg err'; return; }
+  if (!name || !email || !phone) { msg.textContent = 'Name, email, and phone are all required.'; msg.className = 'msg err'; return; }
 
   const players = (auctionData && auctionData.players) || [];
   if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
@@ -235,7 +228,7 @@ async function submitSignup() {
     const pinHash = await sha256Hex(pin);
     const player = {
       id: genId(),
-      name, contact, position,
+      name, email, phone,
       pinHash,
       registeredAt: firebase.firestore.Timestamp.now(),
       votesCount: 0,
