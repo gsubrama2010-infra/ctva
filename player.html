@@ -39,9 +39,12 @@ a{text-decoration:none;color:inherit;}
 .back-link:hover{color:var(--gold);}
 
 .profile-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:2.2rem;text-align:center;}
-.avatar{width:150px;height:150px;border-radius:50%;margin:0 auto 1.2rem;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid var(--gold);}
+.photo-row{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:1.2rem;}
+.avatar{width:150px;height:150px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid var(--gold);flex-shrink:0;}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block;}
 .avatar .initials{font-family:'Anton',sans-serif;font-size:3rem;color:rgba(255,255,255,.95);}
+.club-logo-large{width:150px;height:150px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid var(--border);flex-shrink:0;background:var(--surface2);}
+.club-logo-large img{width:100%;height:100%;object-fit:cover;display:block;}
 
 .p-name{font-family:'Anton',sans-serif;font-size:2.1rem;line-height:1.05;margin-bottom:.5rem;}
 .badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.6rem;}
@@ -181,14 +184,20 @@ function render(auction, photo) {
     ? `<img src="${photo}" alt="${esc(player.name)}">`
     : `<div class="initials" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(player.name)};">${esc(initials(player.name))}</div>`;
 
+  const clubLogoUrl = getClubLogo(player.club);
+  const clubLogoLarge = clubLogoUrl ? `<div class="club-logo-large"><img src="${clubLogoUrl}" alt="${esc(player.club)}"></div>` : '';
+
   el.innerHTML = `
     <div class="profile-card">
-      <div class="avatar">${avatar}</div>
+      <div class="photo-row">
+        <div class="avatar">${avatar}</div>
+        ${clubLogoLarge}
+      </div>
       <div class="p-name">${esc(player.name)}</div>
       <div class="badges">
         <span class="badge ${player.isCaptain?'owner':''}">${player.isCaptain?'👑 ':''}${esc(status.label)}</span>
         ${status.team ? `<span class="badge">🏐 <strong>${esc(status.team)}</strong></span>` : ''}
-        ${player.club ? `<span class="badge">${getClubLogo(player.club) ? `<img class="club-logo" src="${getClubLogo(player.club)}" alt="">` : ''}${esc(player.club)}</span>` : ''}
+        ${player.club ? `<span class="badge">${clubLogoUrl ? `<img class="club-logo" src="${clubLogoUrl}" alt="">` : ''}${esc(player.club)}</span>` : ''}
         ${player.age ? `<span class="badge">Age <strong>${esc(player.age)}</strong></span>` : ''}
       </div>
       <div class="notes-box">
