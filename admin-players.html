@@ -65,6 +65,17 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
 .avatar-pick .preview{width:70px;height:70px;border-radius:50%;overflow:hidden;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid var(--gold);font-family:'Anton',sans-serif;font-size:1.5rem;}
 .avatar-pick .preview img{width:100%;height:100%;object-fit:cover;}
 .btn-row{display:flex;gap:8px;margin-top:1rem;}
+
+.crop-wrap{text-align:center;margin-bottom:16px;}
+.crop-wrap p{color:var(--muted);font-size:12px;margin-bottom:10px;}
+.crop-frame{position:relative;width:200px;height:200px;border-radius:50%;overflow:hidden;background:#000;cursor:grab;touch-action:none;border:2px solid var(--gold);margin:0 auto;}
+.crop-frame.dragging{cursor:grabbing;}
+.crop-frame img{position:absolute;top:0;left:0;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none;}
+.zoom-row{display:flex;align-items:center;gap:10px;margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto;}
+.zoom-row input[type=range]{flex:1;accent-color:var(--gold);}
+.crop-btn-row{display:flex;gap:8px;margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto;}
+.crop-btn-row .btn{flex:1;padding:8px 10px;font-size:12px;}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid rgba(250,248,242,.15);}
 .msg{font-size:12.5px;margin-top:8px;min-height:16px;}
 .msg.err{color:#e07070;}
 .msg.ok{color:#6dbc7e;}
@@ -101,12 +112,7 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
     <h3 id="modalName">Edit Player</h3>
-    <div class="avatar-pick">
-      <div class="preview" id="mAvatarPreview"></div>
-      <div style="flex:1;">
-        <input type="file" id="m-photo" accept="image/jpeg,image/png,image/webp">
-      </div>
-    </div>
+    <div id="mAvatarPickArea"></div>
     <div class="form-group"><label>Team / Club</label><input type="text" id="m-team"></div>
     <div class="form-group"><label>Age</label><input type="number" id="m-age" min="1" max="99"></div>
     <div class="form-group"><label>Notes</label><textarea id="m-notes"></textarea></div>
@@ -183,27 +189,123 @@ function getClubLogo(club) {
   return CLUB_LOGOS[key] || CLUB_LOGO_FALLBACK;
 }
 
-// Resize + compress an image file client-side so it fits comfortably in a
-// single Firestore document (1MB limit) without needing paid Storage.
-function compressImage(file, maxDim = 480, quality = 0.75) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onerror = reject;
-      img.onload = () => {
-        let { width, height } = img;
-        if (width > height && width > maxDim) { height = Math.round(height * maxDim / width); width = maxDim; }
-        else if (height > maxDim) { width = Math.round(width * maxDim / height); height = maxDim; }
-        const canvas = document.createElement('canvas');
-        canvas.width = width; canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
+// Interactive crop: lets the admin drag/zoom a photo into a circular frame
+// before it's compressed and saved. onDone receives a square JPEG data URL
+// (or null if cancelled).
+function openCropper(file, containerEl, onDone) {
+  const frameSize = 200;
+  const OUT = 480;
+
+  function clamp(state) {
+    const dispW = state.naturalW * state.scale, dispH = state.naturalH * state.scale;
+    state.offsetX = Math.min(0, Math.max(frameSize - dispW, state.offsetX));
+    state.offsetY = Math.min(0, Math.max(frameSize - dispH, state.offsetY));
+  }
+  function render(imgEl, state) {
+    imgEl.style.width = (state.naturalW * state.scale) + 'px';
+    imgEl.style.height = (state.naturalH * state.scale) + 'px';
+    imgEl.style.transform = `translate(${state.offsetX}px, ${state.offsetY}px)`;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const minScale = Math.max(frameSize / img.naturalWidth, frameSize / img.naturalHeight);
+      const state = {
+        naturalW: img.naturalWidth, naturalH: img.naturalHeight,
+        scale: minScale, minScale, maxScale: minScale * 3,
+        offsetX: (frameSize - img.naturalWidth * minScale) / 2,
+        offsetY: (frameSize - img.naturalHeight * minScale) / 2
       };
-      img.src = e.target.result;
+      clamp(state);
+
+      containerEl.innerHTML = `
+        <div class="crop-wrap">
+          <p>Drag to reposition · use the slider to zoom</p>
+          <div class="crop-frame" id="cropFrame"><img id="cropImg" src="${e.target.result}"></div>
+          <div class="zoom-row"><span>🔍</span><input type="range" id="zoomSlider" min="0" max="100" value="0"></div>
+          <div class="crop-btn-row">
+            <button type="button" class="btn btn-secondary" id="btnCancelCrop">Cancel</button>
+            <button type="button" class="btn btn-gold" id="btnUseCrop">Use This Photo</button>
+          </div>
+        </div>`;
+
+      const frameEl = document.getElementById('cropFrame');
+      const imgEl = document.getElementById('cropImg');
+      const zoomEl = document.getElementById('zoomSlider');
+      render(imgEl, state);
+
+      let dragging = false, startX, startY, startOffX, startOffY;
+      frameEl.addEventListener('pointerdown', (ev) => {
+        dragging = true; frameEl.setPointerCapture(ev.pointerId);
+        startX = ev.clientX; startY = ev.clientY;
+        startOffX = state.offsetX; startOffY = state.offsetY;
+        frameEl.classList.add('dragging');
+      });
+      frameEl.addEventListener('pointermove', (ev) => {
+        if (!dragging) return;
+        state.offsetX = startOffX + (ev.clientX - startX);
+        state.offsetY = startOffY + (ev.clientY - startY);
+        clamp(state);
+        render(imgEl, state);
+      });
+      const stopDrag = () => { dragging = false; frameEl.classList.remove('dragging'); };
+      frameEl.addEventListener('pointerup', stopDrag);
+      frameEl.addEventListener('pointercancel', stopDrag);
+
+      zoomEl.addEventListener('input', () => {
+        const t = zoomEl.value / 100;
+        const newScale = state.minScale + t * (state.maxScale - state.minScale);
+        const cx = frameSize / 2, cy = frameSize / 2;
+        const relX = (cx - state.offsetX) / state.scale, relY = (cy - state.offsetY) / state.scale;
+        state.scale = newScale;
+        state.offsetX = cx - relX * state.scale;
+        state.offsetY = cy - relY * state.scale;
+        clamp(state);
+        render(imgEl, state);
+      });
+
+      document.getElementById('btnCancelCrop').onclick = () => onDone(null);
+      document.getElementById('btnUseCrop').onclick = () => {
+        const f = OUT / frameSize;
+        const canvas = document.createElement('canvas');
+        canvas.width = OUT; canvas.height = OUT;
+        canvas.getContext('2d').drawImage(
+          img,
+          state.offsetX * f, state.offsetY * f,
+          state.naturalW * state.scale * f, state.naturalH * state.scale * f
+        );
+        onDone(canvas.toDataURL('image/jpeg', 0.8));
+      };
     };
-    reader.readAsDataURL(file);
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderModalAvatarPick(p) {
+  const photo = photoMap[p.id];
+  const preview = photo
+    ? `<img src="${photo}">`
+    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;">${esc(initials(p.name))}</div>`;
+  const area = document.getElementById('mAvatarPickArea');
+  area.innerHTML = `
+    <div class="avatar-pick">
+      <div class="preview" id="mAvatarPreview">${preview}</div>
+      <div style="flex:1;">
+        <input type="file" id="m-photo" accept="image/jpeg,image/png,image/webp">
+      </div>
+    </div>
+  `;
+  document.getElementById('m-photo').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    openCropper(file, area, (dataUrl) => {
+      if (dataUrl) pickedPhotoDataUrl = dataUrl;
+      renderModalAvatarPick(p);
+      if (dataUrl) document.getElementById('mAvatarPreview').innerHTML = `<img src="${dataUrl}">`;
+    });
   });
 }
 
@@ -222,16 +324,6 @@ function initAdmin() {
   document.getElementById('search').addEventListener('input', e => renderRows(e.target.value));
   document.getElementById('btnCloseModal').onclick = () => document.getElementById('modalOverlay').classList.remove('show');
   document.getElementById('btnSaveModal').onclick = saveModal;
-  document.getElementById('m-photo').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-      pickedPhotoDataUrl = await compressImage(file);
-      document.getElementById('mAvatarPreview').innerHTML = `<img src="${pickedPhotoDataUrl}">`;
-    } catch (err) {
-      alert('Could not process that image.');
-    }
-  });
 }
 
 function renderRows(filterText) {
@@ -271,10 +363,7 @@ function openModal(id) {
   document.getElementById('m-team').value = p.isCaptain ? (p.teamName||'') : (p.club||'');
   document.getElementById('m-age').value = p.age || '';
   document.getElementById('m-notes').value = p.notes || '';
-  const photo = photoMap[id];
-  document.getElementById('mAvatarPreview').innerHTML = photo
-    ? `<img src="${photo}">`
-    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;">${esc(initials(p.name))}</div>`;
+  renderModalAvatarPick(p);
   document.getElementById('modalMsg').textContent = '';
   document.getElementById('modalOverlay').classList.add('show');
 }
