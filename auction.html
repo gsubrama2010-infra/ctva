@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
-<title>Player Auction — CTVA</title>
+<title>Own a Player, Win Cash — CTVA Fantasy Auction</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -102,6 +102,10 @@ a{text-decoration:none;color:inherit;}
 .roster-row:last-child{border-bottom:none;}
 .roster-row .price{color:var(--gold);font-weight:700;}
 
+.event-details{display:flex;flex-wrap:wrap;gap:10px;margin-top:1.5rem;}
+.event-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(232,162,61,.08);border:1px solid rgba(232,162,61,.25);border-radius:20px;padding:8px 15px;font-size:13px;color:var(--text);}
+.event-pill strong{color:var(--gold);font-weight:700;}
+.event-pill.fee{background:linear-gradient(135deg,rgba(232,162,61,.22),rgba(232,162,61,.1));border-color:var(--gold);}
 .t-footer{background:#060e09;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);}
 .t-footer a{color:var(--gold);}
 @media(max-width:600px){ .t-hero h1{font-size:2.1rem;} }
@@ -125,9 +129,15 @@ a{text-decoration:none;color:inherit;}
 
 <div class="t-hero">
   <div class="t-hero-inner">
-    <div class="eyebrow" id="phaseLabel">Player auction</div>
-    <h1 id="heroTitle">Sunday <span>Auction</span></h1>
-    <p id="heroSub">60 players, 10 captains, $5,000 budgets. Captains bid to build their 6-player squads before the round robin.</p>
+    <div class="eyebrow" id="phaseLabel">Fantasy player auction</div>
+    <h1 id="heroTitle">Own a Player.<br><span>Win Cash.</span></h1>
+    <p id="heroSub">5-a-side volleyball &middot; Fantasy Player Ownership. Pick real players — they play, you score points, and the top owners win cash.</p>
+    <div class="event-details">
+      <span class="event-pill">📅 <strong>Saturday, October 10, 2026</strong></span>
+      <span class="event-pill">📍 <strong>Action Zone</strong>, Scarborough</span>
+      <span class="event-pill">🎲 Team Draw: <strong>Friday, October 9</strong></span>
+      <span class="event-pill fee">💰 Owner Entry: <strong>$400</strong></span>
+    </div>
   </div>
 </div>
 
@@ -378,7 +388,7 @@ AUCTION_REF.onSnapshot(snap => {
   if (auction) {
     document.getElementById('phaseLabel').textContent =
       auction.status === 'auction' ? 'Bidding live' :
-      auction.status === 'completed' ? 'Rosters final' : 'Player auction';
+      auction.status === 'completed' ? 'Rosters final' : 'Fantasy player auction';
   }
   render();
 }, err => {
