@@ -79,7 +79,8 @@ a{text-decoration:none;color:inherit;}
 .lot-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;}
 .lot-card.leading{border-color:var(--gold);}
 .lot-card.closed{opacity:.65;}
-.lot-head{display:flex;align-items:center;gap:10px;margin-bottom:.6rem;}
+.lot-head{display:flex;align-items:center;gap:10px;margin-bottom:.6rem;text-decoration:none;color:inherit;cursor:pointer;}
+.lot-head:hover .lot-name{text-decoration:underline;}
 .lot-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:2px solid var(--border);}
 .lot-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
 .lot-avatar .initials{font-family:'Anton',sans-serif;font-size:.85rem;color:rgba(255,255,255,.95);}
@@ -340,11 +341,11 @@ function renderAuctionView() {
     const clubLogo = p ? getClubLogo(p.club) : null;
 
     return `<div class="lot-card ${iAmLeading?'leading':''} ${closed?'closed':''}">
-      <div class="lot-head">
+      <a class="lot-head" href="player.html?id=${esc(p?p.id:'')}">
         <div class="lot-avatar">${avatarInner}</div>
         <div class="lot-name">${esc(p?p.name:'?')}${p && p.club && p.club.toUpperCase()!=='N/A' ? ` <span class="lot-club-text">- ${esc(p.club)}</span>` : ''}</div>
         ${clubLogo ? `<img class="lot-club-logo" src="${clubLogo}" alt="${esc(p.club)}" title="${esc(p.club)}">` : ''}
-      </div>
+      </a>
       <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?esc(leader.teamName):'no bids'}</span></div>
       <div class="lot-time ${closed?'closed-tag':closingSoon?'closing':''}">${closed?'Closed':fmtRemaining(remaining)}</div>
       ${bidArea}
