@@ -85,6 +85,7 @@ a{text-decoration:none;color:inherit;}
 .lot-avatar .initials{font-family:'Anton',sans-serif;font-size:.85rem;color:rgba(255,255,255,.95);}
 .lot-club-logo{width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
 .lot-name{font-family:'Anton',sans-serif;font-size:1.05rem;}
+.lot-club-text{font-family:'Inter',sans-serif;font-size:.72rem;font-weight:500;color:var(--muted);}
 .lot-bid-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem;}
 .lot-bid{font-family:'Anton',sans-serif;font-size:1.5rem;color:var(--gold);}
 .lot-leader{font-size:12px;color:var(--muted);}
@@ -341,7 +342,7 @@ function renderAuctionView() {
     return `<div class="lot-card ${iAmLeading?'leading':''} ${closed?'closed':''}">
       <div class="lot-head">
         <div class="lot-avatar">${avatarInner}</div>
-        <div class="lot-name">${esc(p?p.name:'?')}</div>
+        <div class="lot-name">${esc(p?p.name:'?')}${p && p.club && p.club.toUpperCase()!=='N/A' ? ` <span class="lot-club-text">- ${esc(p.club)}</span>` : ''}</div>
         ${clubLogo ? `<img class="lot-club-logo" src="${clubLogo}" alt="${esc(p.club)}" title="${esc(p.club)}">` : ''}
       </div>
       <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?esc(leader.teamName):'no bids'}</span></div>
