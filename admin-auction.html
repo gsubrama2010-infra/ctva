@@ -187,17 +187,44 @@ function render() {
   if (!auction) {
     body.innerHTML = renderSetup();
   } else {
+    let html = renderRegToggle();
     switch (auction.status) {
-      case 'registration':      body.innerHTML = renderRegistration(); break;
-      case 'voting':             body.innerHTML = renderVoting(); break;
-      case 'captains_review':    body.innerHTML = renderCaptainsReview(); break;
-      case 'captains_selected':  body.innerHTML = renderCaptainsSelected(); break;
-      case 'auction':            body.innerHTML = renderAuctionLive(); break;
-      case 'completed':          body.innerHTML = renderCompleted(); break;
-      default:                   body.innerHTML = '<p>Unknown state.</p>';
+      case 'registration':      html += renderRegistration(); break;
+      case 'voting':             html += renderVoting(); break;
+      case 'captains_review':    html += renderCaptainsReview(); break;
+      case 'captains_selected':  html += renderCaptainsSelected(); break;
+      case 'auction':            html += renderAuctionLive(); break;
+      case 'completed':          html += renderCompleted(); break;
+      default:                   html += '<p>Unknown state.</p>';
     }
+    body.innerHTML = html;
   }
   wireEvents();
+}
+
+/* ── REGISTRATION TOGGLE (independent of auction phase) ── */
+function renderRegToggle() {
+  const isOpen = auction.registrationOpen !== undefined ? auction.registrationOpen : auction.status === 'registration';
+  const players = auction.players || [];
+  return `<div class="panel" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <strong style="font-family:'Anton',sans-serif;font-size:1.1rem;">Registration: ${isOpen ? '<span style="color:#6dbc7e;">Open</span>' : '<span style="color:#e07070;">Closed</span>'}</strong>
+      <p class="desc" style="margin:4px 0 0;">${players.length} / ${auction.playerCap} registered on <code>auction-signup.html</code>. This can be toggled independently of the phase below — new sign-ups won't affect owners already selected.</p>
+    </div>
+    <div class="btn-row" style="margin:0;">
+      <button class="btn ${isOpen?'btn-danger':'btn-green'}" id="btnToggleReg">${isOpen ? 'Close Registration' : 'Open Registration'}</button>
+      <button class="btn btn-ghost" id="btnRaiseCap">Raise Cap +20</button>
+    </div>
+  </div>`;
+}
+
+async function toggleRegistration() {
+  const isOpen = auction.registrationOpen !== undefined ? auction.registrationOpen : auction.status === 'registration';
+  await AUCTION_REF.update({ registrationOpen: !isOpen, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+async function raiseCap() {
+  await AUCTION_REF.update({ playerCap: (auction.playerCap||0) + 20, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
 }
 
 /* ── SETUP ── */
@@ -497,6 +524,8 @@ async function pushToLeague() {
 /* ── EVENTS ── */
 function wireEvents() {
   const b = id => document.getElementById(id);
+  if (b('btnToggleReg')) b('btnToggleReg').onclick = () => toggleRegistration().catch(e=>alert(e.message));
+  if (b('btnRaiseCap')) b('btnRaiseCap').onclick = () => raiseCap().catch(e=>alert(e.message));
   if (b('btnCreate')) b('btnCreate').onclick = () => createAuction().catch(e=>{ b('saveStatus').textContent='Error: '+e.message; b('saveStatus').className='save-status err'; });
   if (b('btnCloseReg')) b('btnCloseReg').onclick = () => closeRegistration().catch(e=>alert(e.message));
   if (b('btnCloseVote')) b('btnCloseVote').onclick = () => closeVoting().catch(e=>alert(e.message));

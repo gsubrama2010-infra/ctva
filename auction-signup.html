@@ -169,7 +169,7 @@ function renderForm() {
   const card  = document.getElementById('formCard');
   const players = (auctionData && auctionData.players) || [];
   const cap = (auctionData && auctionData.playerCap) || 60;
-  const status = auctionData && auctionData.status;
+  const regOpen = auctionData && (auctionData.registrationOpen !== undefined ? auctionData.registrationOpen : auctionData.status === 'registration');
 
   document.getElementById('countText').textContent = `${players.length} / ${cap}`;
   document.getElementById('progressFill').style.width = Math.min(100, (players.length / cap) * 100) + '%';
@@ -178,7 +178,7 @@ function renderForm() {
     card.innerHTML = `<div class="closed-box"><div class="icon">🏐</div><p>No auction is currently open for sign-ups.</p></div>`;
     return;
   }
-  if (status !== 'registration') {
+  if (!regOpen) {
     card.innerHTML = `<div class="closed-box"><div class="icon">🔒</div><p>Registration is closed for this auction.</p><p style="margin-top:8px;"><a href="auction.html" style="color:var(--gold);">→ View auction status</a></p></div>`;
     return;
   }
