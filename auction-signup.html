@@ -245,6 +245,22 @@ async function submitSignup() {
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
+    // If bidding is already live, drop this player straight into the pool
+    // as a fresh lot — no admin step, no waiting.
+    if (auctionData.status === 'auction') {
+      const newLot = {
+        playerId: player.id,
+        currentBid: 0,
+        currentBidderTeamId: '',
+        bids: [],
+        endTime: firebase.firestore.Timestamp.fromMillis(Date.now() + (auctionData.auctionWindowDays || 6) * 86400000)
+      };
+      await AUCTION_REF.update({
+        lots: firebase.firestore.FieldValue.arrayUnion(newLot),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+
     document.getElementById('pinValue').textContent = pin;
     document.getElementById('pinOverlay').classList.add('show');
     msg.textContent = '';
