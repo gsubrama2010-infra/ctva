@@ -163,7 +163,7 @@ function initAdmin() {
 }
 
 const PHASES = ['registration','voting','captains_review','captains_selected','auction','completed'];
-const PHASE_LABEL = { registration:'Registration', voting:'Voting', captains_review:'Review Captains', captains_selected:'Captains Set', auction:'Auction', completed:'Completed' };
+const PHASE_LABEL = { registration:'Registration', voting:'Voting', captains_review:'Review Owners', captains_selected:'Owners Set', auction:'Auction', completed:'Completed' };
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function fmtDateTime(ts){ if(!ts) return ''; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString('en-CA',{dateStyle:'medium',timeStyle:'short'}); }
@@ -208,11 +208,11 @@ function renderSetup() {
     <div class="form-group"><label>Auction / Season Name</label><input id="s-name" value="CTVA Player Auction 2026"></div>
     <div class="form-row-3">
       <div class="form-group"><label>Total Players</label><input id="s-cap" type="number" value="60"></div>
-      <div class="form-group"><label>Number of Captains</label><input id="s-captains" type="number" value="10"></div>
+      <div class="form-group"><label>Number of Owners</label><input id="s-captains" type="number" value="10"></div>
       <div class="form-group"><label>Team Size</label><input id="s-teamsize" type="number" value="6"></div>
     </div>
     <div class="form-row-3">
-      <div class="form-group"><label>Budget / Captain ($)</label><input id="s-budget" type="number" value="5000"></div>
+      <div class="form-group"><label>Budget / Owner ($)</label><input id="s-budget" type="number" value="5000"></div>
       <div class="form-group"><label>Min Bid Increment ($)</label><input id="s-incr" type="number" value="50"></div>
       <div class="form-group"><label>Anti-Snipe Extension (min)</label><input id="s-snipe" type="number" value="2"></div>
     </div>
@@ -271,7 +271,7 @@ async function removePlayer(id) {
 async function closeRegistration() {
   const players = auction.players || [];
   if (players.length < auction.captainsCount) {
-    alert(`Need at least ${auction.captainsCount} players to elect ${auction.captainsCount} captains.`);
+    alert(`Need at least ${auction.captainsCount} players to elect ${auction.captainsCount} owners.`);
     return;
   }
   if (!confirm(`Close registration with ${players.length} players and open voting?`)) return;
@@ -297,13 +297,13 @@ function renderVoting() {
       ${ranked.map((p,i)=>`<tr class="${i<auction.captainsCount?'rank-'+Math.min(i+1,3):''}"><td>${i+1}</td><td>${esc(p.name)}</td><td class="num">${p.votes}</td></tr>`).join('')}
     </table>
     <div class="btn-row">
-      <button class="btn btn-gold" id="btnCloseVote">Close Voting &amp; Review Captains</button>
+      <button class="btn btn-gold" id="btnCloseVote">Close Voting &amp; Review Owners</button>
     </div>
   </div>`;
 }
 
 async function closeVoting() {
-  if (!confirm('Close voting? Results will move to captain review.')) return;
+  if (!confirm('Close voting? Results will move to owner review.')) return;
   await AUCTION_REF.update({ status: 'captains_review', votingClosedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
 }
 
@@ -312,7 +312,7 @@ function renderCaptainsReview() {
   const ranked = tally();
   const n = auction.captainsCount;
   return `<div class="panel">
-    <h3>Review &amp; Confirm Captains</h3>
+    <h3>Review &amp; Confirm Owners</h3>
     <p class="desc">Top ${n} by votes are pre-checked. Adjust for ties or preference — you must select exactly ${n} before confirming.</p>
     <table class="dtable">
       <tr><th></th><th>#</th><th>Name</th><th class="num">Votes</th></tr>
@@ -323,7 +323,7 @@ function renderCaptainsReview() {
     </table>
     <p class="hint" id="selCount"></p>
     <div class="btn-row">
-      <button class="btn btn-gold" id="btnConfirmCaptains">Confirm Selected Captains</button>
+      <button class="btn btn-gold" id="btnConfirmCaptains">Confirm Selected Owners</button>
     </div>
     <div class="save-status" id="saveStatus"></div>
   </div>`;
@@ -340,7 +340,7 @@ function updateSelCount() {
 async function confirmCaptains() {
   const n = auction.captainsCount;
   const ids = Array.from(document.querySelectorAll('.cap-check:checked')).map(cb => cb.dataset.id);
-  if (ids.length !== n) { alert(`Select exactly ${n} captains (currently ${ids.length}).`); return; }
+  if (ids.length !== n) { alert(`Select exactly ${n} owners (currently ${ids.length}).`); return; }
 
   const players = (auction.players||[]).map(p => {
     if (ids.includes(p.id)) {
@@ -356,7 +356,7 @@ function renderCaptainsSelected() {
   const captains = (auction.players||[]).filter(p => p.isCaptain);
   const remaining = (auction.players||[]).filter(p => !p.isCaptain).length;
   return `<div class="panel">
-    <h3>Captains Confirmed</h3>
+    <h3>Owners Confirmed</h3>
     <p class="desc">Edit team names below if needed, then open the auction for the remaining ${remaining} players.</p>
     ${captains.map(c => `<div class="captain-row">
       <span>${esc(c.name)}</span>
@@ -411,7 +411,7 @@ function renderAuctionLive() {
     <h3>Auction Live</h3>
     <p class="desc">${lots.length} players up for bidding. ${allEnded ? 'All lots have closed — ready to finalize.' : 'Still in progress.'}</p>
     <table class="dtable">
-      <tr><th>Captain / Team</th><th class="num">Slots</th><th class="num">Committed</th><th class="num">Remaining</th></tr>
+      <tr><th>Owner / Team</th><th class="num">Slots</th><th class="num">Committed</th><th class="num">Remaining</th></tr>
       ${captainStats.map(c=>`<tr><td>${esc(c.teamName)}</td><td class="num">${c.slots}/${auction.teamSize-1}</td><td class="num">$${c.committed}</td><td class="num">$${c.remaining}</td></tr>`).join('')}
     </table>
   </div>
@@ -463,7 +463,7 @@ function renderCompleted() {
       return `<div class="team-block">
         <div class="team-block-head"><strong>${esc(c.teamName)}</strong><span>Spent $${spent} / $${auction.budgetPerCaptain} · $${auction.budgetPerCaptain-spent} left</span></div>
         <div class="team-block-body">
-          <div class="roster-row"><span>👑 ${esc(c.name)} (Captain)</span><span class="price">–</span></div>
+          <div class="roster-row"><span>👑 ${esc(c.name)} (Owner)</span><span class="price">–</span></div>
           ${roster.map(p=>`<div class="roster-row"><span>${esc(p.name)}</span><span class="price">$${p.soldPrice}</span></div>`).join('')}
         </div>
       </div>`;

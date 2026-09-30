@@ -198,7 +198,7 @@ function render() {
   switch (auction.status) {
     case 'registration':     el.innerHTML = renderRegistrationView(); break;
     case 'voting':            el.innerHTML = renderVotingView(); break;
-    case 'captains_review':   el.innerHTML = `<div class="status-box"><div class="icon">🗳️</div><p>Voting has closed. Captains are being finalized.</p></div>`; break;
+    case 'captains_review':   el.innerHTML = `<div class="status-box"><div class="icon">🗳️</div><p>Voting has closed. Owners are being finalized.</p></div>`; break;
     case 'captains_selected': el.innerHTML = renderCaptainsSelectedView(); break;
     case 'auction':           el.innerHTML = renderAuctionView(); wireBidHandlers(); break;
     case 'completed':         el.innerHTML = renderCompletedView(); break;
@@ -218,8 +218,8 @@ function renderRegistrationView() {
 
 function renderVotingView() {
   return `<div class="card">
-    <h3 style="font-family:'Anton',sans-serif;margin-bottom:.4rem;">Captain Voting Open</h3>
-    <p style="color:var(--muted);font-size:13.5px;margin-bottom:1rem;">Registered players are voting for the ${auction.captainsCount} team captains. Results are revealed once voting closes.</p>
+    <h3 style="font-family:'Anton',sans-serif;margin-bottom:.4rem;">Owner Voting Open</h3>
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:1rem;">Registered players are voting for the ${auction.captainsCount} team owners. Results are revealed once voting closes.</p>
     <a href="auction-vote.html" class="btn btn-gold btn-full" style="display:block;text-align:center;text-decoration:none;">Cast Your Vote →</a>
   </div>`;
 }
@@ -227,9 +227,9 @@ function renderVotingView() {
 function renderCaptainsSelectedView() {
   const captains = (auction.players||[]).filter(p => p.isCaptain);
   return `<div class="card">
-    <h3 style="font-family:'Anton',sans-serif;margin-bottom:1rem;">Captains Are In — Auction Starting Soon</h3>
+    <h3 style="font-family:'Anton',sans-serif;margin-bottom:1rem;">Owners Are In — Auction Starting Soon</h3>
     <div class="teams-grid-simple">
-      ${captains.map(c => `<div class="team-mini"><div class="tname">${esc(c.teamName)}</div><div class="cname">Captain: ${esc(c.name)}</div></div>`).join('')}
+      ${captains.map(c => `<div class="team-mini"><div class="tname">${esc(c.teamName)}</div><div class="cname">Owner: ${esc(c.name)}</div></div>`).join('')}
     </div>
   </div>`;
 }
@@ -246,16 +246,16 @@ function renderAuctionView() {
     const won = lots.filter(l => l.currentBidderTeamId === live.teamId);
     const committed = won.reduce((s,l)=>s+l.currentBid,0);
     captainBar = `<div class="captain-bar">
-      <div><div class="name">${esc(live.teamName)}</div><div class="stat">Captain: ${esc(live.name)}</div></div>
+      <div><div class="name">${esc(live.teamName)}</div><div class="stat">Owner: ${esc(live.name)}</div></div>
       <div class="stat">Budget left<br><strong>$${auction.budgetPerCaptain - committed}</strong></div>
       <div class="stat">Slots filled<br><strong>${won.length} / ${auction.teamSize-1}</strong></div>
     </div>`;
   } else {
     const captains = players.filter(p=>p.isCaptain).slice().sort((a,b)=>a.name.localeCompare(b.name));
     captainBar = `<div class="card">
-      <h3 style="font-family:'Anton',sans-serif;margin-bottom:1rem;font-size:1.1rem;">Captain Login</h3>
+      <h3 style="font-family:'Anton',sans-serif;margin-bottom:1rem;font-size:1.1rem;">Owner Login</h3>
       <div class="form-group"><label>Team</label>
-        <select id="f-captain">${captains.map(c=>`<option value="${esc(c.id)}">${esc(c.teamName)} — ${esc(c.name)}</option>`).join('')}</select>
+        <select id="f-captain">${captains.map(c=>`<option value="${esc(c.id)}">${esc(c.teamName)} — ${esc(c.name)} (Owner)</option>`).join('')}</select>
       </div>
       <div class="form-group"><label>PIN</label><input type="text" id="f-pin" inputmode="numeric" maxlength="6" placeholder="Your PIN"></div>
       <button class="btn btn-gold btn-full" id="btnLogin">Unlock Bidding</button>
@@ -276,7 +276,7 @@ function renderAuctionView() {
     if (closed) {
       bidArea = `<div class="lot-note ${leader?'win':''}">${leader ? 'Sold to '+esc(leader.teamName) : 'No bids'}</div>`;
     } else if (!unlockedCaptain) {
-      bidArea = `<div class="lot-note">Log in as a captain to bid</div>`;
+      bidArea = `<div class="lot-note">Log in as an owner to bid</div>`;
     } else if (iAmLeading) {
       bidArea = `<div class="lot-note win">You're winning this player</div>`;
     } else {
@@ -306,7 +306,7 @@ function renderCompletedView() {
     const spent = roster.reduce((s,p)=>s+(p.soldPrice||0),0);
     return `<div class="team-block">
       <div class="team-block-head"><strong>${esc(c.teamName)}</strong><span>$${spent} spent · $${auction.budgetPerCaptain-spent} left</span></div>
-      <div class="roster-row"><span>👑 ${esc(c.name)} (Captain)</span><span class="price">–</span></div>
+      <div class="roster-row"><span>👑 ${esc(c.name)} (Owner)</span><span class="price">–</span></div>
       ${roster.map(p=>`<div class="roster-row"><span>${esc(p.name)}</span><span class="price">$${p.soldPrice}</span></div>`).join('')}
     </div>`;
   }).join('') + `<div class="card"><a href="league.html" style="color:var(--gold);font-weight:700;">→ See the round-robin league &amp; schedule</a></div>`;
