@@ -79,7 +79,12 @@ a{text-decoration:none;color:inherit;}
 .lot-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;}
 .lot-card.leading{border-color:var(--gold);}
 .lot-card.closed{opacity:.65;}
-.lot-name{font-family:'Anton',sans-serif;font-size:1.05rem;margin-bottom:.6rem;}
+.lot-head{display:flex;align-items:center;gap:10px;margin-bottom:.6rem;}
+.lot-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:2px solid var(--border);}
+.lot-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.lot-avatar .initials{font-family:'Anton',sans-serif;font-size:.85rem;color:rgba(255,255,255,.95);}
+.lot-club-logo{width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
+.lot-name{font-family:'Anton',sans-serif;font-size:1.05rem;}
 .lot-bid-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem;}
 .lot-bid{font-family:'Anton',sans-serif;font-size:1.5rem;color:var(--gold);}
 .lot-leader{font-size:12px;color:var(--muted);}
@@ -173,14 +178,54 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+const PHOTOS = db.collection('player_photos');
 
 let auction = null;
 let unlockedCaptain = null;
+let photoMap = {};
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 async function sha256Hex(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function initials(name) {
+  if (!name) return '?';
+  const words = name.trim().split(/\s+/);
+  const first = words[0]?.[0] || '';
+  const last = words.length > 1 ? words[words.length-1][0] : '';
+  return (first + last).toUpperCase();
+}
+const AVATAR_PALETTE = [
+  ['#8fa9c9','#5c7699'], ['#c9a98f','#997a5c'], ['#a3b58f','#748a5c'],
+  ['#b28fc9','#7f5c99'], ['#c98fa0','#995c70'], ['#8fc9c0','#5c9992']
+];
+function avatarGradient(name) {
+  let hash = 0;
+  for (const ch of (name||'')) hash = (hash*31 + ch.charCodeAt(0)) >>> 0;
+  const [from,to] = AVATAR_PALETTE[hash % AVATAR_PALETTE.length];
+  return `linear-gradient(135deg, ${from}, ${to})`;
+}
+const CLUB_LOGO_FALLBACK = 'images/TeamLogos/TorontoBluesSC.jpeg';
+const CLUB_LOGOS = {
+  'blues':          'images/TeamLogos/TorontoBluesSC.jpeg',
+  'thai munn':      'images/TeamLogos/ThaimunSportsClub.jpeg',
+  'malvern':        'images/TeamLogos/MalvernSportsClub.jpeg',
+  'super star':     'images/TeamLogos/SuperStar.jpeg',
+  'north gurilla':  'images/TeamLogos/NorthernGorillasSC.jpeg',
+  'singing fish':   'images/TeamLogos/SingingFishVolleyballClub.jpeg',
+  'rough river':    'images/TeamLogos/RougeRiverVolleyballClub.jpeg',
+  'new star':       'images/TeamLogos/NewStar.jpeg',
+  'uthaya nila':    'images/TeamLogos/UthayaNilaSC.jpeg',
+  'sivasakthi':     'images/TeamLogos/SivasakhtiSC.jpeg',
+  'siva sakthi':    'images/TeamLogos/SivasakhtiSC.jpeg',
+  'nagar kovil':    'images/TeamLogos/NagarkovilSC.jpeg'
+};
+function getClubLogo(club) {
+  if (!club) return null;
+  const key = club.trim().toLowerCase();
+  if (!key || key === 'n/a') return null;
+  return CLUB_LOGOS[key] || CLUB_LOGO_FALLBACK;
 }
 function toMs(ts){ return ts && ts.toMillis ? ts.toMillis() : new Date(ts).getTime(); }
 function fmtRemaining(ms) {
@@ -287,8 +332,18 @@ function renderAuctionView() {
       </div>`;
     }
 
+    const photo = p ? photoMap[p.id] : null;
+    const avatarInner = photo
+      ? `<img src="${photo}" alt="${esc(p.name)}">`
+      : `<div class="initials" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(p?p.name:'?')};">${esc(initials(p?p.name:'?'))}</div>`;
+    const clubLogo = p ? getClubLogo(p.club) : null;
+
     return `<div class="lot-card ${iAmLeading?'leading':''} ${closed?'closed':''}">
-      <div class="lot-name">${esc(p?p.name:'?')}</div>
+      <div class="lot-head">
+        <div class="lot-avatar">${avatarInner}</div>
+        <div class="lot-name">${esc(p?p.name:'?')}</div>
+        ${clubLogo ? `<img class="lot-club-logo" src="${clubLogo}" alt="${esc(p.club)}" title="${esc(p.club)}">` : ''}
+      </div>
       <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?esc(leader.teamName):'no bids'}</span></div>
       <div class="lot-time ${closed?'closed-tag':closingSoon?'closing':''}">${closed?'Closed':fmtRemaining(remaining)}</div>
       ${bidArea}
@@ -405,6 +460,12 @@ AUCTION_REF.onSnapshot(snap => {
 }, err => {
   document.getElementById('body').innerHTML = `<div class="status-box"><div class="icon">⚠️</div><p>Could not load the auction.</p></div>`;
   console.error(err);
+});
+
+PHOTOS.onSnapshot(snap => {
+  photoMap = {};
+  snap.forEach(doc => { photoMap[doc.id] = doc.data().photoBase64; });
+  if (auction) render();
 });
 
 setInterval(() => { if (auction && auction.status === 'auction' && unlockedCaptain) render(); }, 15000);
