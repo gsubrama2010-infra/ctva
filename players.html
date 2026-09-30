@@ -114,8 +114,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+const PHOTOS = db.collection('player_photos');
 
 let allPlayers = [];
+let photoMap = {};
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function initials(name) {
@@ -137,8 +139,9 @@ function avatarGradient(name) {
 }
 
 function cardHtml(p) {
-  const avatar = p.photoURL
-    ? `<img src="${esc(p.photoURL)}" alt="${esc(p.name)}">`
+  const photo = photoMap[p.id];
+  const avatar = photo
+    ? `<img src="${photo}" alt="${esc(p.name)}">`
     : `<div class="initials" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(p.name)};">${esc(initials(p.name))}</div>`;
   return `<a class="p-card ${p.isCaptain?'owner':''}" href="player.html?id=${esc(p.id)}">
     <div class="p-avatar">${avatar}</div>
@@ -171,6 +174,12 @@ AUCTION_REF.onSnapshot(snap => {
 }, err => {
   document.getElementById('body').innerHTML = `<div class="empty">Could not load players.</div>`;
   console.error(err);
+});
+
+PHOTOS.onSnapshot(snap => {
+  photoMap = {};
+  snap.forEach(doc => { photoMap[doc.id] = doc.data().photoBase64; });
+  render(document.getElementById('search').value);
 });
 </script>
 </body>

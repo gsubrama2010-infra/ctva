@@ -119,7 +119,6 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script>
 const ADMIN_PASSWORD = 'ctva2026';
 const firebaseConfig = {
@@ -132,8 +131,8 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
 const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+const PHOTOS = db.collection('player_photos');
 
 function checkPw() {
   const val = document.getElementById('pwInput').value;
@@ -148,8 +147,9 @@ function checkPw() {
 }
 
 let auction = null;
+let photoMap = {};
 let editingId = null;
-let pickedFile = null;
+let pickedPhotoDataUrl = null;
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function initials(name) {
@@ -160,6 +160,30 @@ function initials(name) {
   return (first + last).toUpperCase();
 }
 
+// Resize + compress an image file client-side so it fits comfortably in a
+// single Firestore document (1MB limit) without needing paid Storage.
+function compressImage(file, maxDim = 480, quality = 0.75) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height && width > maxDim) { height = Math.round(height * maxDim / width); width = maxDim; }
+        else if (height > maxDim) { width = Math.round(width * maxDim / height); height = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function initAdmin() {
   AUCTION_REF.onSnapshot(snap => {
     auction = snap.exists ? snap.data() : null;
@@ -167,14 +191,23 @@ function initAdmin() {
   }, err => {
     document.getElementById('rows').innerHTML = `<tr><td colspan="7">Failed to load: ${err.message}</td></tr>`;
   });
+  PHOTOS.onSnapshot(snap => {
+    photoMap = {};
+    snap.forEach(doc => { photoMap[doc.id] = doc.data().photoBase64; });
+    renderRows(document.getElementById('search').value);
+  });
   document.getElementById('search').addEventListener('input', e => renderRows(e.target.value));
   document.getElementById('btnCloseModal').onclick = () => document.getElementById('modalOverlay').classList.remove('show');
   document.getElementById('btnSaveModal').onclick = saveModal;
-  document.getElementById('m-photo').addEventListener('change', e => {
+  document.getElementById('m-photo').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    pickedFile = file;
-    document.getElementById('mAvatarPreview').innerHTML = `<img src="${URL.createObjectURL(file)}">`;
+    try {
+      pickedPhotoDataUrl = await compressImage(file);
+      document.getElementById('mAvatarPreview').innerHTML = `<img src="${pickedPhotoDataUrl}">`;
+    } catch (err) {
+      alert('Could not process that image.');
+    }
   });
 }
 
@@ -186,8 +219,9 @@ function renderRows(filterText) {
     .slice().sort((a,b) => (a.number||0) - (b.number||0));
 
   tbody.innerHTML = players.map(p => {
-    const avatar = p.photoURL
-      ? `<img src="${esc(p.photoURL)}">`
+    const photo = photoMap[p.id];
+    const avatar = photo
+      ? `<img src="${photo}">`
       : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#2F5233;color:#fff;">${esc(initials(p.name))}</div>`;
     return `<tr>
       <td><div class="row-avatar">${avatar}</div></td>
@@ -195,7 +229,7 @@ function renderRows(filterText) {
       <td>${p.isCaptain ? '👑 Owner' : 'Player'}</td>
       <td>${esc(p.isCaptain ? (p.teamName||'') : (p.club||''))}</td>
       <td>${p.age ? esc(p.age) : '<span style="color:var(--muted);">–</span>'}</td>
-      <td>${p.photoURL ? '✓' : '<span style="color:var(--muted);">–</span>'}</td>
+      <td>${photo ? '✓' : '<span style="color:var(--muted);">–</span>'}</td>
       <td><button class="btn btn-ghost" data-edit="${esc(p.id)}">Edit</button> <a class="btn btn-ghost" href="player.html?id=${esc(p.id)}" target="_blank">View</a></td>
     </tr>`;
   }).join('') || `<tr><td colspan="7">No players match.</td></tr>`;
@@ -209,13 +243,14 @@ function openModal(id) {
   const p = (auction.players||[]).find(x => x.id === id);
   if (!p) return;
   editingId = id;
-  pickedFile = null;
+  pickedPhotoDataUrl = null;
   document.getElementById('modalName').textContent = 'Edit ' + p.name;
   document.getElementById('m-team').value = p.isCaptain ? (p.teamName||'') : (p.club||'');
   document.getElementById('m-age').value = p.age || '';
   document.getElementById('m-notes').value = p.notes || '';
-  document.getElementById('mAvatarPreview').innerHTML = p.photoURL
-    ? `<img src="${esc(p.photoURL)}">`
+  const photo = photoMap[id];
+  document.getElementById('mAvatarPreview').innerHTML = photo
+    ? `<img src="${photo}">`
     : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;">${esc(initials(p.name))}</div>`;
   document.getElementById('modalMsg').textContent = '';
   document.getElementById('modalOverlay').classList.add('show');
@@ -226,13 +261,9 @@ async function saveModal() {
   const msg = document.getElementById('modalMsg');
   btn.disabled = true;
   try {
-    const p = (auction.players||[]).find(x => x.id === editingId);
-    let photoURL = p.photoURL || '';
-    if (pickedFile) {
-      const ext = pickedFile.name.split('.').pop();
-      const ref = storage.ref(`player-photos/${editingId}.${ext}`);
-      await ref.put(pickedFile);
-      photoURL = await ref.getDownloadURL();
+    if (pickedPhotoDataUrl) {
+      await PHOTOS.doc(editingId).set({ photoBase64: pickedPhotoDataUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      pickedPhotoDataUrl = null;
     }
     const teamVal = document.getElementById('m-team').value.trim();
     const age = parseInt(document.getElementById('m-age').value) || null;
@@ -243,8 +274,8 @@ async function saveModal() {
     const players = (data.players||[]).map(x => {
       if (x.id !== editingId) return x;
       return x.isCaptain
-        ? { ...x, teamName: teamVal || x.teamName, age, notes, photoURL }
-        : { ...x, club: teamVal, age, notes, photoURL };
+        ? { ...x, teamName: teamVal || x.teamName, age, notes }
+        : { ...x, club: teamVal, age, notes };
     });
     await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
 
