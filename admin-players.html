@@ -47,6 +47,7 @@ table.dtable th{text-align:left;padding:7px 8px;color:var(--muted);font-size:10.
 table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);vertical-align:middle;}
 .row-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:13px;flex-shrink:0;}
 .row-avatar img{width:100%;height:100%;object-fit:cover;}
+.club-logo{width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:5px;}
 .btn{border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}
 .btn-gold{background:var(--gold);color:var(--ink);}
 .btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);}
@@ -160,6 +161,28 @@ function initials(name) {
   return (first + last).toUpperCase();
 }
 
+const CLUB_LOGO_FALLBACK = 'images/TeamLogos/TorontoBluesSC.jpeg';
+const CLUB_LOGOS = {
+  'blues':          'images/TeamLogos/TorontoBluesSC.jpeg',
+  'thai munn':      'images/TeamLogos/ThaimunSportsClub.jpeg',
+  'malvern':        'images/TeamLogos/MalvernSportsClub.jpeg',
+  'super star':     'images/TeamLogos/SuperStar.jpeg',
+  'north gurilla':  'images/TeamLogos/NorthernGorillasSC.jpeg',
+  'singing fish':   'images/TeamLogos/SingingFishVolleyballClub.jpeg',
+  'rough river':    'images/TeamLogos/RougeRiverVolleyballClub.jpeg',
+  'new star':       'images/TeamLogos/NewStar.jpeg',
+  'uthaya nila':    'images/TeamLogos/UthayaNilaSC.jpeg',
+  'sivasakthi':     'images/TeamLogos/SivasakhtiSC.jpeg',
+  'siva sakthi':    'images/TeamLogos/SivasakhtiSC.jpeg',
+  'nagar kovil':    'images/TeamLogos/NagarkovilSC.jpeg'
+};
+function getClubLogo(club) {
+  if (!club) return null;
+  const key = club.trim().toLowerCase();
+  if (!key || key === 'n/a') return null;
+  return CLUB_LOGOS[key] || CLUB_LOGO_FALLBACK;
+}
+
 // Resize + compress an image file client-side so it fits comfortably in a
 // single Firestore document (1MB limit) without needing paid Storage.
 function compressImage(file, maxDim = 480, quality = 0.75) {
@@ -227,7 +250,7 @@ function renderRows(filterText) {
       <td><div class="row-avatar">${avatar}</div></td>
       <td>${esc(p.name)}</td>
       <td>${p.isCaptain ? '👑 Owner' : 'Player'}</td>
-      <td>${esc(p.isCaptain ? (p.teamName||'') : (p.club||''))}</td>
+      <td>${p.isCaptain ? esc(p.teamName||'') : (() => { const logo = getClubLogo(p.club); return `${logo?`<img class="club-logo" src="${logo}" alt="">`:''}${esc(p.club||'')}`; })()}</td>
       <td>${p.age ? esc(p.age) : '<span style="color:var(--muted);">–</span>'}</td>
       <td>${photo ? '✓' : '<span style="color:var(--muted);">–</span>'}</td>
       <td><button class="btn btn-ghost" data-edit="${esc(p.id)}">Edit</button> <a class="btn btn-ghost" href="player.html?id=${esc(p.id)}" target="_blank">View</a></td>

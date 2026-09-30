@@ -48,6 +48,7 @@ a{text-decoration:none;color:inherit;}
 .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,162,61,.08);border:1px solid rgba(232,162,61,.25);border-radius:20px;padding:6px 14px;font-size:12.5px;color:var(--text);}
 .badge strong{color:var(--gold);}
 .badge.owner{background:linear-gradient(135deg,rgba(232,162,61,.22),rgba(232,162,61,.1));border-color:var(--gold);}
+.badge .club-logo{width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;}
 
 .notes-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.4rem 1.6rem;text-align:left;margin-top:1.4rem;}
 .notes-box .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;}
@@ -123,6 +124,28 @@ function avatarGradient(name) {
   return `linear-gradient(135deg, ${from}, ${to})`;
 }
 
+const CLUB_LOGO_FALLBACK = 'images/TeamLogos/TorontoBluesSC.jpeg';
+const CLUB_LOGOS = {
+  'blues':          'images/TeamLogos/TorontoBluesSC.jpeg',
+  'thai munn':      'images/TeamLogos/ThaimunSportsClub.jpeg',
+  'malvern':        'images/TeamLogos/MalvernSportsClub.jpeg',
+  'super star':     'images/TeamLogos/SuperStar.jpeg',
+  'north gurilla':  'images/TeamLogos/NorthernGorillasSC.jpeg',
+  'singing fish':   'images/TeamLogos/SingingFishVolleyballClub.jpeg',
+  'rough river':    'images/TeamLogos/RougeRiverVolleyballClub.jpeg',
+  'new star':       'images/TeamLogos/NewStar.jpeg',
+  'uthaya nila':    'images/TeamLogos/UthayaNilaSC.jpeg',
+  'sivasakthi':     'images/TeamLogos/SivasakhtiSC.jpeg',
+  'siva sakthi':    'images/TeamLogos/SivasakhtiSC.jpeg',
+  'nagar kovil':    'images/TeamLogos/NagarkovilSC.jpeg'
+};
+function getClubLogo(club) {
+  if (!club) return null;
+  const key = club.trim().toLowerCase();
+  if (!key || key === 'n/a') return null;
+  return CLUB_LOGOS[key] || CLUB_LOGO_FALLBACK;
+}
+
 function findPlayer(auction, id) {
   return (auction.players || []).find(p => p.id === id);
 }
@@ -165,7 +188,7 @@ function render(auction, photo) {
       <div class="badges">
         <span class="badge ${player.isCaptain?'owner':''}">${player.isCaptain?'👑 ':''}${esc(status.label)}</span>
         ${status.team ? `<span class="badge">🏐 <strong>${esc(status.team)}</strong></span>` : ''}
-        ${player.club ? `<span class="badge">${esc(player.club)}</span>` : ''}
+        ${player.club ? `<span class="badge">${getClubLogo(player.club) ? `<img class="club-logo" src="${getClubLogo(player.club)}" alt="">` : ''}${esc(player.club)}</span>` : ''}
         ${player.age ? `<span class="badge">Age <strong>${esc(player.age)}</strong></span>` : ''}
       </div>
       <div class="notes-box">
