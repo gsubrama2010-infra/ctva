@@ -95,7 +95,7 @@ h1 span{color:var(--gold);}
 <div class="wrap">
   <div class="eyebrow">Own a Player, Win Cash</div>
   <h1>Edit My <span>Profile</span></h1>
-  <p class="sub">Pick your name and enter the team access code to update your photo, age, team, and notes on your public player page.</p>
+  <p class="sub">Pick your name and enter the team access code to update your photo, team, and notes on your public player page.</p>
   <div class="card" id="card"><p style="color:var(--muted);">Loading…</p></div>
 </div>
 
@@ -299,7 +299,6 @@ function renderEdit() {
     <div id="avatarPickArea"></div>
     <div class="form-group"><label>Name</label><input type="text" value="${esc(me.name)}" disabled></div>
     <div class="form-group"><label>Team / Club</label><input type="text" id="f-team" value="${esc(me.club||'')}" placeholder="e.g. Malvern"></div>
-    <div class="form-group"><label>Age</label><input type="number" id="f-age" min="1" max="99" value="${esc(me.age||'')}"></div>
     <div class="form-group"><label>Notes</label><textarea id="f-notes" placeholder="A few words about you…">${esc(me.notes||'')}</textarea></div>
     <button class="btn btn-gold" id="btnSave">Save Profile</button>
     <div class="msg" id="saveMsg"></div>
@@ -323,12 +322,11 @@ async function saveProfile() {
     }
 
     const team = document.getElementById('f-team').value.trim();
-    const age = parseInt(document.getElementById('f-age').value) || null;
     const notes = document.getElementById('f-notes').value.trim();
 
     const snap = await AUCTION_REF.get();
     const data = snap.data();
-    const players = (data.players||[]).map(p => p.id === me.id ? { ...p, club: team, age, notes } : p);
+    const players = (data.players||[]).map(p => p.id === me.id ? { ...p, club: team, notes } : p);
     await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
 
     me = players.find(p => p.id === me.id);

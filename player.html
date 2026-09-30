@@ -198,7 +198,6 @@ function render(auction, photo) {
         <span class="badge ${player.isCaptain?'owner':''}">${player.isCaptain?'👑 ':''}${esc(status.label)}</span>
         ${status.team ? `<span class="badge">🏐 <strong>${esc(status.team)}</strong></span>` : ''}
         ${player.club ? `<span class="badge">${clubLogoUrl ? `<img class="club-logo" src="${clubLogoUrl}" alt="">` : ''}${esc(player.club)}</span>` : ''}
-        ${player.age ? `<span class="badge">Age <strong>${esc(player.age)}</strong></span>` : ''}
       </div>
       <div class="notes-box">
         <div class="label">About</div>

@@ -102,7 +102,7 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
   <div class="admin-body">
     <div class="search-row"><input type="text" id="search" placeholder="Search by name…"></div>
     <table class="dtable">
-      <tr><th></th><th>Name</th><th>Type</th><th>Team/Club</th><th>Age</th><th>Photo</th><th></th></tr>
+      <tr><th></th><th>Name</th><th>Type</th><th>Team/Club</th><th>Photo</th><th></th></tr>
       <tbody id="rows"></tbody>
     </table>
   </div>
@@ -114,7 +114,6 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
     <h3 id="modalName">Edit Player</h3>
     <div id="mAvatarPickArea"></div>
     <div class="form-group"><label>Team / Club</label><input type="text" id="m-team"></div>
-    <div class="form-group"><label>Age</label><input type="number" id="m-age" min="1" max="99"></div>
     <div class="form-group"><label>Notes</label><textarea id="m-notes"></textarea></div>
     <div class="btn-row">
       <button class="btn btn-gold" id="btnSaveModal">Save</button>
@@ -314,7 +313,7 @@ function initAdmin() {
     auction = snap.exists ? snap.data() : null;
     renderRows(document.getElementById('search').value);
   }, err => {
-    document.getElementById('rows').innerHTML = `<tr><td colspan="7">Failed to load: ${err.message}</td></tr>`;
+    document.getElementById('rows').innerHTML = `<tr><td colspan="6">Failed to load: ${err.message}</td></tr>`;
   });
   PHOTOS.onSnapshot(snap => {
     photoMap = {};
@@ -328,7 +327,7 @@ function initAdmin() {
 
 function renderRows(filterText) {
   const tbody = document.getElementById('rows');
-  if (!auction) { tbody.innerHTML = `<tr><td colspan="7">No auction data yet.</td></tr>`; return; }
+  if (!auction) { tbody.innerHTML = `<tr><td colspan="6">No auction data yet.</td></tr>`; return; }
   const q = (filterText||'').trim().toLowerCase();
   const players = (auction.players||[]).filter(p => !q || p.name.toLowerCase().includes(q))
     .slice().sort((a,b) => (a.number||0) - (b.number||0));
@@ -343,11 +342,10 @@ function renderRows(filterText) {
       <td>${esc(p.name)}</td>
       <td>${p.isCaptain ? '👑 Owner' : 'Player'}</td>
       <td>${p.isCaptain ? esc(p.teamName||'') : (() => { const logo = getClubLogo(p.club); return `${logo?`<img class="club-logo" src="${logo}" alt="">`:''}${esc(p.club||'')}`; })()}</td>
-      <td>${p.age ? esc(p.age) : '<span style="color:var(--muted);">–</span>'}</td>
       <td>${photo ? '✓' : '<span style="color:var(--muted);">–</span>'}</td>
       <td><button class="btn btn-ghost" data-edit="${esc(p.id)}">Edit</button> <a class="btn btn-ghost" href="player.html?id=${esc(p.id)}" target="_blank">View</a></td>
     </tr>`;
-  }).join('') || `<tr><td colspan="7">No players match.</td></tr>`;
+  }).join('') || `<tr><td colspan="6">No players match.</td></tr>`;
 
   tbody.querySelectorAll('[data-edit]').forEach(btn => {
     btn.onclick = () => openModal(btn.dataset.edit);
@@ -361,7 +359,6 @@ function openModal(id) {
   pickedPhotoDataUrl = null;
   document.getElementById('modalName').textContent = 'Edit ' + p.name;
   document.getElementById('m-team').value = p.isCaptain ? (p.teamName||'') : (p.club||'');
-  document.getElementById('m-age').value = p.age || '';
   document.getElementById('m-notes').value = p.notes || '';
   renderModalAvatarPick(p);
   document.getElementById('modalMsg').textContent = '';
@@ -378,7 +375,6 @@ async function saveModal() {
       pickedPhotoDataUrl = null;
     }
     const teamVal = document.getElementById('m-team').value.trim();
-    const age = parseInt(document.getElementById('m-age').value) || null;
     const notes = document.getElementById('m-notes').value.trim();
 
     const snap = await AUCTION_REF.get();
@@ -386,8 +382,8 @@ async function saveModal() {
     const players = (data.players||[]).map(x => {
       if (x.id !== editingId) return x;
       return x.isCaptain
-        ? { ...x, teamName: teamVal || x.teamName, age, notes }
-        : { ...x, club: teamVal, age, notes };
+        ? { ...x, teamName: teamVal || x.teamName, notes }
+        : { ...x, club: teamVal, notes };
     });
     await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
 
