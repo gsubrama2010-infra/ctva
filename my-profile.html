@@ -84,7 +84,7 @@ h1 span{color:var(--gold);}
 <div class="wrap">
   <div class="eyebrow">Own a Player, Win Cash</div>
   <h1>Edit My <span>Profile</span></h1>
-  <p class="sub">Log in with your PIN to update your photo, age, team, and notes on your public player page.</p>
+  <p class="sub">Pick your name and enter the team access code to update your photo, age, team, and notes on your public player page.</p>
   <div class="card" id="card"><p style="color:var(--muted);">Loading…</p></div>
 </div>
 
@@ -151,13 +151,15 @@ function compressImage(file, maxDim = 480, quality = 0.75) {
   });
 }
 
+const SHARED_ACCESS_CODE = '112233';
+
 function renderLogin() {
   const players = (auction.players || []).slice().sort((a,b) => a.name.localeCompare(b.name));
   document.getElementById('card').innerHTML = `
     <div class="form-group"><label>Your Name</label>
       <select id="f-who">${players.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('')}</select>
     </div>
-    <div class="form-group"><label>PIN</label><input type="text" id="f-pin" inputmode="numeric" maxlength="6" placeholder="Your PIN"></div>
+    <div class="form-group"><label>Access Code</label><input type="text" id="f-pin" inputmode="numeric" maxlength="6" placeholder="Your PIN or the team access code"></div>
     <button class="btn btn-gold" id="btnLogin">Log In</button>
     <div class="msg" id="loginMsg"></div>
   `;
@@ -166,8 +168,10 @@ function renderLogin() {
     const id = document.getElementById('f-who').value;
     const pin = document.getElementById('f-pin').value.trim();
     const player = (auction.players||[]).find(p => p.id === id);
+    if (!player) { msg.textContent = 'Player not found.'; msg.className = 'msg err'; return; }
     const hash = await sha256Hex(pin);
-    if (!player || hash !== player.pinHash) { msg.textContent = 'Incorrect PIN.'; msg.className = 'msg err'; return; }
+    const ok = pin === SHARED_ACCESS_CODE || hash === player.pinHash;
+    if (!ok) { msg.textContent = 'Incorrect code.'; msg.className = 'msg err'; return; }
     me = player;
     const photoSnap = await PHOTOS.doc(me.id).get();
     myPhoto = photoSnap.exists ? photoSnap.data().photoBase64 : null;
