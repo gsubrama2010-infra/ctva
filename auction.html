@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
-<title>Own a Player, Win Cash — CTVA Fantasy Auction</title>
+<title>Live Player Auction — CTVA Volleyball</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -133,9 +133,9 @@ a{text-decoration:none;color:inherit;}
 
 <div class="t-hero">
   <div class="t-hero-inner">
-    <div class="eyebrow" id="phaseLabel">Fantasy player auction</div>
-    <h1 id="heroTitle">Own a Player.<br><span>Win Cash.</span></h1>
-    <p id="heroSub">5-a-side volleyball &middot; Fantasy Player Ownership. Pick real players — they play, you score points, and the top owners win cash.</p>
+    <div class="eyebrow" id="phaseLabel">Live player auction</div>
+    <h1 id="heroTitle">Bid for Players.<br><span>Build Your Team.</span></h1>
+    <p id="heroSub">5-a-side volleyball, IPL-style. Owners bid live to draft real players onto their squad — the teams they build go head-to-head in the tournament, and the winning team takes the cash.</p>
     <div class="event-details">
       <span class="event-pill">📅 <strong>Saturday, October 10, 2026</strong></span>
       <span class="event-pill">📍 <strong>Action Zone</strong>, Scarborough</span>
@@ -399,7 +399,7 @@ AUCTION_REF.onSnapshot(snap => {
   if (auction) {
     document.getElementById('phaseLabel').textContent =
       auction.status === 'auction' ? 'Bidding live' :
-      auction.status === 'completed' ? 'Rosters final' : 'Fantasy player auction';
+      auction.status === 'completed' ? 'Rosters final' : 'Live player auction';
   }
   render();
 }, err => {
