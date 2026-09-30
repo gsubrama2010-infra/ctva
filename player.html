@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
+<title>Player Profile — CTVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --signal:   #C23B3B;
+  --ink:      #15241E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+a{text-decoration:none;color:inherit;}
+
+.topbar{background:#060e09;padding:.45rem 0;font-size:11.5px;letter-spacing:.05em;border-bottom:1px solid rgba(232,162,61,.08);}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;color:var(--muted);}
+.navbar{background:rgba(11,20,16,.95);backdrop-filter:blur(14px);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.nav-links{display:flex;gap:1.8rem;align-items:center;}
+.nav-links a{color:var(--muted);font-size:13.5px;font-weight:500;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+
+.wrap{max-width:720px;margin:0 auto;padding:3rem 2rem;}
+.back-link{display:inline-block;color:var(--muted);font-size:13px;margin-bottom:1.6rem;}
+.back-link:hover{color:var(--gold);}
+
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:2.2rem;text-align:center;}
+.avatar{width:150px;height:150px;border-radius:50%;margin:0 auto 1.2rem;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid var(--gold);}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.avatar .initials{font-family:'Anton',sans-serif;font-size:3rem;color:rgba(255,255,255,.95);}
+
+.p-name{font-family:'Anton',sans-serif;font-size:2.1rem;line-height:1.05;margin-bottom:.5rem;}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.6rem;}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,162,61,.08);border:1px solid rgba(232,162,61,.25);border-radius:20px;padding:6px 14px;font-size:12.5px;color:var(--text);}
+.badge strong{color:var(--gold);}
+.badge.owner{background:linear-gradient(135deg,rgba(232,162,61,.22),rgba(232,162,61,.1));border-color:var(--gold);}
+
+.notes-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.4rem 1.6rem;text-align:left;margin-top:1.4rem;}
+.notes-box .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;}
+.notes-box p{color:var(--text);font-size:14.5px;white-space:pre-wrap;}
+.notes-empty{color:var(--muted);font-style:italic;}
+
+.status-box{text-align:center;padding:4rem 2rem;color:var(--muted);}
+.status-box .icon{font-size:3rem;margin-bottom:1rem;}
+
+.t-footer{background:#060e09;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);margin-top:2rem;}
+.t-footer a{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-inner"><span>Scarborough · Toronto, ON</span><span>info@ctva.ca</span></div></div>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html"><img src="images/TeamLogos/CTVA_Logo_v3.png" alt="CTVA" style="height:46px;width:auto;object-fit:contain;display:block;"></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tournaments.html">Tournaments</a>
+      <a href="league.html">League</a>
+      <a href="auction.html" class="active" style="color:var(--gold);">Auction</a>
+      <a href="tribute.html">In Memory</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <a class="back-link" href="players.html">&larr; All Players</a>
+  <div id="body"><p style="color:var(--muted);">Loading…</p></div>
+</div>
+
+<div class="t-footer">
+  <a href="index.html">← Back to CTVA home</a> &nbsp;·&nbsp;
+  Canadian Tamil Volleyball Association &nbsp;·&nbsp; info@ctva.ca
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey:            "AIzaSyA1L_Wx_csuB_4M7iCBmJBJgpU1US3sxn0",
+  authDomain:        "ctva-petition.firebaseapp.com",
+  projectId:         "ctva-petition",
+  storageBucket:     "ctva-petition.firebasestorage.app",
+  messagingSenderId: "899824677710",
+  appId:             "1:899824677710:web:c5c5c010431c12c39ae41f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function initials(name) {
+  if (!name) return '?';
+  const words = name.trim().split(/\s+/);
+  const first = words[0]?.[0] || '';
+  const last = words.length > 1 ? words[words.length-1][0] : '';
+  return (first + last).toUpperCase();
+}
+const AVATAR_PALETTE = [
+  ['#8fa9c9','#5c7699'], ['#c9a98f','#997a5c'], ['#a3b58f','#748a5c'],
+  ['#b28fc9','#7f5c99'], ['#c98fa0','#995c70'], ['#8fc9c0','#5c9992']
+];
+function avatarGradient(name) {
+  let hash = 0;
+  for (const ch of (name||'')) hash = (hash*31 + ch.charCodeAt(0)) >>> 0;
+  const [from,to] = AVATAR_PALETTE[hash % AVATAR_PALETTE.length];
+  return `linear-gradient(135deg, ${from}, ${to})`;
+}
+
+function findPlayer(auction, id) {
+  return (auction.players || []).find(p => p.id === id);
+}
+
+function teamStatus(auction, player) {
+  if (player.isCaptain) return { label: 'Team Owner', team: player.teamName };
+  if (player.soldTo) {
+    const owner = (auction.players||[]).find(p => p.teamId === player.soldTo);
+    return { label: 'Drafted', team: owner ? owner.teamName : 'Drafted' };
+  }
+  return { label: 'Undrafted', team: null };
+}
+
+function render(auction) {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const el = document.getElementById('body');
+
+  if (!auction || !id) {
+    el.innerHTML = `<div class="status-box"><div class="icon">🏐</div><p>Player not found.</p></div>`;
+    return;
+  }
+  const player = findPlayer(auction, id);
+  if (!player) {
+    el.innerHTML = `<div class="status-box"><div class="icon">🔍</div><p>No player found with that link.</p></div>`;
+    return;
+  }
+
+  document.title = `${player.name} — CTVA Player Profile`;
+  const status = teamStatus(auction, player);
+
+  const avatar = player.photoURL
+    ? `<img src="${esc(player.photoURL)}" alt="${esc(player.name)}">`
+    : `<div class="initials" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(player.name)};">${esc(initials(player.name))}</div>`;
+
+  el.innerHTML = `
+    <div class="profile-card">
+      <div class="avatar">${avatar}</div>
+      <div class="p-name">${esc(player.name)}</div>
+      <div class="badges">
+        <span class="badge ${player.isCaptain?'owner':''}">${player.isCaptain?'👑 ':''}${esc(status.label)}</span>
+        ${status.team ? `<span class="badge">🏐 <strong>${esc(status.team)}</strong></span>` : ''}
+        ${player.club ? `<span class="badge">${esc(player.club)}</span>` : ''}
+        ${player.age ? `<span class="badge">Age <strong>${esc(player.age)}</strong></span>` : ''}
+      </div>
+      <div class="notes-box">
+        <div class="label">About</div>
+        ${player.notes ? `<p>${esc(player.notes)}</p>` : `<p class="notes-empty">No notes added yet.</p>`}
+      </div>
+    </div>
+  `;
+}
+
+AUCTION_REF.onSnapshot(snap => {
+  render(snap.exists ? snap.data() : null);
+}, err => {
+  document.getElementById('body').innerHTML = `<div class="status-box"><div class="icon">⚠️</div><p>Could not load profile.</p></div>`;
+  console.error(err);
+});
+</script>
+</body>
+</html>

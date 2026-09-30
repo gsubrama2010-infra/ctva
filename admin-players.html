@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
+<title>Admin — Player Profiles — CTVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --signal:   #C23B3B;
+  --ink:      #15241E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+
+#gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+.gate-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:100%;max-width:360px;text-align:center;}
+.gate-box h2{font-family:'Anton',sans-serif;font-size:1.8rem;margin-bottom:.5rem;}
+.gate-box p{color:var(--muted);font-size:13.5px;margin-bottom:1.5rem;}
+.gate-box input{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;}
+.gate-err{color:#e07070;font-size:12.5px;margin-bottom:10px;display:none;}
+
+#admin{display:none;}
+.admin-topbar{background:#060e09;padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);}
+.admin-topbar strong{font-family:'Anton',sans-serif;font-size:1.1rem;}
+.admin-topbar a{color:var(--gold);font-size:13px;}
+.admin-body{max-width:1100px;margin:0 auto;padding:2rem 1.5rem;}
+
+.search-row{margin-bottom:1.2rem;}
+.search-row input{width:100%;max-width:320px;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:9px 12px;font-size:13.5px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;}
+
+table.dtable{width:100%;border-collapse:collapse;font-size:13px;}
+table.dtable th{text-align:left;padding:7px 8px;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);}
+table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);vertical-align:middle;}
+.row-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:13px;flex-shrink:0;}
+.row-avatar img{width:100%;height:100%;object-fit:cover;}
+.btn{border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}
+.btn-gold{background:var(--gold);color:var(--ink);}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--muted);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(6,14,9,.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:500;padding:1.5rem;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.8rem;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-box h3{font-family:'Anton',sans-serif;font-size:1.3rem;margin-bottom:1rem;}
+.form-group{margin-bottom:14px;}
+.form-group label{font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;}
+.form-group input,.form-group textarea{width:100%;border:1.5px solid rgba(250,248,242,.1);border-radius:7px;padding:9px 12px;font-size:13.5px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;}
+.form-group textarea{resize:vertical;min-height:80px;}
+.avatar-pick{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.avatar-pick .preview{width:70px;height:70px;border-radius:50%;overflow:hidden;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid var(--gold);font-family:'Anton',sans-serif;font-size:1.5rem;}
+.avatar-pick .preview img{width:100%;height:100%;object-fit:cover;}
+.btn-row{display:flex;gap:8px;margin-top:1rem;}
+.msg{font-size:12.5px;margin-top:8px;min-height:16px;}
+.msg.err{color:#e07070;}
+.msg.ok{color:#6dbc7e;}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <div style="font-size:2.2rem;margin-bottom:.6rem;">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Enter the admin password to manage player profiles.</p>
+    <div class="gate-err" id="gateErr">Incorrect password.</div>
+    <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="btn btn-gold" style="width:100%;" onclick="checkPw()">Enter</button>
+  </div>
+</div>
+
+<div id="admin">
+  <div class="admin-topbar">
+    <strong>🏐 CTVA — Player Profiles</strong>
+    <div><a href="admin-auction.html" style="margin-right:14px;">Auction Admin</a><a href="players.html">View Public Page →</a></div>
+  </div>
+  <div class="admin-body">
+    <div class="search-row"><input type="text" id="search" placeholder="Search by name…"></div>
+    <table class="dtable">
+      <tr><th></th><th>Name</th><th>Type</th><th>Team/Club</th><th>Age</th><th>Photo</th><th></th></tr>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3 id="modalName">Edit Player</h3>
+    <div class="avatar-pick">
+      <div class="preview" id="mAvatarPreview"></div>
+      <div style="flex:1;">
+        <input type="file" id="m-photo" accept="image/jpeg,image/png,image/webp">
+      </div>
+    </div>
+    <div class="form-group"><label>Team / Club</label><input type="text" id="m-team"></div>
+    <div class="form-group"><label>Age</label><input type="number" id="m-age" min="1" max="99"></div>
+    <div class="form-group"><label>Notes</label><textarea id="m-notes"></textarea></div>
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btnSaveModal">Save</button>
+      <button class="btn btn-ghost" id="btnCloseModal">Cancel</button>
+    </div>
+    <div class="msg" id="modalMsg"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script>
+const ADMIN_PASSWORD = 'ctva2026';
+const firebaseConfig = {
+  apiKey:            "AIzaSyA1L_Wx_csuB_4M7iCBmJBJgpU1US3sxn0",
+  authDomain:        "ctva-petition.firebaseapp.com",
+  projectId:         "ctva-petition",
+  storageBucket:     "ctva-petition.firebasestorage.app",
+  messagingSenderId: "899824677710",
+  appId:             "1:899824677710:web:c5c5c010431c12c39ae41f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('gate').style.display  = 'none';
+    document.getElementById('admin').style.display = 'block';
+    initAdmin();
+  } else {
+    document.getElementById('gateErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+let auction = null;
+let editingId = null;
+let pickedFile = null;
+
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function initials(name) {
+  if (!name) return '?';
+  const words = name.trim().split(/\s+/);
+  const first = words[0]?.[0] || '';
+  const last = words.length > 1 ? words[words.length-1][0] : '';
+  return (first + last).toUpperCase();
+}
+
+function initAdmin() {
+  AUCTION_REF.onSnapshot(snap => {
+    auction = snap.exists ? snap.data() : null;
+    renderRows(document.getElementById('search').value);
+  }, err => {
+    document.getElementById('rows').innerHTML = `<tr><td colspan="7">Failed to load: ${err.message}</td></tr>`;
+  });
+  document.getElementById('search').addEventListener('input', e => renderRows(e.target.value));
+  document.getElementById('btnCloseModal').onclick = () => document.getElementById('modalOverlay').classList.remove('show');
+  document.getElementById('btnSaveModal').onclick = saveModal;
+  document.getElementById('m-photo').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    pickedFile = file;
+    document.getElementById('mAvatarPreview').innerHTML = `<img src="${URL.createObjectURL(file)}">`;
+  });
+}
+
+function renderRows(filterText) {
+  const tbody = document.getElementById('rows');
+  if (!auction) { tbody.innerHTML = `<tr><td colspan="7">No auction data yet.</td></tr>`; return; }
+  const q = (filterText||'').trim().toLowerCase();
+  const players = (auction.players||[]).filter(p => !q || p.name.toLowerCase().includes(q))
+    .slice().sort((a,b) => (a.number||0) - (b.number||0));
+
+  tbody.innerHTML = players.map(p => {
+    const avatar = p.photoURL
+      ? `<img src="${esc(p.photoURL)}">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#2F5233;color:#fff;">${esc(initials(p.name))}</div>`;
+    return `<tr>
+      <td><div class="row-avatar">${avatar}</div></td>
+      <td>${esc(p.name)}</td>
+      <td>${p.isCaptain ? '👑 Owner' : 'Player'}</td>
+      <td>${esc(p.isCaptain ? (p.teamName||'') : (p.club||''))}</td>
+      <td>${p.age ? esc(p.age) : '<span style="color:var(--muted);">–</span>'}</td>
+      <td>${p.photoURL ? '✓' : '<span style="color:var(--muted);">–</span>'}</td>
+      <td><button class="btn btn-ghost" data-edit="${esc(p.id)}">Edit</button> <a class="btn btn-ghost" href="player.html?id=${esc(p.id)}" target="_blank">View</a></td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="7">No players match.</td></tr>`;
+
+  tbody.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.onclick = () => openModal(btn.dataset.edit);
+  });
+}
+
+function openModal(id) {
+  const p = (auction.players||[]).find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  pickedFile = null;
+  document.getElementById('modalName').textContent = 'Edit ' + p.name;
+  document.getElementById('m-team').value = p.isCaptain ? (p.teamName||'') : (p.club||'');
+  document.getElementById('m-age').value = p.age || '';
+  document.getElementById('m-notes').value = p.notes || '';
+  document.getElementById('mAvatarPreview').innerHTML = p.photoURL
+    ? `<img src="${esc(p.photoURL)}">`
+    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;">${esc(initials(p.name))}</div>`;
+  document.getElementById('modalMsg').textContent = '';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+async function saveModal() {
+  const btn = document.getElementById('btnSaveModal');
+  const msg = document.getElementById('modalMsg');
+  btn.disabled = true;
+  try {
+    const p = (auction.players||[]).find(x => x.id === editingId);
+    let photoURL = p.photoURL || '';
+    if (pickedFile) {
+      const ext = pickedFile.name.split('.').pop();
+      const ref = storage.ref(`player-photos/${editingId}.${ext}`);
+      await ref.put(pickedFile);
+      photoURL = await ref.getDownloadURL();
+    }
+    const teamVal = document.getElementById('m-team').value.trim();
+    const age = parseInt(document.getElementById('m-age').value) || null;
+    const notes = document.getElementById('m-notes').value.trim();
+
+    const snap = await AUCTION_REF.get();
+    const data = snap.data();
+    const players = (data.players||[]).map(x => {
+      if (x.id !== editingId) return x;
+      return x.isCaptain
+        ? { ...x, teamName: teamVal || x.teamName, age, notes, photoURL }
+        : { ...x, club: teamVal, age, notes, photoURL };
+    });
+    await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+
+    msg.textContent = '✓ Saved';
+    msg.className = 'msg ok';
+    setTimeout(() => document.getElementById('modalOverlay').classList.remove('show'), 500);
+  } catch (e) {
+    msg.textContent = 'Error: ' + e.message;
+    msg.className = 'msg err';
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

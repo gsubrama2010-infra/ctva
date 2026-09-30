@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="images/TeamLogos/CTVA_Logo_v3.png">
+<title>Players — CTVA Auction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1410;
+  --surface:  #111c15;
+  --surface2: #172110;
+  --border:   rgba(232,162,61,0.13);
+  --gold:     #E8A23D;
+  --text:     #FAF8F2;
+  --muted:    rgba(250,248,242,0.5);
+  --green:    #2F5233;
+  --green2:   #4A7350;
+  --ink:      #15241E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+a{text-decoration:none;color:inherit;}
+
+.topbar{background:#060e09;padding:.45rem 0;font-size:11.5px;letter-spacing:.05em;border-bottom:1px solid rgba(232,162,61,.08);}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;justify-content:space-between;color:var(--muted);}
+.navbar{background:rgba(11,20,16,.95);backdrop-filter:blur(14px);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:200;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.nav-links{display:flex;gap:1.8rem;align-items:center;}
+.nav-links a{color:var(--muted);font-size:13.5px;font-weight:500;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+
+.t-hero{background:linear-gradient(135deg,#060e09 0%,#0e1e12 60%,#152510 100%);padding:3rem 2rem 2.2rem;border-bottom:1px solid var(--border);}
+.t-hero-inner{max-width:1100px;margin:0 auto;}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green2);margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:22px;height:2px;background:var(--gold);display:inline-block;}
+.t-hero h1{font-family:'Anton',sans-serif;font-size:2.4rem;line-height:1.0;margin-bottom:.5rem;}
+.t-hero h1 span{color:var(--gold);}
+.t-hero p{color:var(--muted);font-size:1rem;}
+
+.wrap{max-width:1100px;margin:0 auto;padding:2.2rem 2rem 3rem;}
+.search-row{margin-bottom:1.6rem;}
+.search-row input{width:100%;max-width:360px;border:1.5px solid rgba(250,248,242,.1);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;}
+
+.section-label{font-family:'Anton',sans-serif;font-size:1.2rem;margin:1.6rem 0 1rem;color:var(--gold);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;}
+.p-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1rem;text-align:center;transition:border-color .15s,transform .15s;}
+.p-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.p-avatar{width:76px;height:76px;border-radius:50%;margin:0 auto .8rem;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.p-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.p-avatar .initials{font-family:'Anton',sans-serif;font-size:1.5rem;color:rgba(255,255,255,.95);}
+.p-name{font-size:14px;font-weight:700;margin-bottom:.2rem;}
+.p-sub{font-size:11.5px;color:var(--muted);}
+.p-card.owner{border-color:rgba(232,162,61,.4);}
+.p-card.owner .p-sub{color:var(--gold);}
+
+.empty{color:var(--muted);text-align:center;padding:3rem 0;}
+
+.t-footer{background:#060e09;padding:2rem;text-align:center;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);}
+.t-footer a{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-inner"><span>Scarborough · Toronto, ON</span><span>info@ctva.ca</span></div></div>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html"><img src="images/TeamLogos/CTVA_Logo_v3.png" alt="CTVA" style="height:46px;width:auto;object-fit:contain;display:block;"></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="tournaments.html">Tournaments</a>
+      <a href="league.html">League</a>
+      <a href="auction.html" class="active" style="color:var(--gold);">Auction</a>
+      <a href="tribute.html">In Memory</a>
+    </div>
+  </div>
+</nav>
+
+<div class="t-hero">
+  <div class="t-hero-inner">
+    <div class="eyebrow">Own a Player, Win Cash</div>
+    <h1>Player <span>Profiles</span></h1>
+    <p>Browse every owner and player in this season's auction. Tap a card to view their profile.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="search-row" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+    <input type="text" id="search" placeholder="Search by name…">
+    <a href="my-profile.html" style="color:var(--gold);font-size:13px;font-weight:600;">✎ Edit My Profile →</a>
+  </div>
+  <div id="body"><p style="color:var(--muted);">Loading…</p></div>
+</div>
+
+<div class="t-footer">
+  <a href="index.html">← Back to CTVA home</a> &nbsp;·&nbsp;
+  Canadian Tamil Volleyball Association &nbsp;·&nbsp; info@ctva.ca
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey:            "AIzaSyA1L_Wx_csuB_4M7iCBmJBJgpU1US3sxn0",
+  authDomain:        "ctva-petition.firebaseapp.com",
+  projectId:         "ctva-petition",
+  storageBucket:     "ctva-petition.firebasestorage.app",
+  messagingSenderId: "899824677710",
+  appId:             "1:899824677710:web:c5c5c010431c12c39ae41f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const AUCTION_REF = db.collection('ctva_auctions').doc('current');
+
+let allPlayers = [];
+
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function initials(name) {
+  if (!name) return '?';
+  const words = name.trim().split(/\s+/);
+  const first = words[0]?.[0] || '';
+  const last = words.length > 1 ? words[words.length-1][0] : '';
+  return (first + last).toUpperCase();
+}
+const AVATAR_PALETTE = [
+  ['#8fa9c9','#5c7699'], ['#c9a98f','#997a5c'], ['#a3b58f','#748a5c'],
+  ['#b28fc9','#7f5c99'], ['#c98fa0','#995c70'], ['#8fc9c0','#5c9992']
+];
+function avatarGradient(name) {
+  let hash = 0;
+  for (const ch of (name||'')) hash = (hash*31 + ch.charCodeAt(0)) >>> 0;
+  const [from,to] = AVATAR_PALETTE[hash % AVATAR_PALETTE.length];
+  return `linear-gradient(135deg, ${from}, ${to})`;
+}
+
+function cardHtml(p) {
+  const avatar = p.photoURL
+    ? `<img src="${esc(p.photoURL)}" alt="${esc(p.name)}">`
+    : `<div class="initials" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(p.name)};">${esc(initials(p.name))}</div>`;
+  return `<a class="p-card ${p.isCaptain?'owner':''}" href="player.html?id=${esc(p.id)}">
+    <div class="p-avatar">${avatar}</div>
+    <div class="p-name">${esc(p.name)}</div>
+    <div class="p-sub">${p.isCaptain ? '👑 '+esc(p.teamName||'Owner') : esc(p.club||'Player')}</div>
+  </a>`;
+}
+
+function render(filterText) {
+  const el = document.getElementById('body');
+  const q = (filterText||'').trim().toLowerCase();
+  const filtered = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
+
+  if (!filtered.length) { el.innerHTML = `<div class="empty">No players found.</div>`; return; }
+
+  const owners = filtered.filter(p => p.isCaptain);
+  const players = filtered.filter(p => !p.isCaptain);
+
+  let html = '';
+  if (owners.length) html += `<div class="section-label">Team Owners</div><div class="grid">${owners.map(cardHtml).join('')}</div>`;
+  if (players.length) html += `<div class="section-label">Players</div><div class="grid">${players.map(cardHtml).join('')}</div>`;
+  el.innerHTML = html;
+}
+
+document.getElementById('search').addEventListener('input', e => render(e.target.value));
+
+AUCTION_REF.onSnapshot(snap => {
+  allPlayers = snap.exists ? (snap.data().players || []) : [];
+  render(document.getElementById('search').value);
+}, err => {
+  document.getElementById('body').innerHTML = `<div class="empty">Could not load players.</div>`;
+  console.error(err);
+});
+</script>
+</body>
+</html>
