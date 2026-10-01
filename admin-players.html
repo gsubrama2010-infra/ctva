@@ -115,6 +115,10 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
     <div id="mAvatarPickArea"></div>
     <div class="form-group"><label>Name</label><input type="text" id="m-name"></div>
     <div class="form-group"><label>Team / Club</label><input type="text" id="m-team"></div>
+    <div id="mTeamLogoWrap" hidden>
+      <div class="form-group"><label>Owner Team Logo</label></div>
+      <div id="mTeamLogoPickArea"></div>
+    </div>
     <div class="form-group"><label>Notes</label><textarea id="m-notes"></textarea></div>
     <div class="btn-row">
       <button class="btn btn-gold" id="btnSaveModal">Save</button>
@@ -140,6 +144,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const AUCTION_REF = db.collection('ctva_auctions').doc('current');
 const PHOTOS = db.collection('player_photos');
+const TEAM_LOGOS = db.collection('team_logos');
 
 function checkPw() {
   const val = document.getElementById('pwInput').value;
@@ -155,8 +160,10 @@ function checkPw() {
 
 let auction = null;
 let photoMap = {};
+let teamLogoMap = {};
 let editingId = null;
 let pickedPhotoDataUrl = null;
+let pickedTeamLogoDataUrl = null;
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function initials(name) {
@@ -311,6 +318,30 @@ function renderModalAvatarPick(p) {
   });
 }
 
+function renderModalTeamLogoPick(p) {
+  const area = document.getElementById('mTeamLogoPickArea');
+  if (!area) return;
+  const logo = teamLogoMap[p.teamId];
+  const preview = logo ? `<img src="${logo}">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;">🏐</div>`;
+  area.innerHTML = `
+    <div class="avatar-pick">
+      <div class="preview" id="mTeamLogoPreview">${preview}</div>
+      <div style="flex:1;">
+        <input type="file" id="m-teamlogo" accept="image/jpeg,image/png,image/webp">
+      </div>
+    </div>
+  `;
+  document.getElementById('m-teamlogo').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    openCropper(file, area, (dataUrl) => {
+      if (dataUrl) pickedTeamLogoDataUrl = dataUrl;
+      renderModalTeamLogoPick(p);
+      if (dataUrl) document.getElementById('mTeamLogoPreview').innerHTML = `<img src="${dataUrl}">`;
+    });
+  });
+}
+
 function initAdmin() {
   AUCTION_REF.onSnapshot(snap => {
     auction = snap.exists ? snap.data() : null;
@@ -321,6 +352,11 @@ function initAdmin() {
   PHOTOS.onSnapshot(snap => {
     photoMap = {};
     snap.forEach(doc => { photoMap[doc.id] = doc.data().photoBase64; });
+    renderRows(document.getElementById('search').value);
+  });
+  TEAM_LOGOS.onSnapshot(snap => {
+    teamLogoMap = {};
+    snap.forEach(doc => { teamLogoMap[doc.id] = doc.data().logoBase64; });
     renderRows(document.getElementById('search').value);
   });
   document.getElementById('search').addEventListener('input', e => renderRows(e.target.value));
@@ -344,7 +380,7 @@ function renderRows(filterText) {
       <td><div class="row-avatar">${avatar}</div></td>
       <td>${esc(p.name)}</td>
       <td>${p.isCaptain ? '👑 Owner' : 'Player'}</td>
-      <td>${p.isCaptain ? esc(p.teamName||'') : (() => { const logo = getClubLogo(p.club); return `${logo?`<img class="club-logo" src="${logo}" alt="">`:''}${esc(p.club||'')}`; })()}</td>
+      <td>${p.isCaptain ? `${teamLogoMap[p.teamId]?`<img class="club-logo" src="${teamLogoMap[p.teamId]}" alt="">`:''}${esc(p.teamName||'')}` : (() => { const logo = getClubLogo(p.club); return `${logo?`<img class="club-logo" src="${logo}" alt="">`:''}${esc(p.club||'')}`; })()}</td>
       <td>${photo ? '✓' : '<span style="color:var(--muted);">–</span>'}</td>
       <td><button class="btn btn-ghost" data-edit="${esc(p.id)}">Edit</button> <a class="btn btn-ghost" href="player.html?id=${esc(p.id)}" target="_blank">View</a></td>
     </tr>`;
@@ -360,11 +396,14 @@ function openModal(id) {
   if (!p) return;
   editingId = id;
   pickedPhotoDataUrl = null;
+  pickedTeamLogoDataUrl = null;
   document.getElementById('modalName').textContent = 'Edit ' + p.name;
   document.getElementById('m-name').value = p.name || '';
   document.getElementById('m-team').value = p.isCaptain ? (p.teamName||'') : (p.club||'');
   document.getElementById('m-notes').value = p.notes || '';
   renderModalAvatarPick(p);
+  document.getElementById('mTeamLogoWrap').hidden = !p.isCaptain;
+  if (p.isCaptain) renderModalTeamLogoPick(p);
   document.getElementById('modalMsg').textContent = '';
   document.getElementById('modalOverlay').classList.add('show');
 }
@@ -377,6 +416,11 @@ async function saveModal() {
     if (pickedPhotoDataUrl) {
       await PHOTOS.doc(editingId).set({ photoBase64: pickedPhotoDataUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
       pickedPhotoDataUrl = null;
+    }
+    const editingPlayer = (auction.players||[]).find(x => x.id === editingId);
+    if (pickedTeamLogoDataUrl && editingPlayer && editingPlayer.isCaptain && editingPlayer.teamId) {
+      await TEAM_LOGOS.doc(editingPlayer.teamId).set({ logoBase64: pickedTeamLogoDataUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      pickedTeamLogoDataUrl = null;
     }
     const nameVal = document.getElementById('m-name').value.trim();
     const teamVal = document.getElementById('m-team').value.trim();

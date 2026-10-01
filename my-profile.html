@@ -119,11 +119,14 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const AUCTION_REF = db.collection('ctva_auctions').doc('current');
 const PHOTOS = db.collection('player_photos');
+const TEAM_LOGOS = db.collection('team_logos');
 
 let auction = null;
 let me = null;
 let myPhoto = null;
 let pickedPhotoDataUrl = null;
+let myTeamLogo = null;
+let pickedTeamLogoDataUrl = null;
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 async function sha256Hex(str) {
@@ -257,6 +260,10 @@ function renderLogin() {
     me = player;
     const photoSnap = await PHOTOS.doc(me.id).get();
     myPhoto = photoSnap.exists ? photoSnap.data().photoBase64 : null;
+    if (me.isCaptain && me.teamId) {
+      const logoSnap = await TEAM_LOGOS.doc(me.teamId).get();
+      myTeamLogo = logoSnap.exists ? logoSnap.data().logoBase64 : null;
+    }
     renderEdit();
   };
 }
@@ -294,17 +301,57 @@ function renderAvatarPick() {
   });
 }
 
+function renderTeamLogoPick() {
+  const logoPreview = myTeamLogo
+    ? `<img src="${myTeamLogo}">`
+    : `<div class="initials">🏐</div>`;
+  document.getElementById('teamLogoPickArea').innerHTML = `
+    <div class="avatar-pick">
+      <div class="preview" id="teamLogoPreview">${logoPreview}</div>
+      <div style="flex:1;">
+        <input type="file" id="f-teamlogo" accept="image/jpeg,image/png,image/webp">
+        <div class="msg" id="teamLogoMsg" style="margin-top:6px;"></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('f-teamlogo').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 12 * 1024 * 1024) {
+      document.getElementById('teamLogoMsg').textContent = 'Logo must be under 12MB.';
+      document.getElementById('teamLogoMsg').className = 'msg err';
+      return;
+    }
+    openCropper(file, document.getElementById('teamLogoPickArea'), (dataUrl) => {
+      if (dataUrl) pickedTeamLogoDataUrl = dataUrl;
+      renderTeamLogoPick();
+      if (dataUrl) {
+        document.getElementById('teamLogoPreview').innerHTML = `<img src="${dataUrl}">`;
+        document.getElementById('teamLogoMsg').textContent = 'Logo ready — click Save Profile.';
+        document.getElementById('teamLogoMsg').className = 'msg ok';
+      }
+    });
+  });
+}
+
 function renderEdit() {
+  const teamLogoSection = me.isCaptain ? `
+    <div class="form-group"><label>Owner Team Logo (for "${esc(me.teamName||'your team')}")</label></div>
+    <div id="teamLogoPickArea"></div>
+  ` : '';
+
   document.getElementById('card').innerHTML = `
     <div id="avatarPickArea"></div>
     <div class="form-group"><label>Name</label><input type="text" value="${esc(me.name)}" disabled></div>
     <div class="form-group"><label>Team / Club</label><input type="text" id="f-team" value="${esc(me.club||'')}" placeholder="e.g. Malvern"></div>
+    ${teamLogoSection}
     <div class="form-group"><label>Notes</label><textarea id="f-notes" placeholder="A few words about you…">${esc(me.notes||'')}</textarea></div>
     <button class="btn btn-gold" id="btnSave">Save Profile</button>
     <div class="msg" id="saveMsg"></div>
     <a class="view-link" href="player.html?id=${esc(me.id)}">→ View my public profile</a>
   `;
   renderAvatarPick();
+  if (me.isCaptain) renderTeamLogoPick();
 
   document.getElementById('btnSave').onclick = saveProfile;
 }
@@ -319,6 +366,11 @@ async function saveProfile() {
       await PHOTOS.doc(me.id).set({ photoBase64: pickedPhotoDataUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
       myPhoto = pickedPhotoDataUrl;
       pickedPhotoDataUrl = null;
+    }
+    if (pickedTeamLogoDataUrl && me.isCaptain && me.teamId) {
+      await TEAM_LOGOS.doc(me.teamId).set({ logoBase64: pickedTeamLogoDataUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      myTeamLogo = pickedTeamLogoDataUrl;
+      pickedTeamLogoDataUrl = null;
     }
 
     const team = document.getElementById('f-team').value.trim();

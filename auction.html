@@ -71,6 +71,7 @@ a{text-decoration:none;color:inherit;}
 /* TEAMS GRID (captains_selected) */
 .teams-grid-simple{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;}
 .team-mini{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.team-mini-logo{width:36px;height:36px;border-radius:50%;object-fit:cover;margin-bottom:.5rem;border:1px solid var(--border);}
 .team-mini .tname{font-family:'Anton',sans-serif;font-size:1.05rem;color:var(--gold);}
 .team-mini .cname{font-size:12.5px;color:var(--muted);margin-top:3px;}
 
@@ -89,7 +90,7 @@ a{text-decoration:none;color:inherit;}
 .lot-club-text{font-family:'Inter',sans-serif;font-size:.72rem;font-weight:500;color:var(--muted);}
 .lot-bid-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.3rem;}
 .lot-bid{font-family:'Anton',sans-serif;font-size:1.5rem;color:var(--gold);}
-.lot-leader{font-size:12px;color:var(--muted);}
+.lot-leader{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:4px;}
 .lot-time{font-size:11px;color:var(--muted);margin-bottom:.7rem;}
 .lot-time.closing{color:var(--signal);}
 .lot-time.closed-tag{color:#6dbc7e;}
@@ -181,10 +182,12 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const AUCTION_REF = db.collection('ctva_auctions').doc('current');
 const PHOTOS = db.collection('player_photos');
+const TEAM_LOGOS = db.collection('team_logos');
 
 let auction = null;
 let unlockedCaptain = null;
 let photoMap = {};
+let teamLogoMap = {};
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 async function sha256Hex(str) {
@@ -278,7 +281,7 @@ function renderCaptainsSelectedView() {
   return `<div class="card">
     <h3 style="font-family:'Anton',sans-serif;margin-bottom:1rem;">Owners Are In — Auction Starting Soon</h3>
     <div class="teams-grid-simple">
-      ${captains.map(c => `<div class="team-mini"><div class="tname">${esc(c.teamName)}</div><div class="cname">Owner: ${esc(c.name)}</div></div>`).join('')}
+      ${captains.map(c => `<div class="team-mini">${teamLogoMap[c.teamId]?`<img class="team-mini-logo" src="${teamLogoMap[c.teamId]}" alt="">`:''}<div class="tname">${esc(c.teamName)}</div><div class="cname">Owner: ${esc(c.name)}</div></div>`).join('')}
     </div>
   </div>`;
 }
@@ -294,7 +297,9 @@ function renderAuctionView() {
     const live = byId[unlockedCaptain.id] || unlockedCaptain;
     const won = lots.filter(l => l.currentBidderTeamId === live.teamId);
     const committed = won.reduce((s,l)=>s+l.currentBid,0);
+    const myLogo = teamLogoMap[live.teamId];
     captainBar = `<div class="captain-bar">
+      ${myLogo ? `<img class="team-mini-logo" src="${myLogo}" alt="" style="margin-bottom:0;">` : ''}
       <div><div class="name">${esc(live.teamName)}</div><div class="stat">Owner: ${esc(live.name)}</div></div>
       <div class="stat">Budget left<br><strong>$${auction.budgetPerCaptain - committed}</strong></div>
       <div class="stat">Slots filled<br><strong>${won.length} / ${auction.teamSize-1}</strong></div>
@@ -348,7 +353,7 @@ function renderAuctionView() {
         <div class="lot-name">${esc(p?p.name:'?')}${p && p.club && p.club.toUpperCase()!=='N/A' ? ` <span class="lot-club-text">- ${esc(p.club)}</span>` : ''}</div>
         ${clubLogo ? `<img class="lot-club-logo" src="${clubLogo}" alt="${esc(p.club)}" title="${esc(p.club)}">` : ''}
       </a>
-      <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?esc(leader.teamName):'no bids'}</span></div>
+      <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?`${teamLogoMap[leader.teamId]?`<img class="lot-club-logo" src="${teamLogoMap[leader.teamId]}" alt="">`:''}${esc(leader.teamName)}`:'no bids'}</span></div>
       <div class="lot-time ${closed?'closed-tag':closingSoon?'closing':''}">${closed?'Closed':fmtRemaining(remaining)}</div>
       ${bidArea}
     </div>`;
@@ -469,6 +474,12 @@ AUCTION_REF.onSnapshot(snap => {
 PHOTOS.onSnapshot(snap => {
   photoMap = {};
   snap.forEach(doc => { photoMap[doc.id] = doc.data().photoBase64; });
+  if (auction) render();
+});
+
+TEAM_LOGOS.onSnapshot(snap => {
+  teamLogoMap = {};
+  snap.forEach(doc => { teamLogoMap[doc.id] = doc.data().logoBase64; });
   if (auction) render();
 });
 

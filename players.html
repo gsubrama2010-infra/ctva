@@ -116,9 +116,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const AUCTION_REF = db.collection('ctva_auctions').doc('current');
 const PHOTOS = db.collection('player_photos');
+const TEAM_LOGOS = db.collection('team_logos');
 
 let allPlayers = [];
 let photoMap = {};
+let teamLogoMap = {};
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function initials(name) {
@@ -170,10 +172,11 @@ function cardHtml(p) {
     : `<div class="initials" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(p.name)};">${esc(initials(p.name))}</div>`;
   const club = p.isCaptain ? '' : (p.club || '');
   const clubLogo = getClubLogo(club);
+  const teamLogo = p.isCaptain ? teamLogoMap[p.teamId] : null;
   return `<a class="p-card ${p.isCaptain?'owner':''}" href="player.html?id=${esc(p.id)}">
     <div class="p-avatar">${avatar}</div>
     <div class="p-name">${esc(p.name)}</div>
-    <div class="p-sub">${p.isCaptain ? '👑 '+esc(p.teamName||'Owner') : `${clubLogo?`<img class="club-logo" src="${clubLogo}" alt="">`:''}${esc(club||'Player')}`}</div>
+    <div class="p-sub">${p.isCaptain ? `${teamLogo?`<img class="club-logo" src="${teamLogo}" alt="">`:'👑 '}${esc(p.teamName||'Owner')}` : `${clubLogo?`<img class="club-logo" src="${clubLogo}" alt="">`:''}${esc(club||'Player')}`}</div>
   </a>`;
 }
 
@@ -206,6 +209,12 @@ AUCTION_REF.onSnapshot(snap => {
 PHOTOS.onSnapshot(snap => {
   photoMap = {};
   snap.forEach(doc => { photoMap[doc.id] = doc.data().photoBase64; });
+  render(document.getElementById('search').value);
+});
+
+TEAM_LOGOS.onSnapshot(snap => {
+  teamLogoMap = {};
+  snap.forEach(doc => { teamLogoMap[doc.id] = doc.data().logoBase64; });
   render(document.getElementById('search').value);
 });
 </script>
