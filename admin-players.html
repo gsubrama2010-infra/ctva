@@ -113,6 +113,7 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
   <div class="modal-box">
     <h3 id="modalName">Edit Player</h3>
     <div id="mAvatarPickArea"></div>
+    <div class="form-group"><label>Name</label><input type="text" id="m-name"></div>
     <div class="form-group"><label>Team / Club</label><input type="text" id="m-team"></div>
     <div class="form-group"><label>Notes</label><textarea id="m-notes"></textarea></div>
     <div class="btn-row">
@@ -360,6 +361,7 @@ function openModal(id) {
   editingId = id;
   pickedPhotoDataUrl = null;
   document.getElementById('modalName').textContent = 'Edit ' + p.name;
+  document.getElementById('m-name').value = p.name || '';
   document.getElementById('m-team').value = p.isCaptain ? (p.teamName||'') : (p.club||'');
   document.getElementById('m-notes').value = p.notes || '';
   renderModalAvatarPick(p);
@@ -376,16 +378,18 @@ async function saveModal() {
       await PHOTOS.doc(editingId).set({ photoBase64: pickedPhotoDataUrl, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
       pickedPhotoDataUrl = null;
     }
+    const nameVal = document.getElementById('m-name').value.trim();
     const teamVal = document.getElementById('m-team').value.trim();
     const notes = document.getElementById('m-notes').value.trim();
+    if (!nameVal) { msg.textContent = 'Name cannot be empty.'; msg.className = 'msg err'; btn.disabled = false; return; }
 
     const snap = await AUCTION_REF.get();
     const data = snap.data();
     const players = (data.players||[]).map(x => {
       if (x.id !== editingId) return x;
       return x.isCaptain
-        ? { ...x, teamName: teamVal || x.teamName, notes }
-        : { ...x, club: teamVal, notes };
+        ? { ...x, name: nameVal, teamName: teamVal || x.teamName, notes }
+        : { ...x, name: nameVal, club: teamVal, notes };
     });
     await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
 
