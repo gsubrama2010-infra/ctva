@@ -157,6 +157,14 @@ const AUCTION_REF = db.collection('ctva_auctions').doc('current');
 
 let auctionData = null;
 
+const CLUB_NAMES = [
+  'Blues', 'Thai Munn', 'Malvern', 'Super Star', 'North Gurilla', 'Singing Fish',
+  'Rough River', 'New Star', 'Uthaya Nila', 'Sivasakthi', 'Nagar Kovil',
+  'Toronto Sports Club', 'Flemington', 'Dragon', 'Ajax Boys', 'Allakais',
+  'Captain Miller SC', 'GTA Sixers Sports Club', 'Jaffna Kings SC',
+  'Shooting Stars', 'Uthaya Oli', 'Volley King', 'Rainbows SC(VVT)'
+];
+
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 async function sha256Hex(str) {
@@ -195,7 +203,15 @@ function renderForm() {
     </div>
     <div class="form-group">
       <label>Current Team</label>
-      <input type="text" id="f-team" placeholder="e.g. Malvern">
+      <select id="f-team">
+        <option value="">— Select your team —</option>
+        ${CLUB_NAMES.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('')}
+        <option value="__other__">Other (type below)</option>
+      </select>
+    </div>
+    <div class="form-group" id="f-team-other-wrap" hidden>
+      <label>Team Name</label>
+      <input type="text" id="f-team-other" placeholder="Type your team name">
     </div>
     <div class="form-group">
       <label>Phone Number</label>
@@ -208,12 +224,17 @@ function renderForm() {
     <button class="btn btn-gold" id="submitBtn" onclick="submitSignup()">Register</button>
     <div class="msg" id="formMsg"></div>
   `;
+
+  document.getElementById('f-team').addEventListener('change', (e) => {
+    document.getElementById('f-team-other-wrap').hidden = e.target.value !== '__other__';
+  });
 }
 
 async function submitSignup() {
   const msg = document.getElementById('formMsg');
   const name  = document.getElementById('f-name').value.trim();
-  const team  = document.getElementById('f-team').value.trim();
+  const teamSel = document.getElementById('f-team').value;
+  const team  = teamSel === '__other__' ? document.getElementById('f-team-other').value.trim() : teamSel;
   const phone = document.getElementById('f-phone').value.trim();
   const notes = document.getElementById('f-notes').value.trim();
 

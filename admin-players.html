@@ -114,7 +114,17 @@ table.dtable td{padding:7px 8px;border-bottom:1px solid rgba(250,248,242,.05);ve
     <h3 id="modalName">Edit Player</h3>
     <div id="mAvatarPickArea"></div>
     <div class="form-group"><label>Name</label><input type="text" id="m-name"></div>
-    <div class="form-group"><label>Team / Club</label><input type="text" id="m-team"></div>
+    <div class="form-group"><label>Club</label>
+      <select id="m-club"></select>
+    </div>
+    <div class="form-group" id="mClubOtherWrap" hidden>
+      <label>Club Name</label>
+      <input type="text" id="m-club-other" placeholder="Type club name">
+    </div>
+    <div class="form-group" id="mOwnerTeamNameWrap" hidden>
+      <label>Owner Team Name</label>
+      <input type="text" id="m-teamname" placeholder="e.g. Cholar Padai">
+    </div>
     <div id="mTeamLogoWrap" hidden>
       <div class="form-group"><label>Owner Team Logo</label></div>
       <div id="mTeamLogoPickArea"></div>
@@ -189,8 +199,25 @@ const CLUB_LOGOS = {
   'siva sakthi':    'images/TeamLogos/SivasakhtiSC.jpeg',
   'nagar kovil':    'images/TeamLogos/NagarkovilSC.jpeg',
   'toronto sports club': 'images/TeamLogos/Volleyball-Generic.svg',
-  'flemington':     'images/TeamLogos/Volleyball-Generic.svg'
+  'flemington':     'images/TeamLogos/Volleyball-Generic.svg',
+  'dragon':         'images/TeamLogos/Dragon.jpeg',
+  'ajax boys':      'images/TeamLogos/AjaxBoys.png',
+  'allakais':       'images/TeamLogos/Allakais.jpeg',
+  'captain miller sc': 'images/TeamLogos/CaptainMillerSC.png',
+  'gta sixers sports club': 'images/TeamLogos/GTASixersSportsClub.jpeg',
+  'jaffna kings sc': 'images/TeamLogos/JaffnaKingsSC.png',
+  'shooting stars': 'images/TeamLogos/ShootingStars.jpeg',
+  'uthaya oli':     'images/TeamLogos/UthayaOliSC.jpeg',
+  'volley king':    'images/TeamLogos/VolleyKing.png',
+  'rainbows sc(vvt)': 'images/TeamLogos/Volleyball-Generic.svg'
 };
+const CLUB_NAMES = [
+  'Blues', 'Thai Munn', 'Malvern', 'Super Star', 'North Gurilla', 'Singing Fish',
+  'Rough River', 'New Star', 'Uthaya Nila', 'Sivasakthi', 'Nagar Kovil',
+  'Toronto Sports Club', 'Flemington', 'Dragon', 'Ajax Boys', 'Allakais',
+  'Captain Miller SC', 'GTA Sixers Sports Club', 'Jaffna Kings SC',
+  'Shooting Stars', 'Uthaya Oli', 'Volley King', 'Rainbows SC(VVT)'
+];
 function getClubLogo(club) {
   if (!club) return null;
   const key = club.trim().toLowerCase();
@@ -399,8 +426,23 @@ function openModal(id) {
   pickedTeamLogoDataUrl = null;
   document.getElementById('modalName').textContent = 'Edit ' + p.name;
   document.getElementById('m-name').value = p.name || '';
-  document.getElementById('m-team').value = p.isCaptain ? (p.teamName||'') : (p.club||'');
   document.getElementById('m-notes').value = p.notes || '';
+
+  const isOther = p.club && !CLUB_NAMES.includes(p.club);
+  document.getElementById('m-club').innerHTML = `
+    <option value="">— Select club —</option>
+    ${CLUB_NAMES.map(c => `<option value="${esc(c)}" ${p.club===c?'selected':''}>${esc(c)}</option>`).join('')}
+    <option value="__other__" ${isOther?'selected':''}>Other (type below)</option>
+  `;
+  document.getElementById('mClubOtherWrap').hidden = !isOther;
+  document.getElementById('m-club-other').value = isOther ? p.club : '';
+  document.getElementById('m-club').onchange = (e) => {
+    document.getElementById('mClubOtherWrap').hidden = e.target.value !== '__other__';
+  };
+
+  document.getElementById('mOwnerTeamNameWrap').hidden = !p.isCaptain;
+  document.getElementById('m-teamname').value = p.teamName || '';
+
   renderModalAvatarPick(p);
   document.getElementById('mTeamLogoWrap').hidden = !p.isCaptain;
   if (p.isCaptain) renderModalTeamLogoPick(p);
@@ -423,7 +465,9 @@ async function saveModal() {
       pickedTeamLogoDataUrl = null;
     }
     const nameVal = document.getElementById('m-name').value.trim();
-    const teamVal = document.getElementById('m-team').value.trim();
+    const clubSel = document.getElementById('m-club').value;
+    const clubVal = clubSel === '__other__' ? document.getElementById('m-club-other').value.trim() : clubSel;
+    const teamNameVal = document.getElementById('m-teamname').value.trim();
     const notes = document.getElementById('m-notes').value.trim();
     if (!nameVal) { msg.textContent = 'Name cannot be empty.'; msg.className = 'msg err'; btn.disabled = false; return; }
 
@@ -432,8 +476,8 @@ async function saveModal() {
     const players = (data.players||[]).map(x => {
       if (x.id !== editingId) return x;
       return x.isCaptain
-        ? { ...x, name: nameVal, teamName: teamVal || x.teamName, notes }
-        : { ...x, name: nameVal, club: teamVal, notes };
+        ? { ...x, name: nameVal, club: clubVal, teamName: teamNameVal || x.teamName, notes }
+        : { ...x, name: nameVal, club: clubVal, notes };
     });
     await AUCTION_REF.update({ players, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
 
