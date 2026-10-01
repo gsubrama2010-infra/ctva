@@ -43,7 +43,8 @@ a{text-decoration:none;color:inherit;}
 
 .wrap{max-width:1100px;margin:0 auto;padding:2.2rem 2rem 3rem;}
 .search-row{margin-bottom:1.6rem;}
-.search-row input{width:100%;max-width:360px;border:1.5px solid rgba(250,248,242,.1);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;}
+.search-row input,.search-row select{width:100%;max-width:360px;border:1.5px solid rgba(250,248,242,.1);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;}
+.search-row select option{background:var(--surface2);}
 
 .section-label{font-family:'Anton',sans-serif;font-size:1.2rem;margin:1.6rem 0 1rem;color:var(--gold);}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;}
@@ -90,7 +91,10 @@ a{text-decoration:none;color:inherit;}
 
 <div class="wrap">
   <div class="search-row" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-    <input type="text" id="search" placeholder="Search by name…">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;flex:1;">
+      <input type="text" id="search" placeholder="Search by name…" style="max-width:280px;">
+      <select id="teamFilter" style="max-width:220px;"><option value="">All Teams</option></select>
+    </div>
     <a href="my-profile.html" style="color:var(--gold);font-size:13px;font-weight:600;">✎ Edit My Profile →</a>
   </div>
   <div id="body"><p style="color:var(--muted);">Loading…</p></div>
@@ -190,10 +194,28 @@ function cardHtml(p) {
   </a>`;
 }
 
+function populateTeamFilter() {
+  const sel = document.getElementById('teamFilter');
+  const current = sel.value;
+  const teams = new Set();
+  allPlayers.forEach(p => {
+    const t = p.isCaptain ? p.teamName : p.club;
+    if (t && t.trim() && t.trim().toUpperCase() !== 'N/A') teams.add(t.trim());
+  });
+  const sorted = Array.from(teams).sort((a,b) => a.localeCompare(b));
+  sel.innerHTML = `<option value="">All Teams</option>${sorted.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('')}`;
+  if (sorted.includes(current)) sel.value = current;
+}
+
 function render(filterText) {
   const el = document.getElementById('body');
   const q = (filterText||'').trim().toLowerCase();
-  const filtered = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers;
+  const teamFilter = document.getElementById('teamFilter').value;
+
+  let filtered = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers.slice();
+  if (teamFilter) {
+    filtered = filtered.filter(p => (p.isCaptain ? p.teamName : p.club) === teamFilter);
+  }
 
   if (!filtered.length) { el.innerHTML = `<div class="empty">No players found.</div>`; return; }
 
@@ -207,9 +229,11 @@ function render(filterText) {
 }
 
 document.getElementById('search').addEventListener('input', e => render(e.target.value));
+document.getElementById('teamFilter').addEventListener('change', () => render(document.getElementById('search').value));
 
 AUCTION_REF.onSnapshot(snap => {
   allPlayers = snap.exists ? (snap.data().players || []) : [];
+  populateTeamFilter();
   render(document.getElementById('search').value);
 }, err => {
   document.getElementById('body').innerHTML = `<div class="empty">Could not load players.</div>`;
