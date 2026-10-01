@@ -276,9 +276,9 @@ function renderRegistration() {
     <h3>Registration Open</h3>
     <p class="desc">${players.length} / ${auction.playerCap} players registered. Share the sign-up link: <code>auction-signup.html</code></p>
     <table class="dtable">
-      <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th></th></tr>
+      <tr><th>#</th><th>Name</th><th>Team</th><th>Phone</th><th></th></tr>
       ${players.map((p,i)=>`<tr>
-        <td>${i+1}</td><td>${esc(p.name)}</td><td>${esc(p.email)}</td><td>${esc(p.phone)}</td>
+        <td>${i+1}</td><td>${esc(p.name)}</td><td>${esc(p.club||'')}</td><td>${esc(p.phone)}</td>
         <td><button class="btn btn-danger btn-sm" data-remove="${esc(p.id)}">Remove</button></td>
       </tr>`).join('') || '<tr><td colspan="5" style="color:var(--muted);">No players yet.</td></tr>'}
     </table>
