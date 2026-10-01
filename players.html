@@ -197,9 +197,12 @@ function cardHtml(p) {
 function populateTeamFilter() {
   const sel = document.getElementById('teamFilter');
   const current = sel.value;
+  // Club is the real-world team everyone (owners included) plays for in
+  // the regular season, so the filter is club-based for everyone — an
+  // owner's fantasy auction team name is a separate thing.
   const teams = new Set();
   allPlayers.forEach(p => {
-    const t = p.isCaptain ? p.teamName : p.club;
+    const t = p.club;
     if (t && t.trim() && t.trim().toUpperCase() !== 'N/A') teams.add(t.trim());
   });
   const sorted = Array.from(teams).sort((a,b) => a.localeCompare(b));
@@ -213,18 +216,22 @@ function render(filterText) {
   const teamFilter = document.getElementById('teamFilter').value;
 
   let filtered = q ? allPlayers.filter(p => p.name.toLowerCase().includes(q)) : allPlayers.slice();
-  if (teamFilter) {
-    filtered = filtered.filter(p => (p.isCaptain ? p.teamName : p.club) === teamFilter);
-  }
+  if (teamFilter) filtered = filtered.filter(p => p.club === teamFilter);
 
   if (!filtered.length) { el.innerHTML = `<div class="empty">No players found.</div>`; return; }
 
-  const owners = filtered.filter(p => p.isCaptain);
-  const players = filtered.filter(p => !p.isCaptain);
-
   let html = '';
-  if (owners.length) html += `<div class="section-label">Team Owners</div><div class="grid">${owners.map(cardHtml).join('')}</div>`;
-  if (players.length) html += `<div class="section-label">Players</div><div class="grid">${players.map(cardHtml).join('')}</div>`;
+  if (teamFilter) {
+    // Filtering by real-world club: everyone who plays for that club
+    // shows up together, whether or not they also happen to own an
+    // auction team — club membership is what's being asked about here.
+    html += `<div class="section-label">Players</div><div class="grid">${filtered.map(cardHtml).join('')}</div>`;
+  } else {
+    const owners = filtered.filter(p => p.isCaptain);
+    const players = filtered.filter(p => !p.isCaptain);
+    if (owners.length) html += `<div class="section-label">Team Owners</div><div class="grid">${owners.map(cardHtml).join('')}</div>`;
+    if (players.length) html += `<div class="section-label">Players</div><div class="grid">${players.map(cardHtml).join('')}</div>`;
+  }
   el.innerHTML = html;
 }
 
