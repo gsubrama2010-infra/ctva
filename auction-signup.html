@@ -198,7 +198,7 @@ function renderForm() {
       <input type="text" id="f-team" placeholder="e.g. Malvern">
     </div>
     <div class="form-group">
-      <label>Phone Number *</label>
+      <label>Phone Number</label>
       <input type="tel" id="f-phone" placeholder="e.g. 416-555-1234">
     </div>
     <div class="form-group">
@@ -217,7 +217,7 @@ async function submitSignup() {
   const phone = document.getElementById('f-phone').value.trim();
   const notes = document.getElementById('f-notes').value.trim();
 
-  if (!name || !phone) { msg.textContent = 'Name and phone are required.'; msg.className = 'msg err'; return; }
+  if (!name) { msg.textContent = 'Name is required.'; msg.className = 'msg err'; return; }
 
   const players = (auctionData && auctionData.players) || [];
   if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
