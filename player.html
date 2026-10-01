@@ -208,10 +208,10 @@ function render(auction, photo, teamLogo) {
   let extraLogos = '';
   if (player.isCaptain) {
     const teamBox = teamLogo
-      ? `<div class="photo-col"><div class="team-logo-box"><img src="${teamLogo}" alt="${esc(player.teamName||'Team logo')}"></div><div class="label">${esc(player.teamName||'Team')}</div></div>`
+      ? `<div class="team-logo-box"><img src="${teamLogo}" alt="${esc(player.teamName||'Team logo')}"></div>`
       : '';
     const clubBox = clubLogoUrl
-      ? `<div class="photo-col"><div class="club-logo-large"><img src="${clubLogoUrl}" alt="${esc(player.club)}"></div><div class="label">${esc(player.club)}</div></div>`
+      ? `<div class="club-logo-large"><img src="${clubLogoUrl}" alt="${esc(player.club)}"></div>`
       : '';
     extraLogos = teamBox + clubBox;
   } else if (clubLogoUrl) {
