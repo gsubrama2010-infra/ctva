@@ -144,6 +144,33 @@ function initials(name) {
 // Interactive crop: lets the person drag/zoom their photo into a circular
 // frame before it's compressed and saved. onDone receives a square JPEG
 // data URL (or null if cancelled).
+// Resize while preserving the original aspect ratio (no forced square
+// crop) — better for crest/shield-style logos that look wrong cropped
+// to a circle.
+function resizeOriginal(file, maxDim = 480) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function openCropper(file, containerEl, onDone) {
   const frameSize = 220;
   const OUT = 480;
@@ -315,19 +342,31 @@ function renderTeamLogoPick() {
     : `<div class="initials">🏐</div>`;
   document.getElementById('teamLogoPickArea').innerHTML = `
     <div class="avatar-pick">
-      <div class="preview" id="teamLogoPreview">${logoPreview}</div>
+      <div class="preview" id="teamLogoPreview" style="border-radius:10px;">${logoPreview}</div>
       <div style="flex:1;">
         <input type="file" id="f-teamlogo" accept="image/jpeg,image/png,image/webp">
+        <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12.5px;font-weight:400;text-transform:none;color:var(--muted);">
+          <input type="checkbox" id="f-teamlogo-original" checked style="width:auto;"> Keep original shape (recommended for crest/shield logos)
+        </label>
         <div class="msg" id="teamLogoMsg" style="margin-top:6px;"></div>
       </div>
     </div>
   `;
-  document.getElementById('f-teamlogo').addEventListener('change', (e) => {
+  document.getElementById('f-teamlogo').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     if (file.size > 12 * 1024 * 1024) {
       document.getElementById('teamLogoMsg').textContent = 'Logo must be under 12MB.';
       document.getElementById('teamLogoMsg').className = 'msg err';
+      return;
+    }
+    if (document.getElementById('f-teamlogo-original').checked) {
+      const dataUrl = await resizeOriginal(file);
+      pickedTeamLogoDataUrl = dataUrl;
+      renderTeamLogoPick();
+      document.getElementById('teamLogoPreview').innerHTML = `<img src="${dataUrl}">`;
+      document.getElementById('teamLogoMsg').textContent = 'Logo ready — click Save Profile.';
+      document.getElementById('teamLogoMsg').className = 'msg ok';
       return;
     }
     openCropper(file, document.getElementById('teamLogoPickArea'), (dataUrl) => {
