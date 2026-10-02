@@ -452,13 +452,40 @@ function renderRows(filterText) {
       <td>${p.isCaptain ? '👑 Owner' : 'Player'}</td>
       <td>${p.isCaptain ? `${teamLogoMap[p.teamId]?`<img class="club-logo" src="${teamLogoMap[p.teamId]}" alt="">`:''}${esc(p.teamName||'')}` : (() => { const logo = getClubLogo(p.club); return `${logo?`<img class="club-logo" src="${logo}" alt="">`:''}${esc(p.club||'')}`; })()}</td>
       <td>${photo ? '✓' : '<span style="color:var(--muted);">–</span>'}</td>
-      <td><button class="btn btn-ghost" data-edit="${esc(p.id)}">Edit</button> <a class="btn btn-ghost" href="player.html?id=${esc(p.id)}" target="_blank">View</a></td>
+      <td><button class="btn btn-ghost" data-edit="${esc(p.id)}">Edit</button> <a class="btn btn-ghost" href="player.html?id=${esc(p.id)}" target="_blank">View</a> <button class="btn btn-danger" data-delete="${esc(p.id)}">Delete</button></td>
     </tr>`;
   }).join('') || `<tr><td colspan="6">No players match.</td></tr>`;
 
   tbody.querySelectorAll('[data-edit]').forEach(btn => {
     btn.onclick = () => openModal(btn.dataset.edit);
   });
+  tbody.querySelectorAll('[data-delete]').forEach(btn => {
+    btn.onclick = () => deletePlayer(btn.dataset.delete);
+  });
+}
+
+async function deletePlayer(id) {
+  const p = (auction.players||[]).find(x => x.id === id);
+  if (!p) return;
+
+  let warn = `Delete ${p.name}? This cannot be undone.`;
+  if (p.isCaptain) {
+    const hasRoster = (auction.players||[]).some(x => x.soldTo === p.teamId);
+    warn = `${p.name} is a TEAM OWNER (${p.teamName||'no team name'}).${hasRoster ? ' They have players already drafted onto their roster — deleting the owner will leave those players’ "sold to" record pointing at a team that no longer exists.' : ''} Delete anyway? This cannot be undone.`;
+  }
+  if (!confirm(warn)) return;
+
+  try {
+    const snap = await AUCTION_REF.get();
+    const data = snap.data();
+    const players = (data.players||[]).filter(x => x.id !== id);
+    const lots = (data.lots||[]).filter(l => l.playerId !== id);
+    await AUCTION_REF.update({ players, lots, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await PHOTOS.doc(id).delete().catch(() => {});
+    if (p.isCaptain && p.teamId) await TEAM_LOGOS.doc(p.teamId).delete().catch(() => {});
+  } catch (e) {
+    alert('Error deleting player: ' + e.message);
+  }
 }
 
 function openModal(id) {
