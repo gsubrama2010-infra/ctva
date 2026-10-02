@@ -52,10 +52,12 @@ h1.big span{color:var(--gold);}
 .player-name{font-family:'Anton',sans-serif;font-size:8vw;line-height:1;}
 .player-club{font-size:3.6vw;color:var(--muted);margin-top:1vh;}
 
-.owners-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4vw;margin-top:3vh;width:100%;max-width:420px;}
-.owner-box{display:flex;flex-direction:column;align-items:center;gap:1vh;}
-.owner-logo{width:20vw;height:20vw;max-width:110px;max-height:110px;border-radius:16px;object-fit:contain;background:#fff;padding:6px;border:2px solid var(--gold);}
-.owner-name{font-size:3.2vw;color:var(--text);font-weight:600;}
+.owners-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5vw 4vw;margin-top:3vh;width:100%;max-width:420px;max-height:62vh;overflow:hidden;}
+.owners-grid.wrap4{grid-template-columns:repeat(4,1fr);}
+.owner-box{display:flex;flex-direction:column;align-items:center;gap:.8vh;}
+.owner-logo{width:18vw;height:18vw;max-width:90px;max-height:90px;border-radius:14px;object-fit:contain;background:#fff;padding:5px;border:2px solid var(--gold);}
+.owner-logo.club{border-color:var(--green2);}
+.owner-name{font-size:2.8vw;color:var(--text);font-weight:600;line-height:1.2;}
 
 .cta-btn{display:inline-block;margin-top:3.4vh;background:var(--gold);color:#03050b;font-weight:800;font-size:4.2vw;padding:2vh 7vw;border-radius:999px;}
 .url{margin-top:2.2vh;font-size:3.6vw;color:var(--gold);font-weight:700;letter-spacing:.02em;}
@@ -95,6 +97,40 @@ const PHOTOS = db.collection('player_photos');
 const TEAM_LOGOS = db.collection('team_logos');
 
 function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+const CLUB_LOGO_FALLBACK = 'images/TeamLogos/Volleyball-Generic.svg';
+const CLUB_LOGOS = {
+  'blues':          'images/TeamLogos/TorontoBluesSC.jpeg',
+  'thai munn':      'images/TeamLogos/ThaimunSportsClub.jpeg',
+  'malvern':        'images/TeamLogos/MalvernSportsClub.jpeg',
+  'super star':     'images/TeamLogos/SuperStar.jpeg',
+  'north gurilla':  'images/TeamLogos/NorthernGorillasSC.jpeg',
+  'singing fish':   'images/TeamLogos/SingingFishVolleyballClub.jpeg',
+  'rough river':    'images/TeamLogos/RougeRiverVolleyballClub.jpeg',
+  'new star':       'images/TeamLogos/NewStar.jpeg',
+  'uthaya nila':    'images/TeamLogos/UthayaNilaSC.jpeg',
+  'sivasakthi':     'images/TeamLogos/SivasakhtiSC.jpeg',
+  'siva sakthi':    'images/TeamLogos/SivasakhtiSC.jpeg',
+  'nagar kovil':    'images/TeamLogos/NagarkovilSC.jpeg',
+  'toronto sports club': 'images/TeamLogos/Volleyball-Generic.svg',
+  'flemington':     'images/TeamLogos/Volleyball-Generic.svg',
+  'dragon':         'images/TeamLogos/Dragon.jpeg',
+  'ajax boys':      'images/TeamLogos/AjaxBoys.png',
+  'allakais':       'images/TeamLogos/Allakais.jpeg',
+  'captain miller sc': 'images/TeamLogos/CaptainMillerSC.png',
+  'gta sixers sports club': 'images/TeamLogos/GTASixersSportsClub.jpeg',
+  'jaffna kings sc': 'images/TeamLogos/JaffnaKingsSC.png',
+  'shooting stars': 'images/TeamLogos/ShootingStars.jpeg',
+  'uthaya oli':     'images/TeamLogos/UthayaOliSC.jpeg',
+  'volley king':    'images/TeamLogos/VolleyKing.png',
+  'rainbows sc(vvt)': 'images/TeamLogos/Volleyball-Generic.svg'
+};
+function getClubLogo(club) {
+  if (!club) return null;
+  const key = club.trim().toLowerCase();
+  if (!key || key === 'n/a') return null;
+  return CLUB_LOGOS[key] || CLUB_LOGO_FALLBACK;
+}
 
 const SLIDE_MS = 3200;
 let slides = [];
@@ -137,11 +173,23 @@ function playerSlide(p, photo) {
 }
 
 function ownersSlide(owners) {
+  const gridClass = owners.length > 9 ? 'owners-grid wrap4' : 'owners-grid';
   return `<div class="slide">
     <div class="eyebrow">The Owners</div>
-    <h1 class="big" style="font-size:8vw;">8 Owners.<br><span>1 Champion.</span></h1>
-    <div class="owners-grid">
+    <h1 class="big" style="font-size:8vw;">${owners.length} Owners.<br><span>1 Champion.</span></h1>
+    <div class="${gridClass}">
       ${owners.map(o => `<div class="owner-box"><img class="owner-logo" src="${o.logo}" alt=""><div class="owner-name">${esc(o.teamName)}</div></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function clubsSlide(clubs) {
+  const gridClass = clubs.length > 9 ? 'owners-grid wrap4' : 'owners-grid';
+  return `<div class="slide">
+    <div class="eyebrow">The Clubs</div>
+    <h1 class="big" style="font-size:8vw;">Real Clubs.<br><span>Real Players.</span></h1>
+    <div class="${gridClass}">
+      ${clubs.map(c => `<div class="owner-box"><img class="owner-logo club" src="${c.logo}" alt=""><div class="owner-name">${esc(c.name)}</div></div>`).join('')}
     </div>
   </div>`;
 }
@@ -221,13 +269,22 @@ document.getElementById('btnPrev').onclick = () => { pause(); showSlide(current-
   withPhotos.forEach(p => { const c = p.club || '?'; if (!byClub[c]) byClub[c] = p; });
   const featured = Object.values(byClub).slice(0, 6);
 
-  const owners = players.filter(p => p.isCaptain && logoMap[p.teamId] && p.teamName)
-    .map(p => ({ teamName: p.teamName, logo: logoMap[p.teamId] }))
-    .slice(0, 6);
+  // Every owner, using their uploaded logo if they have one, otherwise the
+  // same generic-volleyball fallback used on the rest of the site.
+  const owners = players.filter(p => p.isCaptain && p.teamName)
+    .map(p => ({ teamName: p.teamName, logo: logoMap[p.teamId] || CLUB_LOGO_FALLBACK }));
+
+  // Every real club actually represented in the roster, each with its logo
+  // (falling back to the generic icon for clubs with no logo on file).
+  const clubNames = new Set();
+  players.forEach(p => { if (p.club && p.club.trim() && p.club.trim().toUpperCase() !== 'N/A') clubNames.add(p.club.trim()); });
+  const clubs = Array.from(clubNames).sort((a,b)=>a.localeCompare(b))
+    .map(name => ({ name, logo: getClubLogo(name) }));
 
   const html = [
     ...staticSlides(),
     ...featured.map(p => playerSlide(p, photoMap[p.id])),
+    ...(clubs.length ? [clubsSlide(clubs)] : []),
     ...(owners.length ? [ownersSlide(owners)] : []),
     ...finalSlides()
   ];
