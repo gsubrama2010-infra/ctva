@@ -100,6 +100,14 @@ a{text-decoration:none;color:inherit;}
 .bid-row button:disabled{opacity:.4;cursor:not-allowed;}
 .lot-note{font-size:11.5px;color:var(--muted);}
 .lot-note.win{color:#6dbc7e;font-weight:700;}
+.bid-history{margin-top:.6rem;}
+.bid-history summary{font-size:11.5px;color:var(--muted);cursor:pointer;user-select:none;}
+.bid-history summary:hover{color:var(--text);}
+.bid-history-list{margin-top:.5rem;max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.bid-history-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;padding:4px 8px;border-radius:6px;background:var(--surface2);}
+.bid-history-row.top{background:rgba(232,162,61,.1);border:1px solid rgba(232,162,61,.3);}
+.bh-team{display:flex;align-items:center;gap:5px;color:var(--text-2,var(--text));overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bh-amount{color:var(--gold);font-weight:700;flex-shrink:0;}
 
 /* COMPLETED ROSTERS */
 .team-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden;}
@@ -357,15 +365,32 @@ function renderAuctionView() {
       : `<div class="initials" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(p?p.name:'?')};">${esc(initials(p?p.name:'?'))}</div>`;
     const clubLogo = p ? getClubLogo(p.club) : null;
 
+    const bidHistory = (l.bids||[]).slice().reverse();
+    const historyHtml = bidHistory.length ? `
+      <details class="bid-history">
+        <summary>Bid trail (${bidHistory.length})</summary>
+        <div class="bid-history-list">
+          ${bidHistory.map((b, i) => {
+            const bidder = byId[b.teamId];
+            const bLogo = teamLogoMap[b.teamId];
+            return `<div class="bid-history-row ${i===0?'top':''}">
+              <span class="bh-team">${bLogo?`<img class="lot-club-logo" src="${bLogo}" alt="">`:''}${esc(bidder?bidder.teamName:'Unknown')}${i===0?' 👑':''}</span>
+              <span class="bh-amount">$${b.amount}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </details>` : '';
+
     return `<div class="lot-card ${iAmLeading?'leading':''} ${closed?'closed':''}">
       <a class="lot-head" href="player.html?id=${esc(p?p.id:'')}">
         <div class="lot-avatar">${avatarInner}</div>
         <div class="lot-name">${esc(p?p.name:'?')}${p && p.club && p.club.toUpperCase()!=='N/A' ? ` <span class="lot-club-text">- ${esc(p.club)}</span>` : ''}</div>
         ${clubLogo ? `<img class="lot-club-logo" src="${clubLogo}" alt="${esc(p.club)}" title="${esc(p.club)}">` : ''}
       </a>
-      <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?`${teamLogoMap[leader.teamId]?`<img class="lot-club-logo" src="${teamLogoMap[leader.teamId]}" alt="">`:''}${esc(leader.teamName)}`:'no bids'}</span></div>
+      <div class="lot-bid-row"><span class="lot-bid">$${l.currentBid}</span><span class="lot-leader">${leader?`👑 ${teamLogoMap[leader.teamId]?`<img class="lot-club-logo" src="${teamLogoMap[leader.teamId]}" alt="">`:''}${esc(leader.teamName)}`:'no bids'}</span></div>
       <div class="lot-time ${closed?'closed-tag':closingSoon?'closing':''}">${closed?'Closed':fmtRemaining(remaining)}</div>
       ${bidArea}
+      ${historyHtml}
     </div>`;
   }).join('');
 
