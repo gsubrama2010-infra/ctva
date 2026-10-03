@@ -73,6 +73,7 @@ table.dtable .num{text-align:center;}
 .btn-ghost:hover{border-color:var(--muted);color:var(--text);}
 .btn-danger{background:rgba(194,59,59,.15);border:1px solid rgba(194,59,59,.3);color:#e07070;}
 .btn-danger:hover{background:rgba(194,59,59,.25);}
+.btn-full{width:100%;}
 .btn-sm{padding:5px 10px;font-size:11.5px;}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;}
 .save-status{font-size:12.5px;margin-top:.6rem;min-height:18px;}
@@ -92,6 +93,16 @@ table.dtable .num{text-align:center;}
 .roster-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(250,248,242,.04);font-size:13px;}
 .roster-row:last-child{border-bottom:none;}
 .roster-row .price{color:var(--gold);font-weight:700;}
+
+.btn-sm2{padding:5px 9px;font-size:11px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(6,14,9,.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:500;padding:1.5rem;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.8rem;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-box h3{font-family:'Anton',sans-serif;font-size:1.2rem;margin-bottom:.3rem;}
+.modal-box .sub{font-size:12.5px;color:var(--muted);margin-bottom:1.2rem;}
+.modal-box .current-state{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:13px;}
+.modal-box .current-state strong{color:var(--gold);}
+.modal-divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0;}
 
 @media(max-width:700px){
   .form-row,.form-row-3{grid-template-columns:1fr;}
@@ -120,6 +131,32 @@ table.dtable .num{text-align:center;}
   <div class="admin-body">
     <div class="stepper" id="stepper"></div>
     <div id="phaseBody"><p style="color:var(--muted);">Loading…</p></div>
+  </div>
+</div>
+
+<!-- BID MANAGEMENT MODAL -->
+<div class="modal-overlay" id="bidModalOverlay">
+  <div class="modal-box">
+    <h3 id="bidModalName">Manage Bid</h3>
+    <p class="sub">Modify, undo, or clear bids on behalf of an owner.</p>
+    <div class="current-state" id="bidModalState"></div>
+
+    <div class="form-group"><label>Set Bid To</label>
+      <div class="form-row">
+        <input type="number" id="bm-amount" placeholder="Amount">
+        <select id="bm-team"></select>
+      </div>
+    </div>
+    <button class="btn btn-gold btn-full" id="btnSetBid">Set Bid</button>
+
+    <hr class="modal-divider">
+
+    <button class="btn btn-ghost btn-full" id="btnRemoveLastBid" style="margin-bottom:8px;">Remove Last Bid (Undo)</button>
+    <button class="btn btn-danger btn-full" id="btnClearBids">Clear All Bids on This Lot</button>
+
+    <hr class="modal-divider">
+    <button class="btn btn-ghost btn-full" id="btnCloseBidModal">Close</button>
+    <div class="save-status" id="bidModalMsg"></div>
   </div>
 </div>
 
@@ -445,12 +482,12 @@ function renderAuctionLive() {
   <div class="panel">
     <h3>Lots</h3>
     <table class="dtable">
-      <tr><th>Player</th><th class="num">Current Bid</th><th>Leading</th><th>Ends</th></tr>
+      <tr><th>Player</th><th class="num">Current Bid</th><th>Leading</th><th>Ends</th><th></th></tr>
       ${lots.map(l => {
         const p = byId[l.playerId];
         const leader = l.currentBidderTeamId ? byId[l.currentBidderTeamId] : null;
         const ended = (l.endTime.toMillis ? l.endTime.toMillis() : new Date(l.endTime).getTime()) <= now;
-        return `<tr><td>${esc(p?p.name:'?')}</td><td class="num">$${l.currentBid}</td><td>${leader?esc(leader.teamName):'<span style="color:var(--muted);">no bids</span>'}</td><td style="color:${ended?'#e07070':'var(--muted)'};font-size:11.5px;">${ended?'closed':fmtDateTime(l.endTime)}</td></tr>`;
+        return `<tr><td>${esc(p?p.name:'?')}</td><td class="num">$${l.currentBid}</td><td>${leader?esc(leader.teamName):'<span style="color:var(--muted);">no bids</span>'}</td><td style="color:${ended?'#e07070':'var(--muted)'};font-size:11.5px;">${ended?'closed':fmtDateTime(l.endTime)}</td><td><button class="btn btn-ghost btn-sm2" data-manage-bid="${esc(l.playerId)}">Manage</button></td></tr>`;
       }).join('')}
     </table>
     <div class="warn-box">Finalizing will lock in all current highest bids as final sales, even for lots still open. Only do this once the window has fully ended (or you're intentionally closing early).</div>
@@ -535,9 +572,91 @@ function wireEvents() {
   if (b('btnFinalize')) b('btnFinalize').onclick = () => finalizeAuction().catch(e=>alert(e.message));
   if (b('btnPushLeague')) b('btnPushLeague').onclick = () => pushToLeague().catch(e=>alert(e.message));
   document.querySelectorAll('[data-remove]').forEach(btn => btn.onclick = () => removePlayer(btn.dataset.remove).catch(e=>alert(e.message)));
+  document.querySelectorAll('[data-manage-bid]').forEach(btn => btn.onclick = () => openBidModal(btn.dataset.manageBid));
   document.querySelectorAll('.cap-check').forEach(cb => cb.onchange = updateSelCount);
   updateSelCount();
 }
+
+/* ── BID MANAGEMENT (admin override) ── */
+let managingLotId = null;
+
+function openBidModal(playerId) {
+  managingLotId = playerId;
+  const lot = (auction.lots||[]).find(l => l.playerId === playerId);
+  const p = (auction.players||[]).find(x => x.id === playerId);
+  if (!lot || !p) return;
+
+  const byId = Object.fromEntries((auction.players||[]).map(x => [x.id, x]));
+  const leader = lot.currentBidderTeamId ? byId[lot.currentBidderTeamId] : null;
+  const captains = (auction.players||[]).filter(x => x.isCaptain).slice().sort((a,b)=>a.teamName.localeCompare(b.teamName));
+
+  document.getElementById('bidModalName').textContent = 'Manage Bid — ' + p.name;
+  document.getElementById('bidModalState').innerHTML =
+    `Current bid: <strong>$${lot.currentBid}</strong> &middot; Leading: <strong>${leader?esc(leader.teamName):'no bids'}</strong> &middot; ${(lot.bids||[]).length} bid(s) placed`;
+  document.getElementById('bm-amount').value = lot.currentBid || '';
+  document.getElementById('bm-team').innerHTML =
+    `<option value="">— No bidder (unsold) —</option>` +
+    captains.map(c => `<option value="${esc(c.teamId)}" ${c.teamId===lot.currentBidderTeamId?'selected':''}>${esc(c.teamName)}</option>`).join('');
+  document.getElementById('bidModalMsg').textContent = '';
+  document.getElementById('bidModalOverlay').classList.add('show');
+}
+
+function closeBidModal() {
+  document.getElementById('bidModalOverlay').classList.remove('show');
+  managingLotId = null;
+}
+
+async function updateLot(mutateFn) {
+  const snap = await AUCTION_REF.get();
+  const data = snap.data();
+  const lots = (data.lots||[]).map(l => l.playerId === managingLotId ? mutateFn({ ...l }) : l);
+  await AUCTION_REF.update({ lots, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+async function setBidManual() {
+  const msg = document.getElementById('bidModalMsg');
+  const amount = parseInt(document.getElementById('bm-amount').value) || 0;
+  const teamId = document.getElementById('bm-team').value;
+  if (teamId && amount <= 0) { msg.textContent = 'Enter an amount greater than $0 for a bidder.'; msg.className = 'save-status err'; return; }
+  try {
+    await updateLot(l => ({
+      ...l,
+      currentBid: teamId ? amount : 0,
+      currentBidderTeamId: teamId || '',
+      bids: [...(l.bids||[]), { teamId: teamId || null, amount: teamId ? amount : 0, at: firebase.firestore.Timestamp.now(), admin: true }]
+    }));
+    msg.textContent = '✓ Bid updated'; msg.className = 'save-status ok';
+    openBidModal(managingLotId);
+  } catch (e) { msg.textContent = 'Error: ' + e.message; msg.className = 'save-status err'; }
+}
+
+async function removeLastBid() {
+  const msg = document.getElementById('bidModalMsg');
+  try {
+    await updateLot(l => {
+      const bids = (l.bids||[]).slice(0, -1);
+      const last = bids[bids.length-1];
+      return { ...l, bids, currentBid: last ? last.amount : 0, currentBidderTeamId: last ? last.teamId : '' };
+    });
+    msg.textContent = '✓ Last bid removed'; msg.className = 'save-status ok';
+    openBidModal(managingLotId);
+  } catch (e) { msg.textContent = 'Error: ' + e.message; msg.className = 'save-status err'; }
+}
+
+async function clearAllBids() {
+  if (!confirm('Clear ALL bids on this lot? This cannot be undone.')) return;
+  const msg = document.getElementById('bidModalMsg');
+  try {
+    await updateLot(l => ({ ...l, currentBid: 0, currentBidderTeamId: '', bids: [] }));
+    msg.textContent = '✓ Cleared'; msg.className = 'save-status ok';
+    openBidModal(managingLotId);
+  } catch (e) { msg.textContent = 'Error: ' + e.message; msg.className = 'save-status err'; }
+}
+
+document.getElementById('btnCloseBidModal').onclick = closeBidModal;
+document.getElementById('btnSetBid').onclick = () => setBidManual().catch(e=>alert(e.message));
+document.getElementById('btnRemoveLastBid').onclick = () => removeLastBid().catch(e=>alert(e.message));
+document.getElementById('btnClearBids').onclick = () => clearAllBids().catch(e=>alert(e.message));
 </script>
 </body>
 </html>
