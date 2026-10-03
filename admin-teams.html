@@ -253,7 +253,14 @@ function renderTeams() {
   grid.innerHTML = owners.map(owner => {
     const roster = (auction.players||[]).filter(p => p.soldTo === owner.teamId).slice().sort((a,b)=>a.name.localeCompare(b.name));
     const logo = teamLogoMap[owner.teamId];
-    const rosterHtml = roster.length ? roster.map(p => {
+    const ownerPhoto = photoMap[owner.id];
+    const ownerAvatar = ownerPhoto ? `<img src="${ownerPhoto}">` : esc(initials(owner.name));
+    const ownerRow = `<div class="roster-row">
+      <div class="r-avatar">${ownerAvatar}</div>
+      <div class="r-name">👑 ${owner.number?`#${owner.number} `:''}${esc(owner.name)}</div>
+      <div class="r-club">Owner</div>
+    </div>`;
+    const rosterHtml = ownerRow + roster.map(p => {
       const photo = photoMap[p.id];
       const avatar = photo ? `<img src="${photo}">` : esc(initials(p.name));
       return `<div class="roster-row">
@@ -263,7 +270,8 @@ function renderTeams() {
         <input type="number" class="r-price" value="${p.soldPrice||0}" min="0" data-price="${esc(p.id)}" title="Price">
         <button class="btn btn-danger" data-remove="${esc(p.id)}">✕</button>
       </div>`;
-    }).join('') : `<div class="empty-roster">No players assigned yet.</div>`;
+    }).join('');
+    const totalCount = roster.length + 1;
 
     return `<div class="team-card">
       <div class="team-card-head">
@@ -272,7 +280,7 @@ function renderTeams() {
           <div class="team-card-name">${esc(owner.teamName||'(unnamed team)')}</div>
           <div class="team-card-owner">Owner: ${esc(owner.name)}</div>
         </div>
-        <div class="team-card-count">${roster.length} player${roster.length===1?'':'s'}</div>
+        <div class="team-card-count">${totalCount} player${totalCount===1?'':'s'}</div>
       </div>
       ${rosterHtml}
     </div>`;

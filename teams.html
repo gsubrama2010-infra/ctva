@@ -164,7 +164,16 @@ function render() {
     const roster = (auction.players||[]).filter(p => p.soldTo === owner.teamId).slice().sort((a,b)=>a.name.localeCompare(b.name));
     const logo = teamLogoMap[owner.teamId];
     const isHi = highlightTeam === owner.teamId;
-    const rosterHtml = roster.length ? roster.map(p => {
+    const ownerPhoto = photoMap[owner.id];
+    const ownerAvatarInner = ownerPhoto
+      ? `<img src="${ownerPhoto}">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${avatarGradient(owner.name)};">${esc(initials(owner.name))}</div>`;
+    const ownerRow = `<a class="roster-row" href="player.html?id=${esc(owner.id)}">
+      <div class="r-avatar">${ownerAvatarInner}</div>
+      <div class="r-name">👑 ${owner.number?`#${owner.number} `:''}${esc(owner.name)}</div>
+      <div class="r-club">Owner</div>
+    </a>`;
+    const rosterHtml = ownerRow + roster.map(p => {
       const photo = photoMap[p.id];
       const avatarInner = photo
         ? `<img src="${photo}">`
@@ -174,7 +183,8 @@ function render() {
         <div class="r-name">${p.number?`#${p.number} `:''}${esc(p.name)}</div>
         <div class="r-club">${esc(p.club||'')}</div>
       </a>`;
-    }).join('') : `<div class="empty-roster">Roster coming soon.</div>`;
+    }).join('');
+    const totalCount = roster.length + 1;
 
     return `<div class="team-card${isHi?' highlight':''}" id="team-${esc(owner.teamId)}">
       <div class="team-card-head">
@@ -183,7 +193,7 @@ function render() {
           <div class="team-card-name">${esc(owner.teamName||'(unnamed team)')}</div>
           <div class="team-card-owner">Owner: ${esc(owner.name)}</div>
         </div>
-        <div class="team-card-count">${roster.length} player${roster.length===1?'':'s'}</div>
+        <div class="team-card-count">${totalCount} player${totalCount===1?'':'s'}</div>
       </div>
       ${rosterHtml}
     </div>`;
