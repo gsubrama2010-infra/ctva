@@ -51,6 +51,7 @@ a{text-decoration:none;color:inherit;}
 .photo-col{display:flex;flex-direction:column;align-items:center;}
 
 .p-name{font-family:'Anton',sans-serif;font-size:2.1rem;line-height:1.05;margin-bottom:.5rem;}
+.p-number{color:var(--gold);}
 .badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.6rem;}
 .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,162,61,.08);border:1px solid rgba(232,162,61,.25);border-radius:20px;padding:6px 14px;font-size:12.5px;color:var(--text);}
 .badge strong{color:var(--gold);}
@@ -236,7 +237,7 @@ function render(auction, photo, teamLogo) {
         <div class="avatar ${photo ? 'clickable' : ''}" id="avatarEl">${avatar}</div>
         ${extraLogos}
       </div>
-      <div class="p-name">${esc(player.name)}</div>
+      <div class="p-name">${player.number ? `<span class="p-number">#${esc(player.number)}</span> ` : ''}${esc(player.name)}</div>
       <div class="badges">
         <span class="badge ${player.isCaptain?'owner':''}">${player.isCaptain?'👑 ':''}${esc(status.label)}</span>
         ${status.team ? `<span class="badge">🏐 <strong>${esc(status.team)}</strong></span>` : ''}
