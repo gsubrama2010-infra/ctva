@@ -57,6 +57,8 @@ a{text-decoration:none;color:inherit;}
 .badge strong{color:var(--gold);}
 .badge.owner{background:linear-gradient(135deg,rgba(232,162,61,.22),rgba(232,162,61,.1));border-color:var(--gold);}
 .badge .club-logo{width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.badge.link{cursor:pointer;transition:border-color .15s,color .15s;}
+.badge.link:hover{border-color:var(--gold);color:var(--gold);}
 
 .notes-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.4rem 1.6rem;text-align:left;margin-top:1.4rem;}
 .notes-box .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem;}
@@ -88,6 +90,7 @@ a{text-decoration:none;color:inherit;}
       <a href="tournaments.html">Tournaments</a>
       <a href="league.html">League</a>
       <a href="auction.html" class="active" style="color:var(--gold);">Auction</a>
+      <a href="teams.html">Teams</a>
       <a href="tribute.html">In Memory</a>
     </div>
   </div>
@@ -209,6 +212,7 @@ function render(auction, photo, teamLogo) {
 
   document.title = `${player.name} — CTVA Player Profile`;
   const status = teamStatus(auction, player);
+  const rosterTeamId = player.isCaptain ? player.teamId : (player.soldTo || null);
 
   const avatar = photo
     ? `<img src="${photo}" alt="${esc(player.name)}">`
@@ -242,6 +246,7 @@ function render(auction, photo, teamLogo) {
         <span class="badge ${player.isCaptain?'owner':''}">${player.isCaptain?'👑 ':''}${esc(status.label)}</span>
         ${status.team ? `<span class="badge">🏐 <strong>${esc(status.team)}</strong></span>` : ''}
         ${player.club ? `<span class="badge">${clubLogoUrl ? `<img class="club-logo" src="${clubLogoUrl}" alt="">` : ''}${esc(player.club)}</span>` : ''}
+        ${rosterTeamId ? `<a class="badge link" href="teams.html?team=${esc(rosterTeamId)}">👥 View Full Roster</a>` : ''}
       </div>
       <div class="notes-box">
         <div class="label">About</div>
