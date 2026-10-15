@@ -1,0 +1,137 @@
+/* assets/theme.css — the CTVA "Court & Crest" theme, shared by every public page.
+   Colours come from the CTVA crest: maple red, black, gold and white on a warm paper background.
+   Each page still has its own <style> with the same token names (--bg, --gold, --text…); the
+   selector below outranks a plain :root, so loading this file re-themes the page without editing
+   its rules. A page that keeps its own palette (the tribute page) adds class="keep-palette" to <html>.
+   The site header and footer come from assets/site.js. */
+
+:root:not(.keep-palette){
+  --bg:#FBF7F0;          /* paper */
+  --surface:#FFFFFF;
+  --surface2:#F3ECE1;
+  --border:#E6DCCD;
+  --gold:#C8102E;        /* the accent everywhere: crest red (text, borders, primary buttons) */
+  --gold-dim:rgba(200,16,46,.5);
+  --gold-dark:#9E0B22;
+  --text:#151112;
+  --muted:#6B6164;
+  --green:#EFE6D8;       /* was dark green behind light text; now a light tan behind dark text */
+  --green2:#9E0B22;
+  --signal:#C8102E;
+  --ink:#FFFFFF;         /* text on accent buttons */
+  --silver:#8C8C8C;
+  --bronze:#A0622D;
+}
+:root{
+  --cx-red:#C8102E; --cx-red-deep:#9E0B22; --cx-red-tint:#FBE9EB;
+  --cx-ink:#151112; --cx-ink-soft:#3E3638; --cx-ink-mute:#6B6164;
+  --cx-gold:#E0A526; --cx-gold-deep:#8A5F00;
+  --cx-paper:#FBF7F0; --cx-paper-dim:#F3ECE1; --cx-line:#E6DCCD;
+  --cx-display:'Anton',Impact,sans-serif; --cx-body:'Inter',system-ui,sans-serif;
+}
+:root:not(.keep-palette) body{background:var(--bg);color:var(--text)}
+
+/* A dark section inside a light page (e.g. the homepage archive): same tokens, dark values. */
+.cx-dark{
+  --bg:#151112; --surface:#1E1819; --surface2:#2A2324; --border:rgba(255,255,255,.12);
+  --gold:#E0A526; --gold-dim:rgba(224,165,38,.55); --gold-dark:#B98315;
+  --text:#FAF6F0; --muted:rgba(250,246,240,.66); --green:#2A2324; --green2:#E0A526; --ink:#151112;
+  background:var(--bg); color:var(--text);
+}
+
+:focus-visible{outline:3px solid var(--cx-red);outline-offset:3px}
+.cx-dark :focus-visible{outline-color:var(--cx-gold)}
+
+/* Old page chrome replaced by the shared header */
+.topbar{display:none!important}
+
+/* ── Shared header (assets/site.js) ── */
+.cx-header{position:sticky;top:0;z-index:1000;background:rgba(251,247,240,.94);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--cx-line);font-family:var(--cx-body)}
+.cx-wrap{width:min(1200px,100% - 40px);margin:0 auto}
+.cx-head-in{display:flex;align-items:center;gap:24px;height:74px}
+.cx-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--cx-ink);flex:none}
+.cx-brand img{width:50px;height:50px;object-fit:contain}
+.cx-brand b{display:block;font:400 26px/1 var(--cx-display);letter-spacing:.03em}
+.cx-brand small{display:block;font:600 10.5px/1.25 var(--cx-body);letter-spacing:.11em;text-transform:uppercase;color:var(--cx-ink-mute)}
+.cx-nav{display:flex;gap:20px;margin-left:auto}
+.cx-nav a{font:600 14.5px var(--cx-body);color:var(--cx-ink-soft);text-decoration:none;padding:8px 0;position:relative;white-space:nowrap}
+.cx-nav a::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:2px;background:var(--cx-red);transform:scaleX(0);transition:transform .2s}
+.cx-nav a:hover{color:var(--cx-ink)}
+.cx-nav a:hover::after,.cx-nav a[aria-current="page"]::after{transform:scaleX(1)}
+.cx-nav a[aria-current="page"]{color:var(--cx-ink)}
+.cx-cta{display:inline-flex;align-items:center;min-height:44px;padding:10px 20px;border-radius:999px;background:var(--cx-red);color:#fff!important;font:700 14.5px var(--cx-body);text-decoration:none;box-shadow:0 4px 0 var(--cx-red-deep);white-space:nowrap;transition:background .2s}
+.cx-cta:hover{background:var(--cx-red-deep)}
+.cx-menu{display:none;margin-left:auto;position:static}
+.cx-menu summary{list-style:none;cursor:pointer;width:46px;height:46px;display:grid;place-items:center;border:1.5px solid var(--cx-line);border-radius:12px;background:#fff;color:var(--cx-ink)}
+.cx-menu summary::-webkit-details-marker{display:none}
+.cx-menu svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.cx-menu-pop{position:absolute;left:0;right:0;top:74px;background:var(--cx-paper);border-bottom:1px solid var(--cx-line);box-shadow:0 18px 30px -20px rgba(0,0,0,.4);padding:8px 20px 20px;display:grid}
+.cx-menu-pop a{padding:13px 4px;font:600 16px var(--cx-body);color:var(--cx-ink);text-decoration:none;border-bottom:1px solid var(--cx-line)}
+.cx-menu-pop a[aria-current="page"]{color:var(--cx-red)}
+.cx-menu-pop .cx-cta{margin-top:14px;justify-content:center;border-bottom:none}
+@media (max-width:1180px){.cx-brand small{display:none}.cx-nav{gap:16px}}
+@media (max-width:1040px){.cx-nav,.cx-head-in>.cx-cta{display:none}.cx-menu{display:block}}
+
+/* ── Shared footer ── */
+.cx-footer{background:var(--cx-ink);color:#CFC6C1;padding:56px 0 26px;margin-top:80px;font-family:var(--cx-body);font-size:15px}
+.cx-foot-in{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px}
+.cx-footer .cx-brand{color:#fff}
+.cx-footer .cx-brand small{color:#A99F9A;display:block}
+.cx-footer p{margin-top:14px;max-width:320px;line-height:1.6}
+.cx-footer h4{color:#fff;font:700 12.5px var(--cx-body);letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px}
+.cx-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.cx-footer a{color:#CFC6C1;text-decoration:none}
+.cx-footer a:hover{color:#fff}
+.cx-foot-note{border-top:1px solid rgba(255,255,255,.12);margin-top:40px;padding-top:20px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13.5px}
+@media (max-width:800px){.cx-foot-in{grid-template-columns:1fr 1fr}}
+
+/* ── Old components on the light theme ── */
+:root:not(.keep-palette) .btn-gold{background:var(--cx-red);color:#fff;border-color:var(--cx-red)}
+:root:not(.keep-palette) .btn-gold:hover{background:var(--cx-red-deep)}
+:root:not(.keep-palette) .page-btn:hover,:root:not(.keep-palette) .page-btn.active{color:var(--text)}
+.cx-dark .page-btn:hover,.cx-dark .page-btn.active{background:var(--cx-gold);color:var(--cx-ink);border-color:var(--cx-gold)}
+:root:not(.keep-palette) input,:root:not(.keep-palette) select,:root:not(.keep-palette) textarea{color:var(--text)}
+:root:not(.keep-palette) ::placeholder{color:#8E8487}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ── Inner-page fixes: banners and colours that were written for the old dark theme ── */
+/* Page banners stay dark (crest black with a red glow), with dark-section token values. */
+.t-hero,.petition-hero,.form-card-head{
+  --text:#FAF6F0; --muted:rgba(250,246,240,.7); --gold:#E0A526; --border:rgba(255,255,255,.12); --ink:#151112;
+  --surface:#1E1819; --surface2:#2A2324; --green:#2A2324; --green2:#E0A526;
+  color:var(--text);
+}
+.t-hero,.petition-hero{background:radial-gradient(ellipse at 85% 0%,rgba(200,16,46,.45),transparent 60%),linear-gradient(135deg,#151112,#241c1d)!important;border-bottom:4px solid var(--cx-red)!important}
+.form-card-head{background:linear-gradient(135deg,#151112,#2A2324)!important}
+.t-hero .btn-gold,.petition-hero .btn-gold{background:var(--cx-gold);color:var(--cx-ink)}
+
+/* Hairlines and tints that were white-on-dark */
+:root:not(.keep-palette) .t-card-head:hover,:root:not(.keep-palette) .candidate-row:hover{background:var(--surface2)}
+:root:not(.keep-palette) .t-status.upcoming{background:var(--surface2)}
+:root:not(.keep-palette) .match-label{background:var(--surface2)}
+:root:not(.keep-palette) .standings-table td,:root:not(.keep-palette) .roster-row,:root:not(.keep-palette) .candidate-row{border-bottom-color:var(--border)}
+:root:not(.keep-palette) .search-row input,:root:not(.keep-palette) .search-row select,
+:root:not(.keep-palette) .form-group input,:root:not(.keep-palette) .form-group select,:root:not(.keep-palette) .form-group textarea,
+:root:not(.keep-palette) .bid-row input{border-color:var(--border);background:#fff}
+:root:not(.keep-palette) .page-links a,:root:not(.keep-palette) .btn-secondary{border-color:var(--border)}
+.p-avatar .initials,.lot-avatar .initials,.avatar .initials,.avatar-pick .initials{color:var(--cx-ink)}
+
+/* Petition page body copy */
+:root:not(.keep-palette) .petition-story p{color:var(--cx-ink-soft)}
+:root:not(.keep-palette) .sig-comment{color:var(--cx-ink-soft);border-left-color:rgba(200,16,46,.3)}
+:root:not(.keep-palette) .privacy-note{color:var(--cx-ink-mute);background:var(--surface2);border-left-color:var(--border)}
+:root:not(.keep-palette) .setup-notice code{background:var(--surface2)}
+.petition-hero .counter-bar-wrap{background:rgba(255,255,255,.15)}
+
+/* Old per-page footers are replaced by the shared footer */
+.t-footer,.petition-footer{display:none!important}
+
+/* Thaimun 2026 gallery: its own back-link bar is replaced by the shared header */
+body>nav:not(.cx-nav):not(.cx-menu-pop){display:none!important}
+.hero-count{color:var(--cx-gold-deep)}
+
+/* Pages that style the bare <nav> element (Thaimun gallery) must not restyle the shared header's navs. */
+.cx-header nav{display:flex;position:static;padding:0;border:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;z-index:auto;justify-content:flex-start}
+.cx-header .cx-menu-pop{display:grid;position:absolute;padding:8px 20px 20px;background:var(--cx-paper);border-bottom:1px solid var(--cx-line)}
+@media (max-width:1040px){.cx-header nav.cx-nav{display:none}}
