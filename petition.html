@@ -473,7 +473,15 @@ document.getElementById('petitionForm').addEventListener('submit', async functio
       campaign: 'scarborough-home-court',
       signedAt
     });
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (err) {
+      // Until the Firestore rule for ctva_petition_private is in place, saving contact details is
+      // refused. Still record the signature (without phone/email) rather than turn people away.
+      if (err && err.code !== 'permission-denied') throw err;
+      console.warn('Contact details not saved (ctva_petition_private rule missing):', err);
+      await publicRef.set({ name, city, comment: document.getElementById('f-comment').value.trim(), signedAt });
+    }
     document.getElementById('petitionForm').style.display = 'none';
     document.getElementById('successMsg').style.display = 'block';
   } catch(err) {
